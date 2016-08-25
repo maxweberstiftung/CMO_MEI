@@ -107,6 +107,7 @@
     
     <!-- correct accidentals -->
     
+    
     <!-- delete page breaks -->
     <xsl:template match="mei:pb"/>
     
@@ -119,18 +120,38 @@
                 <xsl:value-of select="mei:anchoredText[@label='Hâne']"/>
             </xsl:attribute>
             <xsl:copy>
+                <!-- mark measure as hamparsum sub division or end of cycle -->
+                <xsl:choose>
+                    <xsl:when test="mei:dir/mei:symbol/@type = 'HampSubDivision'">
+                        <xsl:attribute name="type">
+                            <xsl:text>HampSubDivision</xsl:text>
+                        </xsl:attribute>
+                    </xsl:when>
+                    <xsl:when test="mei:dir/mei:symbol/@type = 'HampEndCycle'">
+                        <xsl:attribute name="type">
+                            <xsl:text>HampEndCycle</xsl:text>
+                        </xsl:attribute>
+                    </xsl:when>
+                </xsl:choose>
                 <xsl:apply-templates select="@* | node()"/>
             </xsl:copy>
-            <!-- So würden aus den measures sections, aber das sollte man in ein zweiten Stylesheet auslagern evtl. -->
-            <!--<xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:apply-templates select="@* | node()"/>
-            </xsl:element>-->
             <xsl:for-each select="./following-sibling::mei:measure[not(mei:anchoredText/@label='Hâne')][preceding-sibling::mei:measure[mei:anchoredText/@label='Hâne'][1] = $start_measure]">
-                <xsl:copy-of select="."></xsl:copy-of>
-                <!-- So würden aus den measures sections, aber das sollte man in ein zweiten Stylesheet auslagern evtl. -->
-                <!--<xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
+                <xsl:copy>
+                    <!-- mark measure as hamparsum sub division or end of cycle -->
+                    <xsl:choose>
+                        <xsl:when test="mei:dir/mei:symbol/@type = 'HampSubDivision'">
+                            <xsl:attribute name="type">
+                                <xsl:text>HampSubDivision</xsl:text>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:when test="mei:dir/mei:symbol/@type = 'HampEndCycle'">
+                            <xsl:attribute name="type">
+                                <xsl:text>HampEndCycle</xsl:text>
+                            </xsl:attribute>
+                        </xsl:when>
+                    </xsl:choose>
                     <xsl:apply-templates select="@* | node()"/>
-                </xsl:element>-->
+                </xsl:copy>
             </xsl:for-each>
         </xsl:element>
     </xsl:template>
