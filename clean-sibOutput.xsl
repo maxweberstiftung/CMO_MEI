@@ -103,9 +103,990 @@
     <xsl:template match="mei:staffDef/@key.sig"/>
     <xsl:template match="mei:staffDef/@clef.dis"/>
     <xsl:template match="mei:staffDef/@clef.dis.place"/>
+    <xsl:template match="mei:staffDef/@label"/>
     <xsl:template match="mei:staffDef/comment()"/>
     
+    
+    <!-- set key signatures according to instrument labels -->
+    <xsl:template match="mei:staffDef[@n='1']">
+        <xsl:copy>
+            <xsl:apply-templates select="@n"/>
+            <xsl:apply-templates select="@xml:id"/>
+            <xsl:apply-templates select="@lines"/>
+            <xsl:apply-templates select="@clef.shape"/>
+            <xsl:apply-templates select="@clef.line"/>
+            <xsl:choose>
+                <xsl:when test="@label = 'KS Uşşak'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Uşşak</xsl:text>
+                        </xsl:attribute>
+                        <!-- b4 loc 4 &e442; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Acem aşiran'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Acem aşiran</xsl:text>
+                        </xsl:attribute>
+                        <!-- b4 loc 4 &e441; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Mahur'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Mahur</xsl:text>
+                        </xsl:attribute>
+                        <!-- f5 loc 8 &e446; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Nişabur'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Nişabur</xsl:text>
+                        </xsl:attribute>
+                        <!-- C5 loc 5 &e446; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Büzürk'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Büzürk</xsl:text>
+                        </xsl:attribute>
+                        <!-- f5 loc 8 &e444; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Rast'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Rast</xsl:text>
+                        </xsl:attribute>
+                        <!-- b4 loc 4 &e442; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- f5 loc 8 &e444; -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Saba'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Saba</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- b4 loc 4 &e442; -->
+                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E442</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>4</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>b</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>4</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- d5 loc 6 &e441; -->
+                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E441</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>6</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>d</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>5</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label ='KS Nihavend'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Nihavend</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>7</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>e</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Hicaz'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Hicaz</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Nişaburek'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Nişaburek</xsl:text>
+                        </xsl:attribute>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Güldeste'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Güldeste</xsl:text>
+                        </xsl:attribute>
+                        <!-- D5 loc 6 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>6</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>d</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Tarz-ı nevin'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Tarz-ı nevin</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- D5 loc 6 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>6</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>d</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Ferahnak'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Ferahnak</xsl:text>
+                        </xsl:attribute>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Uzzal'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Uzzal</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- B4 loc 4 U+E442 -->
+                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E442</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>4</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>b</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>4</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- F5 loc 8 U+E444 -->
+                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E444</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>8</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>f</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>5</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- C5 loc 5 U+E446 -->
+                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E446</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>5</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>c</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>5</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Suznak'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Suznak</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>7</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>e</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Kürdili hicazkar'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Kürdili hicazkar</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>7</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>e</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- A4 loc 3 U+E441 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E441</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>3</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>a</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Suz-i dil'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Suz-i dil</xsl:text>
+                        </xsl:attribute>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- G5 loc 9 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>9</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>g</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- D5 loc 6 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>6</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>d</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Revnaknüma'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Revnaknüma</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- A4 loc 3 U+E445 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E445</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>3</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>a</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Hicazkar'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Hicazkar</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>7</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>e</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- A4 loc 3 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>3</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>a</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Şedaraban'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Şedaraban</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>7</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>e</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Şehnaz'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Şehnaz</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- G5 loc 9 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>9</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>g</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@label = 'KS Evcara'">
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="label">
+                            <xsl:text>KS Evcara</xsl:text>
+                        </xsl:attribute>
+                        <!-- B4 loc 4 U+E442 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E442</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>b</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>4</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- F5 loc 8 U+E444 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E444</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>8</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>f</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- C5 loc 5 U+E446 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="glyphnum">
+                                <xsl:text>U+E446</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="loc">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="pname">
+                                <xsl:text>c</xsl:text>
+                            </xsl:attribute>
+                            <xsl:attribute name="oct">
+                                <xsl:text>5</xsl:text>
+                            </xsl:attribute>
+                        </xsl:element>
+                        <!-- E5 loc 7 U+E445 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E445</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>7</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>e</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>5</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                        <!-- A4 loc 3 U+E445 -->
+                        <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="glyphnum">
+                            <xsl:text>U+E445</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="loc">
+                            <xsl:text>3</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="pname">
+                            <xsl:text>a</xsl:text>
+                        </xsl:attribute>
+                        <xsl:attribute name="oct">
+                            <xsl:text>4</xsl:text>
+                        </xsl:attribute>
+                    </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:otherwise>
+                    
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- correct accidentals -->
+    <xsl:template match="mei:accid">
+        <xsl:copy>
+            <xsl:apply-templates select="@xml:id"/>
+            <xsl:apply-templates select="@func"/>
+            <!-- set correct @accid -->
+            <xsl:choose>
+                <xsl:when test="@accid"></xsl:when>
+            </xsl:choose>
+            <!-- set correct @accid.ges -->
+            <xsl:choose>
+                <xsl:when test="@accid.ges"></xsl:when>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
     
     
     <!-- delete page breaks -->
