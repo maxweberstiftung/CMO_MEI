@@ -85,9 +85,14 @@
     <!-- prevent non valid ties to be in output -->
     <xsl:template match="mei:tie"/>
     
-    <!-- surpress non valid group signs -->
+    <!-- surpress invalid directions -->
     <xsl:template match="mei:dir[mei:symbol/@type = 'group_start']"/>
     <xsl:template match="mei:dir[mei:symbol/@type = 'group_end']"/>
+    <xsl:template match="mei:dir[mei:symbol/@type = 'HampSubDivision']"/>
+    <xsl:template match="mei:dir[mei:symbol/@type = 'HampEndCycle']"/>
+    <xsl:template match="mei:dir[mei:symbol/@type = 'suppliedBracketStart']"/>
+    <xsl:template match="mei:dir[mei:symbol/@type = 'suppliedBracketEnd']"/>
+    <!-- there is a template for each type of direction to prevent loss of information and get an invalid document instead -->
     
     <!-- add barlines and dirs to layer -->
     <xsl:template match="mei:layer">
