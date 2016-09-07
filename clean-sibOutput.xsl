@@ -69,6 +69,16 @@
     </xsl:template>
     <xsl:template match="mei:anchoredText[@label='Editor_Initials']"/>
     
+    <!-- 
+        Theoretically, the metadata comes from the database and the information about genre, source, usul and makam from the transcription files is not needed.
+        Therefor those <anchoredText> elements could be surpressed ... hopefully
+    -->
+    <xsl:template match="mei:anchoredText[@label='Usûl_name']"/>
+    <xsl:template match="mei:anchoredText[@label='Usûl_subtitle']"/>
+    <xsl:template match="mei:anchoredText[@label='Genre_subtitle']"/>
+    <xsl:template match="mei:anchoredText[@label='Makâm_subtitle']"/>
+    <xsl:template match="mei:anchoredText[@label='Source_subtitle']"/>
+    
     <!-- clean notes -->
     <xsl:template match="mei:note/@dur.ges"/>
     <xsl:template match="mei:note/@oct.ges"/>
