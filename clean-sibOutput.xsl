@@ -257,11 +257,38 @@
     <xsl:template name="accid2glyph">
         <xsl:param name="accid"/>
         <xsl:choose>
+            
+            <!-- Bakiye flat -->
+            <xsl:when test="$accid = 'b'">
+                <xsl:value-of select="'U+E442'"/>
+            </xsl:when>
+            <!-- Küçük mücenneb flat -->
+            <xsl:when test="$accid = 'm'">
+                <xsl:value-of select="'U+E441'"/>
+            </xsl:when>
+            <!-- Koma flat -->
+            <xsl:when test="$accid = 'k'">
+                <xsl:value-of select="'U+E443'"/>
+            </xsl:when>
+            <!-- Bakiye sharp -->
             <xsl:when test="$accid = 'B'">
                 <xsl:value-of select="'U+E445'"/>
             </xsl:when>
-            <xsl:when test="$accid = 'k'">
-                <xsl:value-of select="'U+E443'"/>
+            <!-- Küçük mücenneb sharp -->
+            <xsl:when test="$accid = 'M'">
+                <xsl:value-of select="'U+E446'"/>
+            </xsl:when>
+            <!-- Koma sharp -->
+            <xsl:when test="$accid = 'K'">
+                <xsl:value-of select="'U+E444'"/>
+            </xsl:when>
+            <!-- Büyük mücenneb flat -->
+            <xsl:when test="$accid = 'f'">
+                <xsl:value-of select="'U+E440'"/>
+            </xsl:when>
+            <!-- Büyük mücenneb sharp -->
+            <xsl:when test="$accid = 'S'">
+                <xsl:value-of select="'U+E447'"/>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
