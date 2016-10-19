@@ -246,6 +246,13 @@
     <xsl:template match="mei:measure[not(mei:anchoredText/@label='Hâne')]"/>
     <xsl:template match="mei:anchoredText[@label='Hâne']"/>
     
+    <!-- change vertical brackets into <supplied> elements -->
+    <!-- case 1: symbol vertical bracket 2 lines -->
+    <!-- case 2: symbol vertical bracket 3 lines -->
+    <!-- case 3: vertical brackets as lines -->
+    <!-- case 3.1: start bracket at beginning of measure and end at start of following measure -->
+    <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
+    
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
         <xsl:copy>
