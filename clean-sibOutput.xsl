@@ -38,7 +38,7 @@
             <xsl:apply-templates select="@*"/>
             <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText/mei:title"/>    
         </xsl:copy>
-        <xsl:apply-templates select="node()" />
+        <!--<xsl:apply-templates select="node()" />-->
     </xsl:template>
     <xsl:template match="mei:anchoredText[mei:title]"/>
     
