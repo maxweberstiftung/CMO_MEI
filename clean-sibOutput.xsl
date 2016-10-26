@@ -253,6 +253,16 @@
     <!-- case 3.1: start bracket at beginning of measure and end at start of following measure -->
     <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
     
+    <!-- test conversion of colored notes into supplied notes -->
+    <xsl:template match="mei:note[@color='rgba(170,0,0,1)']">
+          <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+              <xsl:copy>
+                  <xsl:apply-templates select="@*[name()!='color']|node()" />
+              </xsl:copy>
+          </xsl:element>
+    </xsl:template>
+    <!--<xsl:template match="mei:note[@color='rgba(170,0,0,1)'][position()!=1]"></xsl:template>-->
+    
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
         <xsl:copy>
