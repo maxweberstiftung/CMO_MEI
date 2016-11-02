@@ -255,12 +255,51 @@
     
     <!-- test conversion of colored notes into supplied notes -->
     <xsl:template match="mei:note[@color='rgba(170,0,0,1)']">
-          <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-              <xsl:copy>
-                  <xsl:apply-templates select="@*[name()!='color']|node()" />
-              </xsl:copy>
-          </xsl:element>
+        <xsl:variable name="pos" select="./position()"/>
+        <xsl:choose>
+            <xsl:when test="not(./following-sibling::*[@color='rgba(170,0,0,1)'][position() = $pos + 1])">
+                <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:copy>
+                        <xsl:apply-templates select="@*[name()!='color']|node()" />
+                    </xsl:copy>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:copy>
+                        <xsl:apply-templates select="@*[name()!='color']|node()" />
+                    </xsl:copy>
+                    <xsl:for-each select="./following-sibling::*[@color='rgba(170,0,0,1)'][1]">
+                        <xsl:call-template name="addFollowingColoredNotes">
+                            <xsl:with-param name="self" select="."></xsl:with-param>
+                            <xsl:with-param name="pos" select="$pos"></xsl:with-param>
+                        </xsl:call-template>
+                    </xsl:for-each>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
+    <!--
+        It still doesn't work to add adjacent colored notes to the <supplied> element.
+        I have to rethink it...
+        see: http://stackoverflow.com/questions/10055269/find-sibling-node-after-specified-node-is-found 
+    -->
+    
+    <xsl:template name="addFollowingColoredNotes">
+        <xsl:param name="pos"/>
+        <xsl:param name="self"/>
+        <xsl:copy-of select="$self"/>
+    </xsl:template>
+    
+    <xsl:template match="mei:beam[count(./mei:note[@color='rgba(170,0,0,1)']) = count(./*)]">
+        <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:copy>
+                <xsl:apply-templates select="@*"/>
+                <xsl:copy-of select="./*"/>
+            </xsl:copy>
+        </xsl:element>
+    </xsl:template>
+    
     <!--<xsl:template match="mei:note[@color='rgba(170,0,0,1)'][position()!=1]"></xsl:template>-->
     
     <!-- copy every node in file -->  
