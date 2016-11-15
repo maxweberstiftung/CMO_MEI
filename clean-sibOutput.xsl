@@ -9,6 +9,8 @@
     <!-- strip spaces -->
     <!--<xsl:strip-space elements="mei:staffDef mei:scoreDef mei:measure mei:section"/>-->
     
+    <!-- setting color for insertions -->
+    <xsl:variable name="suppliedColor" select="'rgba(170,0,0,1)'"/>
     
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
@@ -246,50 +248,130 @@
     <xsl:template match="mei:measure[not(mei:anchoredText/@label='Hâne')]"/>
     <xsl:template match="mei:anchoredText[@label='Hâne']"/>
     
-    <!-- change vertical brackets into <supplied> elements -->
-    <!-- case 1: symbol vertical bracket 2 lines -->
-    <!-- case 2: symbol vertical bracket 3 lines -->
-    <!-- case 3: vertical brackets as lines -->
-    <!-- case 3.1: start bracket at beginning of measure and end at start of following measure -->
-    <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
-    
-    
-    <!--
-        It still doesn't work to add adjacent colored notes to the <supplied> element.
-        I have to rethink it...
-        see: http://stackoverflow.com/questions/10055269/find-sibling-node-after-specified-node-is-found 
-    -->
-    
-    <xsl:template match="*[./mei:note/@color='rgba(170,0,0,1)']">
+    <!-- change vertical bracket symbols to marking labels for start and end points of <supplied> elements -->
+    <xsl:template match="mei:dir[mei:symbol/@type='suppliedBracketStart']"/>
+    <xsl:template match="mei:dir[mei:symbol/@type='suppliedBracketEnd']"/>
+        
+    <xsl:template match="mei:layer[../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketStart']]">
+        <xsl:variable name="startBrackets" select="./../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketStart']"/>
+        <xsl:variable name="endBrackets" select="./../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketEnd']"/>
+        
+        <xsl:variable name="startPoint" select="for $x in $startBrackets return substring($x/@startid,2)"/>
+        <xsl:variable name="endPoint" select="for $x in $endBrackets return substring($x/@startid,2)"/>
+        
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
-            <xsl:for-each-group select="*" group-adjacent="@color='rgba(170,0,0,1)'">
-                <xsl:variable name="key" select="current-grouping-key()"/>
-                <xsl:variable name="grp" select="current-group()"/>
+            <xsl:for-each select="./*">
                 <xsl:choose>
-                    <xsl:when test="current-grouping-key()">
-                        <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:apply-templates select="$grp"/>
-                        </xsl:element>
+                    <!-- note is referenced in startid of a start bracket -->
+                    <xsl:when test="./@xml:id = $startPoint and not(./@xml:id = $endPoint)">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                                <xsl:attribute name="label">
+                                    <xsl:value-of select="'suppStart'"/>
+                                </xsl:attribute>
+                            <xsl:apply-templates select="./*"/>
+                        </xsl:copy>
+                    </xsl:when>
+                    <xsl:when test="./@xml:id = $endPoint and not(./@xml:id = $startPoint)">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                                <xsl:attribute name="label">
+                                    <xsl:value-of select="'suppEnd'"/>
+                                </xsl:attribute>
+                            <xsl:apply-templates select="./*"/>
+                        </xsl:copy>
+                    </xsl:when>
+                    <xsl:when test="./@xml:id = $endPoint and ./@xml:id = $startPoint">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                            <xsl:attribute name="label">
+                                <xsl:value-of select="'suppStartEnd'"/>
+                            </xsl:attribute>
+                            <xsl:apply-templates select="./*"/>
+                        </xsl:copy>
+                    </xsl:when>
+                    <!-- get referenced child elements -->
+                    <xsl:when test="././*/@xml:id = $startPoint or ././*/@xml:id = $endPoint">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                            <xsl:for-each select="./*">
+                                <xsl:choose>
+                                    <xsl:when test="./@xml:id = $startPoint and not(./@xml:id = $endPoint)">
+                                        <xsl:copy>
+                                            <xsl:apply-templates select="@*"/>
+                                            <xsl:attribute name="label">
+                                                <xsl:value-of select="'suppStart'"/>
+                                            </xsl:attribute>
+                                            <xsl:apply-templates select="./*"/>
+                                        </xsl:copy>
+                                    </xsl:when>
+                                    <xsl:when test="./@xml:id = $endPoint and not(./@xml:id = $startPoint)">
+                                        <xsl:copy>
+                                            <xsl:apply-templates select="@*"/>
+                                            <xsl:attribute name="label">
+                                                <xsl:value-of select="'suppEnd'"/>
+                                            </xsl:attribute>
+                                            <xsl:apply-templates select="./*"/>
+                                        </xsl:copy>
+                                    </xsl:when>
+                                    <xsl:when test="./@xml:id = $endPoint and ./@xml:id = $startPoint">
+                                        <xsl:copy>
+                                            <xsl:apply-templates select="@*"/>
+                                            <xsl:attribute name="label">
+                                                <xsl:value-of select="'suppStartEnd'"/>
+                                            </xsl:attribute>
+                                            <xsl:apply-templates select="./*"/>
+                                        </xsl:copy>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:copy>
+                                            <xsl:apply-templates select="@*"/>
+                                            <xsl:apply-templates select="./*"/>
+                                        </xsl:copy>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:for-each>
+                        </xsl:copy>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:apply-templates select="$grp"/>
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                            <xsl:apply-templates select="./*"/>
+                        </xsl:copy>
                     </xsl:otherwise>
                 </xsl:choose>
-            </xsl:for-each-group>
+            </xsl:for-each>
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="mei:beam[count(./mei:note[@color='rgba(170,0,0,1)']) = count(./*)]">
-        <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-            <xsl:copy>
-                <xsl:apply-templates select="@*"/>
-                <xsl:copy-of select="./*"/>
-            </xsl:copy>
-        </xsl:element>
-    </xsl:template>
+    <!-- case 3: vertical brackets as lines -->
+    <!-- case 3.1: start bracket at beginning of measure and end at start of following measure -->
+    <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
+    <!--
+       http://stackoverflow.com/questions/10859703/xpath-select-all-elements-between-two-specific-elements
+       http://stackoverflow.com/questions/3428104/selecting-siblings-between-two-nodes-using-xpath
+       I have to select the note with startid in the start bracket, the note with the startid in the end bracket and also all elements in between
+    -->
+    <!--<line xml:id="m-1039" endid="#m-1034" label="start" startid="#m-1034"
+        subtype="vertical" type="bracket"/>-->
     
-    <xsl:template match="@color['rgba(170,0,0,1)']"/>
+    <!-- clean vertical bracket lines from unused @endid -->
+    <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']">
+        <xsl:copy>
+            <xsl:choose>
+                <xsl:when test="@startid = @endid">
+                    <xsl:apply-templates select="@*[name() != 'endid']"/>
+                    <xsl:apply-templates select="node()"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@*|node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
+      
+    
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
