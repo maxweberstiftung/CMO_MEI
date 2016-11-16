@@ -12,6 +12,15 @@
     <!-- setting color for insertions -->
     <xsl:variable name="suppliedColor" select="'rgba(170,0,0,1)'"/>
     
+    <xsl:template match="/*">
+        <xsl:if test="//mei:measure[count(mei:line[@type='bracket' and @subtype='vertical']) > 1]">
+            <xsl:value-of select="error(QName('http://www.corpus-musicae-ottomanicae.de/err', 'cmo:error'),'There is more than one vertical bracket line in a measure!')"/>
+        </xsl:if>
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
@@ -182,28 +191,30 @@
     </xsl:template>
     
     <!-- correct accidentals -->
-    <xsl:template match="mei:accid">
+    <!--<xsl:template match="mei:accid">
         <xsl:copy>
             <xsl:apply-templates select="@xml:id"/>
             <xsl:apply-templates select="@func"/>
-            <!-- set correct @accid -->
+            set correct @accid
             <xsl:choose>
                 <xsl:when test="@accid"></xsl:when>
             </xsl:choose>
-            <!-- set correct @accid.ges -->
+            set correct @accid.ges
             <xsl:choose>
                 <xsl:when test="@accid.ges"></xsl:when>
             </xsl:choose>
         </xsl:copy>
-    </xsl:template>
+    </xsl:template>-->
     
     
     <!-- delete page breaks -->
     <xsl:template match="mei:pb"/>
     
-    <!-- put Hanes into sections -->
+    <!-- put Hanes into sections and mark measures according to squared bracket lines and division signs -->
     <xsl:template match="mei:measure[mei:anchoredText/@label='Hâne']">
         <xsl:variable name="start_measure" select="."/>
+        <xsl:variable name="start_melody" select="if (./mei:staff[@n='1']/mei:layer/*[1]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer/mei:beam[1]/*[1] else ./mei:staff[@n='1']/mei:layer[1]/*[1]"/>
+        <xsl:variable name="end_melody" select="if (./mei:staff[@n='1']/mei:layer[1]/*[last()]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[last()]/*[last()] else ./mei:staff[@n='1']/mei:layer[1]/*[last()]"/>
         <xsl:variable name="next_start" select="$start_measure/following-sibling::mei:measure[mei:anchoredText/@label='Hâne'][1]/@xml:id"/>
         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="label">
@@ -223,9 +234,42 @@
                         </xsl:attribute>
                     </xsl:when>
                 </xsl:choose>
+                <!-- set subtype according to vertical bracket lines -->
+                <xsl:choose>
+                    <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
+                        <xsl:choose>
+                            <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
+                                <xsl:attribute name="subtype">
+                                    <xsl:text>suppStart</xsl:text>
+                                </xsl:attribute>
+                            </xsl:when>
+                            <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
+                                <xsl:attribute name="subtype">
+                                    <xsl:text>suppBeforeStart</xsl:text>
+                                </xsl:attribute>
+                            </xsl:when>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
+                        <xsl:choose>
+                            <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
+                                <xsl:attribute name="subtype">
+                                    <xsl:text>suppAfterEnd</xsl:text>
+                                </xsl:attribute>
+                            </xsl:when>
+                            <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
+                                <xsl:attribute name="subtype">
+                                    <xsl:text>suppEnd</xsl:text>
+                                </xsl:attribute>
+                            </xsl:when>
+                        </xsl:choose>
+                    </xsl:when>
+                </xsl:choose>
                 <xsl:apply-templates select="@* | node()"/>
             </xsl:copy>
             <xsl:for-each select="./following-sibling::mei:measure[not(mei:anchoredText/@label='Hâne')][preceding-sibling::mei:measure[mei:anchoredText/@label='Hâne'][1] = $start_measure]">
+                <xsl:variable name="start_melody2" select="if (./mei:staff[@n='1']/mei:layer[1]/*[1]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[1]/*[1] else ./mei:staff[@n='1']/mei:layer[1]/*[1]"/>
+                <xsl:variable name="end_melody2" select="if (./mei:staff[@n='1']/mei:layer[1]/*[last()]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[last()]/*[last()] else ./mei:staff[@n='1']/mei:layer[1]/*[last()]"/>
                 <xsl:copy>
                     <!-- mark measure as hamparsum sub division or end of cycle -->
                     <xsl:choose>
@@ -238,6 +282,37 @@
                             <xsl:attribute name="type">
                                 <xsl:text>HampEndCycle</xsl:text>
                             </xsl:attribute>
+                        </xsl:when>
+                    </xsl:choose>
+                    <!-- set subtype according to vertical bracket lines -->
+                    <xsl:choose>
+                        <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
+                            <xsl:choose>
+                                <xsl:when test="substring(mei:line/@startid,2) = $start_melody2/@xml:id">
+                                    <xsl:attribute name="subtype">
+                                        <xsl:text>suppStart</xsl:text>
+                                    </xsl:attribute>
+                                </xsl:when>
+                                <xsl:when test="substring(mei:line/@startid,2) = $end_melody2/@xml:id">
+                                    <xsl:attribute name="subtype">
+                                        <xsl:text>suppBeforeStart</xsl:text>
+                                    </xsl:attribute>
+                                </xsl:when>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
+                            <xsl:choose>
+                                <xsl:when test="substring(mei:line/@startid,2) = $start_melody2/@xml:id">
+                                    <xsl:attribute name="subtype">
+                                        <xsl:text>suppAfterEnd</xsl:text>
+                                    </xsl:attribute>
+                                </xsl:when>
+                                <xsl:when test="substring(mei:line/@startid,2) = $end_melody2/@xml:id">
+                                    <xsl:attribute name="subtype">
+                                        <xsl:text>suppEnd</xsl:text>
+                                    </xsl:attribute>
+                                </xsl:when>
+                            </xsl:choose>
                         </xsl:when>
                     </xsl:choose>
                     <xsl:apply-templates select="@* | node()"/>
@@ -344,17 +419,7 @@
             </xsl:for-each>
         </xsl:copy>
     </xsl:template>
-    
-    <!-- case 3: vertical brackets as lines -->
-    <!-- case 3.1: start bracket at beginning of measure and end at start of following measure -->
     <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
-    <!--
-       http://stackoverflow.com/questions/10859703/xpath-select-all-elements-between-two-specific-elements
-       http://stackoverflow.com/questions/3428104/selecting-siblings-between-two-nodes-using-xpath
-       I have to select the note with startid in the start bracket, the note with the startid in the end bracket and also all elements in between
-    -->
-    <!--<line xml:id="m-1039" endid="#m-1034" label="start" startid="#m-1034"
-        subtype="vertical" type="bracket"/>-->
     
     <!-- clean vertical bracket lines from unused @endid -->
     <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']">
