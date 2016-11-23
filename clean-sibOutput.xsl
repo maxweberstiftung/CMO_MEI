@@ -210,6 +210,40 @@
     <!-- delete page breaks -->
     <xsl:template match="mei:pb"/>
     
+    <!-- correct linking of start group symbols in case of grace notes -->
+    <xsl:template match="mei:dir[mei:symbol/@type='group_start']">
+        <xsl:variable name="dirRef" select="substring(@startid,2)"/>
+        <xsl:copy>
+            <xsl:apply-templates select="@*[name() != 'startid']"/>
+            <xsl:choose>
+                <xsl:when test="//*[@xml:id=$dirRef]/preceding::mei:note[1]/@grace">
+                    <xsl:variable name="graceNote" select="//*[@xml:id=$dirRef]/preceding::mei:note[1]"/>
+                    <xsl:attribute name="startid">
+                        <xsl:value-of select="concat('#',$graceNote/@xml:id)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="node()"/>
+                </xsl:when>
+                <xsl:when test="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1]/mei:note/@grace">
+                    <xsl:variable name="graceBeam" select="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1][mei:note/@grace]"/>
+                    <xsl:attribute name="startid">
+                        <xsl:value-of select="concat('#',$graceBeam/mei:note[1]/@xml:id)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="node()"/>
+                </xsl:when>
+                <xsl:when test="preceding-sibling::mei:dir[mei:symbol/@type='group_end'][1]/@startid = ./@startid and //*[@xml:id=$dirRef]/following::mei:note[1]/@grace">
+                    <xsl:variable name="followingGrace" select="//*[@xml:id=$dirRef]/following::mei:note[1]"/>
+                    <xsl:attribute name="startid">
+                        <xsl:value-of select="concat('#',$followingGrace/@xml:id)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="node()"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@startid|node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- put Hanes into sections and mark measures according to squared bracket lines and division signs -->
     <xsl:template match="mei:measure[mei:anchoredText/@label='Hâne']">
         <xsl:variable name="start_measure" select="."/>
