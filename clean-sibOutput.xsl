@@ -9,9 +9,6 @@
     <!-- strip spaces -->
     <!--<xsl:strip-space elements="mei:staffDef mei:scoreDef mei:measure mei:section"/>-->
     
-    <!-- setting color for insertions -->
-    <xsl:variable name="suppliedColor" select="'rgba(170,0,0,1)'"/>
-    
     <xsl:template match="/*">
         <xsl:if test="//mei:measure[count(mei:line[@type='bracket' and @subtype='vertical']) > 1]">
             <xsl:value-of select="error(QName('http://www.corpus-musicae-ottomanicae.de/err', 'cmo:error'),'There is more than one vertical bracket line in a measure!')"/>
