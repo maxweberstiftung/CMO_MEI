@@ -188,20 +188,167 @@
     </xsl:template>
     
     <!-- correct accidentals -->
-    <!--<xsl:template match="mei:accid">
+    <xsl:template match="mei:accid">
         <xsl:copy>
-            <xsl:apply-templates select="@xml:id"/>
-            <xsl:apply-templates select="@func"/>
-            set correct @accid
+            <!-- set @accid -->
             <xsl:choose>
-                <xsl:when test="@accid"></xsl:when>
+                <xsl:when test="@accid = 's'">
+                    <!-- Bakiye sharp -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'B'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E445'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = 'f'">
+                    <!-- Küçük mücenneb (flat) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'m'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E441'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = 'fu'">
+                    <!-- Büyük mücenneb (flat) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'bm'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E440'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = 'su'">
+                    <!-- Büyük mücenneb (sharp) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'BM'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E447'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = '3qf'">
+                    <!-- Bakiye (flat) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'b'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E442'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = '1qf'">
+                    <!-- Koma (flat) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'k'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E443'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = '3qs'">
+                    <!-- Küçük mücenneb (sharp) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'M'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E446'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = '1qs'">
+                    <!-- Koma (sharp) -->
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'K'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="glyphnum">
+                        <xsl:value-of select="'U+E444'"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="@func"/>
+                </xsl:when>
+                <xsl:when test="@accid = 'n'">
+                    <xsl:choose>
+                        <xsl:when test="./@func='caution'">
+                            <xsl:attribute name="accid">
+                                <xsl:value-of select="'n'"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="accid.ges">
+                                <xsl:value-of select="'n'"/>
+                            </xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
             </xsl:choose>
-            set correct @accid.ges
+            <!-- set @accid.ges -->
             <xsl:choose>
-                <xsl:when test="@accid.ges"></xsl:when>
+                <xsl:when test="@accid.ges = 's'">
+                    <!-- Bakiye sharp -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'B'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = 'f'">
+                    <!-- Küçük mücenneb (flat) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'m'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = 'fu'">
+                    <!-- Büyük mücenneb (flat) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'bm'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = 'su'">
+                    <!-- Büyük mücenneb (sharp) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'BM'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = '3qf'">
+                    <!-- Bakiye (flat) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'b'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = '1qf'">
+                    <!-- Koma (flat) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'k'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = '3qs'">
+                    <!-- Küçük mücenneb (sharp) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'M'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges = '1qs'">
+                    <!-- Koma (sharp) -->
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'K'"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@accid.ges">
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="@accid.ges"/>
+                    </xsl:attribute>
+                </xsl:when>
             </xsl:choose>
+            <xsl:apply-templates select="@* except (@accid, @accid.ges, @func)"/>
         </xsl:copy>
-    </xsl:template>-->
+    </xsl:template>
     
     
     <!-- delete page breaks -->
