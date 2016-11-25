@@ -54,6 +54,9 @@
     <!-- suppress marking labels -->
     <xsl:template match="@label['suppStart' or 'suppEnd' or 'suppStartEnd']"/>
     
+    <!-- suppress vertical bracket lines -->
+    <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']"/>
+    
     <!-- coloring every element between a start and an end point of an editorial addition -->
     <xsl:template match="*[name() != 'measure'][not(@label) and preceding::node()/@label and following::node()/@label]">
         <xsl:choose>
