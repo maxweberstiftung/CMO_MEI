@@ -400,6 +400,13 @@
         </xsl:copy>
     </xsl:template>
     
+    <!-- add Mükerrer and Grgnum into same <dir> element with Division sign -->
+    <xsl:template match="mei:dir[mei:symbol/@type='HampEndCycle' or mei:symbol/@type='HampSubDivision']">
+        <xsl:variable name="anchoredText"/>
+    </xsl:template>
+    <xsl:template match="mei:anchoredText[@label='Mükerrer']"/>
+    <xsl:template match="mei:anchoredText[@label='Grgnum']"/>
+    
     <!-- put Hanes into sections and mark measures according to squared bracket lines and division signs -->
     <xsl:template match="mei:measure[mei:anchoredText/@label='Section']">
         <!-- keep self as variable for comparing -->
