@@ -37,6 +37,9 @@
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                                <xsl:value-of select="generate-id()"/>
+                            </xsl:attribute>
                             <xsl:apply-templates select="$grp"/>
                         </xsl:element>
                     </xsl:when>
@@ -50,6 +53,9 @@
     
     <xsl:template match="mei:beam[count(./mei:note[@color=$suppliedColor]) = count(./*)]">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
             <xsl:copy>
                 <xsl:apply-templates select="@*"/>
                 <xsl:apply-templates select="./*"/>
@@ -68,6 +74,9 @@
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                                <xsl:value-of select="generate-id()"/>
+                            </xsl:attribute>
                             <xsl:apply-templates select="$grp"/>
                         </xsl:element>
                     </xsl:when>
@@ -82,6 +91,9 @@
     <!-- catching enclosed accidentals and put them into <supplied> elements -->
     <xsl:template match="mei:accid[@enclose='paren']">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
             <xsl:copy>
                 <xsl:apply-templates select="@*"/>
             </xsl:copy>

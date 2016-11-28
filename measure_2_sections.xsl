@@ -103,12 +103,27 @@
             <xsl:copy-of select="@*"/>
             <xsl:if test="./ancestor::mei:measure/@left">
                 <xsl:element name="barLine" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                        <xsl:value-of select="generate-id()"/>
+                    </xsl:attribute>
                     <xsl:attribute name="form">
                         <xsl:value-of select="./ancestor::mei:measure/@left"/>
                     </xsl:attribute>
                 </xsl:element>
             </xsl:if>
-            <xsl:apply-templates/>
+            <xsl:apply-templates select="node()[name() != 'dir']"/>
+            
+            <xsl:if test="./ancestor::mei:measure/@right">
+                <xsl:element name="barLine" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                        <xsl:value-of select="generate-id()"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="form">
+                        <xsl:value-of select="./ancestor::mei:measure/@right"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:if>
+            
             <xsl:for-each select="$dirs">
                 <xsl:variable name="dir" select="."/>
                 <xsl:for-each select="$notes">
@@ -124,13 +139,6 @@
                     </xsl:if>
                 </xsl:for-each>
             </xsl:for-each>
-            <xsl:if test="./ancestor::mei:measure/@right">
-                <xsl:element name="barLine" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="form">
-                        <xsl:value-of select="./ancestor::mei:measure/@right"/>
-                    </xsl:attribute>
-                </xsl:element>
-            </xsl:if>
         </xsl:copy>
         
     </xsl:template>

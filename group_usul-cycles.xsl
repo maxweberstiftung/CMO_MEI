@@ -28,8 +28,11 @@
     <xsl:template match="mei:measure[@type='HampEndCycle']">
         <xsl:variable name="end_measure" select="."/>
         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
             <xsl:attribute name="type">
-                <xsl:text>hamparsum_cycle</xsl:text>
+                <xsl:text>hampartsum_cycle</xsl:text>
             </xsl:attribute>
             <xsl:for-each select="./preceding-sibling::mei:measure[@type='HampSubDivision' and following-sibling::mei:measure[@type='HampEndCycle'][1] = $end_measure]">
                 <xsl:copy>

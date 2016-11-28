@@ -68,6 +68,9 @@
             <xsl:apply-templates select="@xml:id"/>
             <xsl:apply-templates select="node()"/>
             <xsl:element name="persName" namespace="http://www.music-encoding.org/ns/mei">
+                <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                    <xsl:value-of select="generate-id()"/>
+                </xsl:attribute>
                 <xsl:attribute name="role">
                     <xsl:text>Editor</xsl:text>
                 </xsl:attribute>
@@ -141,6 +144,9 @@
             
             <!-- process key signatures -->
             <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                    <xsl:value-of select="generate-id()"/>
+                </xsl:attribute>
                 <!-- tokenize @label to process key signatures -->
                 <xsl:for-each select="tokenize(@label,'\s+')">
                     <xsl:variable name="accid" select="substring(.,1,1)"/>
@@ -166,6 +172,9 @@
                     </xsl:variable>
                     
                     <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                            <xsl:value-of select="generate-id()"/>
+                        </xsl:attribute>
                         <xsl:attribute name="accid">
                             <xsl:value-of select="$accid"/>
                         </xsl:attribute>
@@ -401,6 +410,9 @@
         
         <!-- generate section and put self in it -->
         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
             <!-- Set Section text as label -->
             <xsl:attribute name="label">
                 <xsl:value-of select="mei:anchoredText[@label='Section']"/>
