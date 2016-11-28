@@ -4,6 +4,9 @@
     exclude-result-prefixes="xs"
     version="2.0">
     
+    <!-- strip spaces -->
+    <xsl:strip-space elements="*"/>
+    
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
