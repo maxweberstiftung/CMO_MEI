@@ -127,6 +127,9 @@
     <xsl:template match="mei:staffDef/@label"/>
     <xsl:template match="mei:staffDef/comment()"/>
     
+    <!-- delete verses with empty syllables -->
+    <xsl:template match="mei:verse[mei:syl/not(text())]"/>
+    
     
     <!-- set key signatures according to instrument labels -->
     <xsl:template match="mei:staffDef[@n='1']">
