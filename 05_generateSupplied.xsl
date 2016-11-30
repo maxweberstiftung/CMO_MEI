@@ -66,6 +66,7 @@
     <!-- suppress color -->
     <xsl:template match="@color[$suppliedColor]"/>
     
+    <!-- put whole measures into supplied elements if not a whole section is affected -->
     <xsl:template match="*[(./mei:measure[@subtype=$suppliedSubtype]) and (count(./mei:measure[@subtype=$suppliedSubtype]) &lt; count(./*))]">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
@@ -86,6 +87,18 @@
                 </xsl:choose>
             </xsl:for-each-group>
         </xsl:copy>
+    </xsl:template>
+    
+    <!-- put whole section into supplied element if every measure of a section is affected -->
+    <xsl:template match="*[(./mei:measure[@subtype=$suppliedSubtype]) and (count(./mei:measure[@subtype=$suppliedSubtype]) = count(./*))]">
+        <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
+            <xsl:copy>
+                <xsl:apply-templates select="@*|node()"/>
+            </xsl:copy>
+        </xsl:element>
     </xsl:template>
     
     <!-- catching enclosed accidentals and put them into <supplied> elements -->

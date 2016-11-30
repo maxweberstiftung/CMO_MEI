@@ -10,7 +10,7 @@
             <xsl:copy-of select="*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
-                    <xsl:text>cleaningUsulStaff_adjustDivisionSignAligment</xsl:text>
+                    <xsl:text>transform2cmoMEI</xsl:text>
                 </xsl:attribute>
                 <xsl:attribute name="isodate">
                     <xsl:value-of select="current-dateTime()"/>
@@ -19,27 +19,9 @@
                     <xsl:text>xslt-script</xsl:text>
                 </xsl:attribute>
                 <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO transformation of usul staff and adjust alignment of division signs</xsl:text>
+                    <xsl:text>Process transformations for CMO-MEI customization</xsl:text>
                 </xsl:element>
             </xsl:element>
-        </xsl:copy>
-    </xsl:template>
-    
-    <!-- change @pname of usul staff into @label -->
-    <xsl:template match="mei:note[ancestor::mei:staff/@n='2']">
-        <xsl:copy>
-            <xsl:attribute name="label">
-                <xsl:choose>
-                    <xsl:when test="./@pname = 'g'">
-                        <xsl:value-of select="'tek'"/>
-                    </xsl:when>
-                    <xsl:when test="./@pname = 'd'">
-                        <xsl:value-of select="'düm'"/>
-                    </xsl:when>
-                </xsl:choose>
-            </xsl:attribute>
-            <xsl:apply-templates select="@* except (@pname, @oct)"/>
-            <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
     
@@ -51,7 +33,7 @@
         <xsl:variable name="preceding_barLine" select="preceding-sibling::mei:barLine[1]/@xml:id"/>
         <!-- get last note of melody staff -->
         <xsl:variable name="end_melody_id" select="if (preceding-sibling::*[(name() = 'note') or (name() = 'rest') or (name() = 'beam')][1]/name() = 'beam') then string(preceding::mei:beam[1]/*[last()]/@xml:id) else string(preceding::*[(name() = 'note') or (name() = 'rest')][1]/@xml:id)"/>
-      
+        
         <xsl:copy>
             <xsl:apply-templates select="@* except @startid"/>
             <xsl:choose>
@@ -70,14 +52,8 @@
                 </xsl:otherwise>
             </xsl:choose>
             
+            <!-- process child elements -->
             <xsl:apply-templates select="node()"/>
-        </xsl:copy>
-    </xsl:template>
-    
-    <!-- copy every node in file -->  
-    <xsl:template match="@*|node()">
-        <xsl:copy>
-            <xsl:apply-templates select="@*|node()" />
         </xsl:copy>
     </xsl:template>
     

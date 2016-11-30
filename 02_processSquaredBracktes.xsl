@@ -4,8 +4,14 @@
     exclude-result-prefixes="xs"
     version="2.0">
     
+    <!-- standard color used to mark insertions -->
     <xsl:variable name="suppliedColor" select="'rgba(170,0,0,1)'"/>
+    <!-- standard type to mark inserted measures -->
     <xsl:variable name="suppliedSubtype" select="'supplied'"/>
+    <!-- members of model.EventLike -->
+    <xsl:variable name="eventLikeElements" select="('chord', 'beam', 'tuplet', 'beatRpt', 'bTrem', 'fTrem')"/>
+    <xsl:variable name="eventElements" select="('note', 'rest', 'space')"/>
+    
     
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
@@ -31,7 +37,7 @@
     <!-- processing bracket symbols -->
     
     <!-- changing start and end positions of editorial additions into colored notes -->
-    <xsl:template match="*[name() != 'measure'][@label]">
+    <xsl:template match="*[name() = $eventElements][@label]">
         <xsl:choose>
             <xsl:when test="@label = 'suppStart' or @label = 'suppEnd' or @label = 'suppStartEnd'">
                 <xsl:copy>
@@ -39,26 +45,26 @@
                     <xsl:attribute name="color">
                         <xsl:value-of select="$suppliedColor"/>
                     </xsl:attribute>
-                    <xsl:apply-templates select="./*"/>
+                    <xsl:apply-templates select="./node()"/>
                 </xsl:copy>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy>
                     <xsl:apply-templates select="@*"/>
-                    <xsl:apply-templates select="./*"/>
+                    <xsl:apply-templates select="node()"/>
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
     <!-- suppress marking labels -->
-    <xsl:template match="@label['suppStart' or 'suppEnd' or 'suppStartEnd']"/>
+    <xsl:template match="@label[. = 'suppStart' or . = 'suppEnd' or . = 'suppStartEnd']"/>
     
     <!-- suppress vertical bracket lines -->
     <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']"/>
     
     <!-- coloring every element between a start and an end point of an editorial addition -->
-    <xsl:template match="*[name() != 'measure'][not(@label) and preceding::node()/@label and following::node()/@label]">
+    <xsl:template match="*[name() = $eventElements][not(@label) and preceding::node()/@label = 'suppStart' and following::node()/@label = 'suppEnd']">
         <xsl:choose>
             <xsl:when test="preceding::node()[@label][1]/@label = 'suppStart' and following::node()[@label][1]/@label = 'suppEnd'">
                 <xsl:copy>
@@ -77,6 +83,19 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <!-- coloring beam with first note starting an insertion or last note ending an insertion -->
+    <xsl:template match="*[(name() = $eventLikeElements) and count(child::*) = count(child::*[name() = $eventLikeElements or name() = $eventElements])]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:if test="child::node()[1]/@label = 'suppStart' or child::node()[last()]/@label = 'suppEnd'">
+                <xsl:attribute name="color">
+                    <xsl:value-of select="$suppliedColor"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="./*"/>
+        </xsl:copy>
+    </xsl:template>
      
     <!-- processing bracket lines -->
     <xsl:template match="mei:measure">
@@ -85,10 +104,10 @@
             <xsl:when test="@subtype = 'suppStart' or @subtype = 'suppEnd'">
                 <xsl:copy>
                     <xsl:apply-templates select="@*"/>
-                    <xsl:attribute name="subtype">
-                        <xsl:value-of select="$suppliedSubtype"/>
-                    </xsl:attribute>
-                    <xsl:apply-templates select="./*"/>
+                        <xsl:attribute name="subtype">
+                           <xsl:value-of select="$suppliedSubtype"/>
+                        </xsl:attribute>
+                    <xsl:apply-templates select="./node()"/>
                 </xsl:copy>
             </xsl:when>
             <!-- get measures without subtype -->
@@ -103,14 +122,14 @@
                             <xsl:attribute name="subtype">
                                 <xsl:value-of select="$suppliedSubtype"/>
                             </xsl:attribute>
-                            <xsl:apply-templates select="./*"/>
+                            <xsl:apply-templates select="./node()"/>
                         </xsl:copy>
                     </xsl:when>
                     <!-- don't mark other measures -->
                     <xsl:otherwise>
                         <xsl:copy>
                             <xsl:apply-templates select="@*"/>
-                            <xsl:apply-templates select="./*"/>
+                            <xsl:apply-templates select="./node()"/>
                         </xsl:copy>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -119,7 +138,7 @@
             <xsl:otherwise>
                 <xsl:copy>
                     <xsl:apply-templates select="@*"/>
-                    <xsl:apply-templates select="./*"/>
+                    <xsl:apply-templates select="./node()"/>
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>

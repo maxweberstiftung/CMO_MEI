@@ -175,9 +175,6 @@
                     </xsl:variable>
                     
                     <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
-                        <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                            <xsl:value-of select="generate-id()"/>
-                        </xsl:attribute>
                         <xsl:attribute name="accid">
                             <xsl:value-of select="$accid"/>
                         </xsl:attribute>
@@ -402,7 +399,13 @@
     
     <!-- add Mükerrer and Grgnum into same <dir> element with Division sign -->
     <xsl:template match="mei:dir[mei:symbol/@type='HampEndCycle' or mei:symbol/@type='HampSubDivision']">
-        <xsl:variable name="anchoredText"/>
+        <xsl:variable name="dirReference" select="./@startid"/>
+        <xsl:variable name="anchoredText" select="../mei:anchoredText[((@label='Mükerrer') or (@label='Grgnum')) and @startid = $dirReference]"/>
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:copy-of select="$anchoredText"/>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
     </xsl:template>
     <xsl:template match="mei:anchoredText[@label='Mükerrer']"/>
     <xsl:template match="mei:anchoredText[@label='Grgnum']"/>
@@ -639,7 +642,7 @@
             </xsl:for-each>
         </xsl:copy>
     </xsl:template>
-    <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
+    
     
     <!-- clean vertical bracket lines from unused @endid -->
     <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']">
@@ -655,7 +658,8 @@
             </xsl:choose>
         </xsl:copy>
     </xsl:template>
-      
+     
+    <!-- case 3.2: start bracket in middle of measure and end bracket elsewhere (hopefully not in a following measure) -->
     <!-- add note information, if it is a start supply or end supply of a vertical bracket from a middle of a measure -->
     <xsl:template match="node()[name() = 'note' or name() = 'rest'][ancestor::mei:staff[@n='1'] and ancestor::mei:measure[child::mei:line[@type='bracket']]]">
         <!-- safe line for comparison -->
@@ -731,7 +735,34 @@
                 </xsl:choose>
             </xsl:when>
         </xsl:choose>
-        
+    </xsl:template>
+    
+    <!-- change @pname of usul staff into @label and @loc -->
+    <xsl:template match="mei:note[ancestor::mei:staff/@n='2']">
+        <xsl:copy>
+            <xsl:attribute name="label">
+                <xsl:choose>
+                    <xsl:when test="./@pname = 'g'">
+                        <xsl:value-of select="'tek'"/>
+                    </xsl:when>
+                    <xsl:when test="./@pname = 'd'">
+                        <xsl:value-of select="'düm'"/>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:attribute name="loc">
+                <xsl:choose>
+                    <xsl:when test="./@pname = 'g'">
+                        <xsl:value-of select="'0'"/>
+                    </xsl:when>
+                    <xsl:when test="./@pname = 'd'">
+                        <xsl:value-of select="'2'"/>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:apply-templates select="@* except (@pname, @oct)"/>
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
     </xsl:template>
     
     <!-- copy every node in file -->  
