@@ -7,6 +7,10 @@
     <!-- strip spaces -->
     <xsl:strip-space elements="measure"/>
     
+    <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/annplaksin/CMO_MEI/master/'"/>
+    <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
+    <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
+    
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
@@ -121,6 +125,82 @@
     
     <!-- suppress old break markings -->
     <xsl:template match="mei:anchoredText[@label = 'line break' or @label = 'page break' or @label = 'column break']"/>
+    
+    <!-- add @altsym to every symbol without @glyphnum -->
+    <xsl:template match="mei:symbol[not(@glyphnum)]">
+        <xsl:copy>
+            <xsl:choose>
+                <xsl:when test="@type='Division'">
+                    <xsl:variable name="currentSymbol" select="'Division'"/>
+                    <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                    <xsl:attribute name="altsym">
+                        <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                    </xsl:attribute>
+                    <!-- needs to add an xml:base url to find file -->
+                    <xsl:attribute name="xml:base">
+                        <xsl:value-of select="$baseURI2symbols"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="@type='End_cycle'">
+                    <xsl:choose>
+                        <xsl:when test="@subtype='vertical'">
+                            <xsl:variable name="currentSymbol" select="'End_cycle_vertical'"/>
+                            <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                            <xsl:attribute name="altsym">
+                                <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                            </xsl:attribute>
+                            <!-- needs to add an xml:base url to find file -->
+                            <xsl:attribute name="xml:base">
+                                <xsl:value-of select="$baseURI2symbols"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:when test="@subtype='diagonal'">
+                            <xsl:variable name="currentSymbol" select="'End_cycle_diagonal'"/>
+                            <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                            <xsl:attribute name="altsym">
+                                <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                            </xsl:attribute>
+                            <!-- needs to add an xml:base url to find file -->
+                            <xsl:attribute name="xml:base">
+                                <xsl:value-of select="$baseURI2symbols"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+                <!-- and now all the Segnos symbols and Pincer, Prolongation, dot, and Loop repeat sign -->
+                <xsl:when test="@label = $cmo_symbols//@label">
+                    <xsl:variable name="currentSymbol" select="string(./@label)"/>
+                    <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                    <xsl:attribute name="altsym">
+                        <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                    </xsl:attribute>
+                    <!-- needs to add an xml:base url to find file -->
+                    <xsl:attribute name="xml:base">
+                        <xsl:value-of select="$baseURI2symbols"/>
+                    </xsl:attribute>
+                </xsl:when>
+            </xsl:choose>
+            <xsl:apply-templates select="@*"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- add @altsym to singleStroke and doubleStroke articulations -->
+    <xsl:template match="mei:artic[@label='singleStroke' or @label='doubleStroke']">
+        <xsl:copy>
+            <xsl:if test="@label = $cmo_symbols//@label">
+                <xsl:variable name="currentSymbol" select="string(./@label)"/>
+                <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                <xsl:attribute name="altsym">
+                    <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                </xsl:attribute>
+                <!-- needs to add an xml:base url to find file -->
+                <xsl:attribute name="xml:base">
+                    <xsl:value-of select="$baseURI2symbols"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="@*"/>
+        </xsl:copy>
+    </xsl:template>
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">

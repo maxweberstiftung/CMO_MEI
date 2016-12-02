@@ -9,6 +9,10 @@
     <!-- strip spaces -->
     <!--<xsl:strip-space elements="mei:staffDef mei:scoreDef mei:measure mei:section"/>-->
     
+    <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/annplaksin/CMO_MEI/master/'"/>
+    <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
+    <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
+    
     <xsl:template match="/*">
         <xsl:if test="//mei:measure[count(mei:line[@type='bracket' and @subtype='vertical']) > 1]">
             <xsl:value-of select="error(QName('http://www.corpus-musicae-ottomanicae.de/err', 'cmo:error'),'There is more than one vertical bracket line in a measure!')"/>
@@ -355,6 +359,18 @@
                     </xsl:attribute>
                 </xsl:when>
             </xsl:choose>
+            <!-- adding @altsym to Nim geveşt -->
+            <xsl:if test="@label = $cmo_symbols//@label">
+                <xsl:variable name="currentSymbol" select="string(./@label)"/>
+                <xsl:variable name="symbol" select="$cmo_symbols//mei:symbolDef[@label = $currentSymbol]"/>
+                <xsl:attribute name="altsym">
+                    <xsl:value-of select="concat($cmo_symbolTable,'#',$symbol/@xml:id)"/>
+                </xsl:attribute>
+                <!-- needs to add an xml:base url to find file -->
+                <xsl:attribute name="xml:base">
+                    <xsl:value-of select="$baseURI2symbols"/>
+                </xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates select="@* except (@accid, @accid.ges, @func)"/>
         </xsl:copy>
     </xsl:template>
