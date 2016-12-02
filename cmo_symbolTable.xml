@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-all_anyStart.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-all_anyStart.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<symbolTable xml:id="cmo_symbols" xmlns="http://www.music-encoding.org/ns/mei">
+  <symbolDef label="Division" xml:id="sy-06796386-3"/>
+  <symbolDef label="End_cycle_vertical" xml:id="sy-09667295-3"/>
+  <symbolDef label="End_cycle_diagonal" xml:id="sy-34981485-0"/>
+  <symbolDef label="Loop repeat sign" xml:id="sy-12538205-4"/>
+  <symbolDef label="dot" xml:id="sy-37852394-0"/>
+  <symbolDef label="doubleStroke" xml:id="sy-15409115-5"/>
+  <symbolDef label="Prolongation" xml:id="sy-92965835-0"/>
+  <symbolDef label="singleStroke" xml:id="sy-18280024-0"/>
+  <symbolDef label="Pincer" xml:id="sy-95836745-1"/>
+  <symbolDef label="Nim geveşt" xml:id="sy-21150934-1"/>
+  <!-- all segno symbols -->
+  <symbolDef label="Segno 1" xml:id="sy-98707655-2"/>
+  <symbolDef label="Segno 2" xml:id="sy-24021844-2"/>
+  <symbolDef label="Segno 3" xml:id="sy-01578564-6"/>
+  <symbolDef label="Segno 4" xml:id="sy-79135285-X"/>
+  <symbolDef label="Segno 5" xml:id="sy-04449474-7"/>
+  <symbolDef label="Hash 1" xml:id="sy-82006195-8"/>
+  <symbolDef label="Hash 2" xml:id="sy-07320384-X"/>
+  <symbolDef label="Hash 3" xml:id="sy-84877104-3"/>
+  <symbolDef label="Hash 4" xml:id="sy-10191293-0"/>
+  <symbolDef label="Hash 5" xml:id="sy-87748014-4"/>
+  <symbolDef label="Looped hash 1" xml:id="sy-65304735-0"/>
+  <symbolDef label="Looped hash 2" xml:id="sy-90618924-5"/>
+  <symbolDef label="Looped hash 3" xml:id="sy-68175644-4"/>
+  <symbolDef label="Loop segno" xml:id="sy-93489833-9"/>
+  <symbolDef label="X" xml:id="sy-71046554-2"/>
+  <symbolDef label="X with 4 dots" xml:id="sy-96360743-1"/>
+  <symbolDef label="Circle with dot" xml:id="sy-73917464-2"/>
+  <symbolDef label="Arrow down" xml:id="sy-51474184-9"/>
+  <symbolDef label="Cross 1" xml:id="sy-76788373-6"/>
+  <symbolDef label="Cross 2" xml:id="sy-54345094-X"/>
+  <symbolDef label="Cross 3" xml:id="sy-79659283-7"/>
+  <symbolDef label="Cross 4" xml:id="sy-57216003-2"/>
+  <symbolDef label="Asterisk 1" xml:id="sy-82530193-7"/>
+  <symbolDef label="Asterisk 2" xml:id="sy-60086913-7"/>
+  <symbolDef label="Asterisk 3" xml:id="sy-37643634-2"/>
+  <symbolDef label="Circle with diagonal line 1" xml:id="sy-62957823-7"/>
+  <symbolDef label="Circle with diagonal line 2" xml:id="sy-40514543-X"/>
+  <symbolDef label="Circle with diagonal line, ‘2’ above" xml:id="sy-65828733-8"/>
+  <symbolDef label="Circle with 2 diagonal lines" xml:id="sy-43385453-4"/>
+  <symbolDef label="Circle with 2 diagonal lines 2" xml:id="sy-68699642-1"/>
+</symbolTable>
