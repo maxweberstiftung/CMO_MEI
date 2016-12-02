@@ -25,7 +25,7 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="mei:measure[@type='HampEndCycle']">
+    <xsl:template match="mei:measure[@type='End_cycle']">
         <xsl:variable name="end_measure" select="."/>
         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
@@ -34,7 +34,7 @@
             <xsl:attribute name="type">
                 <xsl:text>hampartsum_cycle</xsl:text>
             </xsl:attribute>
-            <xsl:for-each select="./preceding-sibling::mei:measure[@type='HampSubDivision' and following-sibling::mei:measure[@type='HampEndCycle'][1] = $end_measure]">
+            <xsl:for-each select="./preceding-sibling::mei:measure[@type='Division' and following-sibling::mei:measure[@type='End_cycle'][1] = $end_measure]">
                 <xsl:copy>
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:copy>
@@ -45,7 +45,7 @@
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="mei:measure[@type='HampSubDivision' and following-sibling::mei:measure/@type='HampEndCycle']"></xsl:template>
+    <xsl:template match="mei:measure[@type='Division' and following-sibling::mei:measure/@type='End_cycle']"></xsl:template>
     
     <!-- suppress typing of measures -->
     <xsl:template match="@type[parent::mei:measure]"/>

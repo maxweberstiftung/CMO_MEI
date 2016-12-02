@@ -364,7 +364,7 @@
     <xsl:template match="mei:pb"/>
     
     <!-- correct linking of start group symbols in case of grace notes -->
-    <xsl:template match="mei:dir[mei:symbol/@type='group_start']">
+    <xsl:template match="mei:dir[mei:symbol/@label='Hampartsum group start']">
         <xsl:variable name="dirRef" select="substring(@startid,2)"/>
         <xsl:copy>
             <xsl:apply-templates select="@*[name() != 'startid']"/>
@@ -398,7 +398,7 @@
     </xsl:template>
     
     <!-- add Mükerrer and Grgnum into same <dir> element with Division sign -->
-    <xsl:template match="mei:dir[mei:symbol/@type='HampEndCycle' or mei:symbol/@type='HampSubDivision']">
+    <xsl:template match="mei:dir[mei:symbol/@type='End_cycle' or mei:symbol/@type='Division']">
         <xsl:variable name="dirReference" select="./@startid"/>
         <xsl:variable name="anchoredText" select="../mei:anchoredText[((@label='Mükerrer') or (@label='Grgnum')) and @startid = $dirReference]"/>
         <xsl:copy>
@@ -435,12 +435,12 @@
                 <xsl:choose>
                     <xsl:when test="@right='dashed'">
                         <xsl:attribute name="type">
-                            <xsl:text>HampSubDivision</xsl:text>
+                            <xsl:text>Division</xsl:text>
                         </xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:attribute name="type">
-                            <xsl:text>HampEndCycle</xsl:text>
+                            <xsl:text>End_cycle</xsl:text>
                         </xsl:attribute>
                     </xsl:otherwise>
                 </xsl:choose>
@@ -488,12 +488,12 @@
                     <xsl:choose>
                         <xsl:when test="@right='dashed'">
                             <xsl:attribute name="type">
-                                <xsl:text>HampSubDivision</xsl:text>
+                                <xsl:text>Division</xsl:text>
                             </xsl:attribute>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:attribute name="type">
-                                <xsl:text>HampEndCycle</xsl:text>
+                                <xsl:text>End_cycle</xsl:text>
                             </xsl:attribute>
                         </xsl:otherwise>
                     </xsl:choose>
