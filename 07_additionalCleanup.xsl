@@ -11,6 +11,10 @@
     <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
     <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
     
+    <!-- Variables for hampartsum groups -->
+    <xsl:variable name="group_start" select="'Hampartsum group start'"/>
+    <xsl:variable name="group_end" select="'Hampartsum group end'"/>
+    
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
@@ -45,14 +49,14 @@
     <!-- add line breaks and page breaks -->
     <xsl:template match="mei:layer[parent::mei:staff/@n='1'][ancestor::mei:measure/mei:anchoredText]">
         <xsl:variable name="anchoredBreak" select="ancestor::mei:measure/mei:anchoredText[@label = 'line break' or @label = 'page break' or @label = 'column break']"/>
-        <xsl:variable name="groupSigns" select="ancestor::mei:measure/mei:dir[mei:symbol/@label='Hampartsum group start' or mei:symbol/@label='Hampartsum group end']"/>
+        <xsl:variable name="groupSigns" select="ancestor::mei:measure/mei:dir[mei:symbol/@label=$group_start or mei:symbol/@label=$group_end]"/>
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
             <xsl:for-each select="./*">
                 <xsl:variable name="selfOrChildIDs" select="for $x in descendant-or-self::*/@xml:id return concat('#',$x)"/>
                 <xsl:choose>
                     <!-- put break before element if it is also a start of a group -->
-                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label='Hampartsum group start']/@startid">
+                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_start]/@startid">
                         <xsl:choose>
                             <!-- create a page break event -->
                             <xsl:when test="$anchoredBreak/@label = 'page break'">
@@ -84,7 +88,7 @@
                         </xsl:choose>
                     </xsl:when>
                     <!-- put break after element if it is also an end of a group -->
-                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label='Hampartsum group end']/@startid">
+                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_end]/@startid">
                         <xsl:choose>
                             <!-- put break before element if it is also a start of a group -->
                             <xsl:when test="$anchoredBreak/@label = 'page break'">
