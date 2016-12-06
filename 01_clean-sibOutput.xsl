@@ -9,9 +9,17 @@
     <!-- strip spaces -->
     <!--<xsl:strip-space elements="mei:staffDef mei:scoreDef mei:measure mei:section"/>-->
     
+    <!-- Variables for handling of special <symbol> -->
     <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/annplaksin/CMO_MEI/master/'"/>
     <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
     <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
+    
+    <!-- Variables for sectioning -->
+    <xsl:variable name="sectionName" select="'Section'"/>
+    
+    <!-- Variables for hampartsum groups -->
+    <xsl:variable name="group_start" select="'Hampartsum group start'"/>
+    <xsl:variable name="group_end" select="'Hampartsum group end'"/>
     
     <xsl:template match="/*">
         <xsl:if test="//mei:measure[count(mei:line[@type='bracket' and @subtype='vertical']) > 1]">
@@ -380,7 +388,7 @@
     <xsl:template match="mei:pb"/>
     
     <!-- correct linking of start group symbols in case of grace notes -->
-    <xsl:template match="mei:dir[mei:symbol/@label='Hampartsum group start']">
+    <xsl:template match="mei:dir[mei:symbol/@label=$group_start]">
         <xsl:variable name="dirRef" select="substring(@startid,2)"/>
         <xsl:copy>
             <xsl:apply-templates select="@*[name() != 'startid']"/>
@@ -399,7 +407,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
-                <xsl:when test="preceding-sibling::mei:dir[mei:symbol/@type='group_end'][1]/@startid = ./@startid and //*[@xml:id=$dirRef]/following::mei:note[1]/@grace">
+                <xsl:when test="preceding-sibling::mei:dir[mei:symbol/@type=$group_end][1]/@startid = ./@startid and //*[@xml:id=$dirRef]/following::mei:note[1]/@grace">
                     <xsl:variable name="followingGrace" select="//*[@xml:id=$dirRef]/following::mei:note[1]"/>
                     <xsl:attribute name="startid">
                         <xsl:value-of select="concat('#',$followingGrace/@xml:id)"/>
@@ -426,141 +434,111 @@
     <xsl:template match="mei:anchoredText[@label='Mükerrer']"/>
     <xsl:template match="mei:anchoredText[@label='Grgnum']"/>
     
-    <!-- put Hanes into sections and mark measures according to squared bracket lines and division signs -->
-    <xsl:template match="mei:measure[mei:anchoredText/@label='Section']">
-        <!-- keep self as variable for comparing -->
-        <xsl:variable name="start_measure" select="."/>
+    <!-- put Section markings into sections and mark measures according to squared bracket lines and division signs -->
+    <xsl:template match="mei:section">
+        <xsl:choose>
+            <xsl:when test="./mei:measure[mei:anchoredText/@label=$sectionName]">
+                <xsl:copy>
+                    <xsl:apply-templates select="@*"/>
+                    <!-- first, write every element without a preceding section mark -->
+                    <xsl:for-each select="node()[not(mei:anchoredText/@label=$sectionName) and not(preceding-sibling::mei:measure[mei:anchoredText/@label=$sectionName]) and not(name() = 'scoreDef' and following-sibling::*[1]/mei:anchoredText/@label=$sectionName)]">
+                        <xsl:apply-templates select="."/>
+                    </xsl:for-each>
+                    <!-- then, write all measures from a section mark to the next mark in a section -->
+                    <xsl:for-each select="mei:measure[mei:anchoredText/@label=$sectionName]">
+                        <!-- keep self as variable for comparing -->
+                        <xsl:variable name="start_measure" select="."/>
+                        <xsl:variable name="nextStartN" select="string(./following-sibling::mei:measure[mei:anchoredText/@label=$sectionName][1]/@n)"/>
+                        
+                        <!-- generate section and put self in it -->
+                        <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                                <xsl:value-of select="generate-id()"/>
+                            </xsl:attribute>
+                            <!-- Set Section text as label -->
+                            <xsl:attribute name="label">
+                                <xsl:value-of select="mei:anchoredText[@label=$sectionName]"/>
+                            </xsl:attribute>
+                            
+                            <!-- catch a preceding <scoreDef> -->
+                            <xsl:if test="./preceding-sibling::*[1]/name() = 'scoreDef'">
+                                <xsl:apply-templates select="./preceding-sibling::*[1][name() = 'scoreDef']"/>
+                            </xsl:if>
+                            
+                            <!-- write current measure -->
+                            <xsl:apply-templates select="."/>
+                            
+                            <!-- write following elements until next start -->
+                            <xsl:for-each select="./following-sibling::node()[not(mei:anchoredText/@label=$sectionName)][preceding-sibling::mei:measure[mei:anchoredText/@label=$sectionName][1] = $start_measure]">
+                                <xsl:apply-templates select=". except (.[@n = $nextStartN])"/>
+                            </xsl:for-each>
+                        </xsl:element>
+                    </xsl:for-each>
+                </xsl:copy>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates/> 
+                </xsl:copy>           
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="mei:measure">
         <!-- get first note of melody staff -->
         <xsl:variable name="start_melody" select="if (./mei:staff[@n='1']/mei:layer/*[1]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer/mei:beam[1]/*[1] else ./mei:staff[@n='1']/mei:layer[1]/*[1]"/>
         <!-- get last note of melody staff -->
         <xsl:variable name="end_melody" select="if (./mei:staff[@n='1']/mei:layer[1]/*[last()]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[last()]/*[last()] else ./mei:staff[@n='1']/mei:layer[1]/*[last()]"/>
-        <!-- get start measure of following section -->
-        <xsl:variable name="next_start" select="$start_measure/following-sibling::mei:measure[mei:anchoredText/@label='Section'][1]/@xml:id"/>
         
-        <!-- generate section and put self in it -->
-        <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
-            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id()"/>
-            </xsl:attribute>
-            <!-- Set Section text as label -->
-            <xsl:attribute name="label">
-                <xsl:value-of select="mei:anchoredText[@label='Section']"/>
-            </xsl:attribute>
-            <xsl:copy>
-                <!-- mark measure as hamparsum sub division or end of cycle -->
-                <xsl:choose>
-                    <xsl:when test="@right='dashed'">
-                        <xsl:attribute name="type">
-                            <xsl:text>Division</xsl:text>
-                        </xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:attribute name="type">
-                            <xsl:text>End_cycle</xsl:text>
-                        </xsl:attribute>
-                    </xsl:otherwise>
-                </xsl:choose>
-                <!-- set subtype according to vertical bracket lines -->
-                <xsl:choose>
-                    <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
-                        <xsl:choose>
-                            <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
-                                <xsl:attribute name="subtype">
-                                    <xsl:text>suppStart</xsl:text>
-                                </xsl:attribute>
-                            </xsl:when>
-                            <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
-                                <xsl:attribute name="subtype">
-                                    <xsl:text>suppBeforeStart</xsl:text>
-                                </xsl:attribute>
-                            </xsl:when>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
-                        <xsl:choose>
-                            <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
-                                <xsl:attribute name="subtype">
-                                    <xsl:text>suppAfterEnd</xsl:text>
-                                </xsl:attribute>
-                            </xsl:when>
-                            <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
-                                <xsl:attribute name="subtype">
-                                    <xsl:text>suppEnd</xsl:text>
-                                </xsl:attribute>
-                            </xsl:when>
-                        </xsl:choose>
-                    </xsl:when>
-                </xsl:choose>
-                <xsl:apply-templates select="@* | node()"/>
-            </xsl:copy>
-            <!-- add following measures between the next start of a section to the active section -->
-            <xsl:for-each select="./following-sibling::mei:measure[not(mei:anchoredText/@label='Section')][preceding-sibling::mei:measure[mei:anchoredText/@label='Section'][1] = $start_measure]">
-                <!-- get first note of active measure's melody staff -->
-                <xsl:variable name="start_melody2" select="if (./mei:staff[@n='1']/mei:layer[1]/*[1]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[1]/*[1] else ./mei:staff[@n='1']/mei:layer[1]/*[1]"/>
-                <!-- get last not of active measure's melody staff -->
-                <xsl:variable name="end_melody2" select="if (./mei:staff[@n='1']/mei:layer[1]/*[last()]/name() = 'beam') then ./mei:staff[@n='1']/mei:layer[1]/mei:beam[last()]/*[last()] else ./mei:staff[@n='1']/mei:layer[1]/*[last()]"/>
-                <xsl:copy>
-                    <!-- mark measure as hamparsum sub division or end of cycle -->
+        <xsl:copy>
+            <!-- mark measure as hamparsum sub division or end of cycle -->
+            <xsl:choose>
+                <xsl:when test="@right='dashed'">
+                    <xsl:attribute name="type">
+                        <xsl:text>Division</xsl:text>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="type">
+                        <xsl:text>End_cycle</xsl:text>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+            <!-- set subtype according to vertical bracket lines -->
+            <xsl:choose>
+                <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
                     <xsl:choose>
-                        <xsl:when test="@right='dashed'">
-                            <xsl:attribute name="type">
-                                <xsl:text>Division</xsl:text>
+                        <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
+                            <xsl:attribute name="subtype">
+                                <xsl:text>suppStart</xsl:text>
                             </xsl:attribute>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:attribute name="type">
-                                <xsl:text>End_cycle</xsl:text>
+                            <xsl:attribute name="subtype">
+                                <xsl:text>suppBeforeStart</xsl:text>
                             </xsl:attribute>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <!-- set subtype according to vertical bracket lines -->
+                </xsl:when>
+                <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
                     <xsl:choose>
-                        <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
-                            <xsl:choose>
-                                <xsl:when test="substring(mei:line/@startid,2) = $start_melody2/@xml:id">
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppStart</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:when>
-                                <!--<xsl:when test="substring(mei:line/@startid,2) = $end_melody2/@xml:id">
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppBeforeStart</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:when>-->
-                                <xsl:otherwise>
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppBeforeStart</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:otherwise>
-                            </xsl:choose>
+                        <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
+                            <xsl:attribute name="subtype">
+                                <xsl:text>suppEnd</xsl:text>
+                            </xsl:attribute>
                         </xsl:when>
-                        <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
-                            <xsl:choose>
-                                <!--<xsl:when test="substring(mei:line/@startid,2) = $start_melody2/@xml:id">
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppAfterEnd</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:when>-->
-                                <xsl:when test="substring(mei:line/@startid,2) = $end_melody2/@xml:id">
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppEnd</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:attribute name="subtype">
-                                        <xsl:text>suppAfterEnd</xsl:text>
-                                    </xsl:attribute>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="subtype">
+                                <xsl:text>suppAfterEnd</xsl:text>
+                            </xsl:attribute>
+                        </xsl:otherwise>
                     </xsl:choose>
-                    <xsl:apply-templates select="@* | node()"/>
-                </xsl:copy>
-            </xsl:for-each>
-        </xsl:element>
+                </xsl:when>
+            </xsl:choose>
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:copy>
     </xsl:template>
-    <xsl:template match="mei:measure[not(mei:anchoredText/@label='Section')]"/>
-    <xsl:template match="mei:anchoredText[@label='Section']"/>
+    <xsl:template match="mei:anchoredText[@label=$sectionName]"/>
     
     <!-- change vertical bracket symbols to marking labels for start and end points of <supplied> elements -->
     <xsl:template match="mei:dir[mei:symbol/@type='suppliedBracketStart']"/>
