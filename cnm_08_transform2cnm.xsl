@@ -37,7 +37,7 @@
             <xsl:copy-of select="*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
-                    <xsl:text>cmo:transform2cnm</xsl:text>
+                    <xsl:text>cmo_transform2cnm</xsl:text>
                 </xsl:attribute>
                 <xsl:attribute name="isodate">
                     <xsl:value-of select="current-dateTime()"/>
@@ -54,10 +54,45 @@
     
     <!-- cleaning keyAccidentals -->
     <!-- remove @accid -->
+    <xsl:template match="mei:keyAccid">
+        <xsl:copy>
+            <xsl:apply-templates select="@* except @accid"/>
+            <xsl:if test="@accid = 'n'">
+                <xsl:apply-templates select="@accid"/>
+            </xsl:if>
+        </xsl:copy>
+    </xsl:template>
     
     <!-- cleaning accidentals -->
     <!-- remove accid -->
+    <xsl:template match="mei:accid[@accid]">
+        <xsl:copy>
+            <xsl:apply-templates select="@* except @accid"/>
+            <xsl:if test="@accid = 'n'">
+                <xsl:apply-templates select="@accid"/>
+            </xsl:if>
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- in case of @accid.ges, remove it and add @corresp with ref to preceeding accid -->
+    <xsl:template match="mei:accid[@accid.ges]">
+        <xsl:copy>
+            <xsl:apply-templates select="@* except @accid.ges"/>
+            <xsl:choose>
+                <xsl:when test="@accid.ges = 'n'">
+                    <xsl:apply-templates select="@accid.ges"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="accid" select="string(./@accid.ges)"/>
+                    <xsl:variable name="parentNote" select="parent::mei:note"/>
+                    <xsl:variable name="precedingAccid" select="ancestor::mei:layer//mei:note[@pname = $parentNote/@pname and @oct = $parentNote/@oct]/mei:accid[@accid = $accid and not(@func='caution')]"/>
+                    <xsl:attribute name="corresp">
+                        <xsl:value-of select="concat('#',$precedingAccid/@xml:id)"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
