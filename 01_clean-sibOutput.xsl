@@ -62,11 +62,44 @@
     </xsl:template>
     <xsl:template match="mei:anchoredText[mei:title]"/>
     
+    <xsl:template match="//mei:fileDesc/mei:titleStmt">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:if test="//mei:anchoredText[@label='CMO Ref']">
+                <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="generate-id(//mei:anchoredText[@label='CMO Ref'])"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="label">
+                        <xsl:value-of select="'CMO Ref'"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="//mei:anchoredText[@label='CMO Ref']"/>
+                </xsl:element>
+            </xsl:if>
+            <xsl:apply-templates select="*"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- Source information -->
+    <xsl:template match="mei:fileDesc">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|*"/>
+            <xsl:element name="sourceDesc" namespace="http://www.music-encoding.org/ns/mei">
+                <xsl:attribute name="xml:id">
+                    <xsl:value-of select="generate-id()"/>
+                </xsl:attribute>
+                <xsl:if test="//mei:anchoredText[@label='Source']">
+                    <xsl:call-template name="addsource"/>
+                </xsl:if>
+            </xsl:element>
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- Composer -->
     <xsl:template match="//mei:fileDesc/mei:titleStmt/mei:respStmt/mei:persName[@xml:id]" name="composer">
         <xsl:copy>
             <xsl:attribute name="role">
-                <xsl:text>Composer</xsl:text>
+                <xsl:text>Attribution</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates select="@*"/>
             <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='composer']"/>  
@@ -96,11 +129,12 @@
         Theoretically, the metadata comes from the database and the information about genre, source, usul and makam from the transcription files is not needed.
         Therefor those <anchoredText> elements could be surpressed ... hopefully
     -->
-    <xsl:template match="mei:anchoredText[@label='Usûl_name']"/>
-    <xsl:template match="mei:anchoredText[@label='Usûl_subtitle']"/>
-    <xsl:template match="mei:anchoredText[@label='Genre_subtitle']"/>
-    <xsl:template match="mei:anchoredText[@label='Makâm_subtitle']"/>
-    <xsl:template match="mei:anchoredText[@label='Source_subtitle']"/>
+    <xsl:template match="mei:anchoredText[@label='Usûl name']"/>
+    <xsl:template match="mei:anchoredText[@label='Usûl']"/>
+    <xsl:template match="mei:anchoredText[@label='Genre']"/>
+    <xsl:template match="mei:anchoredText[@label='Makâm']"/>
+    <xsl:template match="mei:anchoredText[@label='Source']"/>
+    <xsl:template match="mei:anchoredText[@label='CMO Ref']"/>
     
     <!-- clean notes -->
     <xsl:template match="mei:note/@dur.ges"/>
@@ -859,6 +893,17 @@
                 </xsl:when>
             </xsl:choose>
         </xsl:if>
+    </xsl:template>
+    
+    <xsl:template name="addsource">
+        <xsl:element name="source" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="xml:id">
+                <xsl:value-of select="generate-id(//mei:anchoredText[@label='Source'])"/>
+            </xsl:attribute>
+            <xsl:attribute name="label">
+                <xsl:value-of select="//mei:anchoredText[@label='Source']"/>
+            </xsl:attribute>
+        </xsl:element>
     </xsl:template>
     
 </xsl:stylesheet>
