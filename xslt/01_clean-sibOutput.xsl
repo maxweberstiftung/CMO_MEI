@@ -172,7 +172,7 @@
             <!-- process key signatures -->
             <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                    <xsl:value-of select="generate-id()"/>
+                    <xsl:value-of select="generate-id(//mei:staffDef[@n='1'])"/>
                 </xsl:attribute>
                 <!-- tokenize @label to process key signatures -->
                 <xsl:for-each select="tokenize(@label,'\s+')">
