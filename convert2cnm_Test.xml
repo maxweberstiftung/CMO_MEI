@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="CMO_convertMusic" default="del_cache">
+
+    <property name="browser" location="C:\Program Files\Oxygen XML Editor 17\oxygen17.1.exe"/>
+    <property name="frameworkDir" value="frameworkDir"/>
+    <property name="currentFile" value="currentFile"/>
+    <property name="currentFileName" value="currentFileName"/>
+    <property name="currentDir" value="currentDir"/>
+
+    <target name="build_cache">
+        <mkdir dir="${currentDir}/conversion_cache"/>
+        
+    </target>
+    
+    <target name="01_cleanUp" depends="build_cache">
+        <xslt force="yes" style="${frameworkDir}/01_clean-sibOutput.xsl" in="${currentFile}" out="${currentDir}/conversion_cache/${currentFileName}_01.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+    
+    <target name="02_processSquareBrackets" depends="01_cleanUp">
+        
+    </target>
+    
+    <target name="03_groupSubsections" depends="02_processSquareBrackets">
+        
+    </target>
+    
+    <target name="04_generateSupplied" depends="03_groupSubsections">
+        
+    </target>
+    
+    <target name="05_mergeSuppliedElements" depends="04_generateSupplied">
+        
+    </target>
+    
+    <target name="06_additionalCleanup" depends="05_mergeSuppliedElements">
+        
+    </target>
+    
+    <target name="07_transform2cnm" depends="06_additionalCleanup">
+        
+    </target><target name="del_cache" depends="07_transform2cnm">
+        <delete dir="${currentDir}/conversion_cache"/>
+        <exec executable="${browser}" spawn="true">
+            <arg value="${currentDir}/${currentFileName}_cnm.mei"/>
+        </exec>
+    </target>
+
+</project>

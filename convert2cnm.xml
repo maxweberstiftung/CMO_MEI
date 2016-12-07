@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="CMO_convertMusic" default="del_cache">
+
+    <!--  -->
+    <property name="browser" location="C:\Program Files\Oxygen XML Editor 17\oxygen17.1.exe"/>
+    <property name="frameworkDir" value="frameworkDir"/>
+    <property name="currentFile" value="currentFile"/>
+    <property name="currentFileName" value="currentFileName"/>
+    <property name="currentDir" value="currentDir"/>
+
+    <target name="build_cache">
+        <mkdir dir="${currentDir}/conversion_cache"/>
+
+    </target>
+
+    <target name="01_cleanUp" depends="build_cache">
+        <xslt force="yes" style="${frameworkDir}/01_clean-sibOutput.xsl" in="${currentFile}"
+            out="${currentDir}/conversion_cache/${currentFileName}_01.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="02_processSquareBrackets" depends="01_cleanUp">
+        <xslt force="yes" style="${frameworkDir}/02_processSquaredBracktes.xsl" in="${currentDir}/conversion_cache/${currentFileName}_01.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_02.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="03_groupSubsections" depends="02_processSquareBrackets">
+        <xslt force="yes" style="${frameworkDir}/03_groupSubsections.xsl" in="${currentDir}/conversion_cache/${currentFileName}_02.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_03.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="04_generateSupplied" depends="03_groupSubsections">
+        <xslt force="yes" style="${frameworkDir}/04_generateSupplied.xsl" in="${currentDir}/conversion_cache/${currentFileName}_03.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_04.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="05_mergeSuppliedElements" depends="04_generateSupplied">
+        <xslt force="yes" style="${frameworkDir}/05_mergeSuppliedElements.xsl" in="${currentDir}/conversion_cache/${currentFileName}_04.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_05.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="06_additionalCleanup" depends="05_mergeSuppliedElements">
+        <xslt force="yes" style="${frameworkDir}/06_additionalCleanup.xsl" in="${currentDir}/conversion_cache/${currentFileName}_05.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_06.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+
+    <target name="07_transform2cnm" depends="06_additionalCleanup">
+        <xslt force="yes" style="${frameworkDir}/cnm_07_transform2cnm.xsl" in="${currentDir}/conversion_cache/${currentFileName}_06.mei"
+            out="${currentDir}/${currentFileName}_cnm.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+    
+    <target name="del_cache" depends="07_transform2cnm">
+        <delete dir="${currentDir}/conversion_cache"/>
+        <exec executable="${browser}" spawn="true">
+            <arg value="${currentDir}/${currentFileName}_cnm.mei"/>
+        </exec>
+    </target>
+
+</project>
