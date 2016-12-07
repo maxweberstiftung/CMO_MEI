@@ -1,47 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="CMO_convertMusic" default="del_cache">
+    
+    <!-- 
+        This Ant build file converts the output of the sibmei CMO version to a valid mei.cnm document.
+        The single files clean up the results of the sibmei export, replace used workarounds in Sibelius to meaningful MEI.
+    -->
 
+    <!-- editor to open result file -->
     <property name="browser" location="C:\Program Files\Oxygen XML Editor 17\oxygen17.1.exe"/>
+    <!-- base directory of framework -->
     <property name="frameworkDir" value="frameworkDir"/>
+    <!-- folder with xslt scripts -->
+    <property name="xslt" value="${frameworkDir}/xslt"/>
+    <!-- current opened file (in oXygen) / file to transform -->
     <property name="currentFile" value="currentFile"/>
+    <!-- file name without ending of the current file -->
     <property name="currentFileName" value="currentFileName"/>
+    <!-- directory of the current file -->
     <property name="currentDir" value="currentDir"/>
-
+    
+    
+    <!-- Build a cache directory and then process the current file through the xslt scripts and open the final result file -->
     <target name="build_cache">
         <mkdir dir="${currentDir}/conversion_cache"/>
-        
+
     </target>
-    
+
     <target name="01_cleanUp" depends="build_cache">
-        <xslt force="yes" style="${frameworkDir}/01_clean-sibOutput.xsl" in="${currentFile}" out="${currentDir}/conversion_cache/${currentFileName}_01.mei">
+        <xslt force="yes" style="${xslt}/01_clean-sibOutput.xsl" in="${currentFile}"
+            out="${currentDir}/conversion_cache/${currentFileName}_01.mei">
             <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         </xslt>
     </target>
     
     <target name="02_processSquareBrackets" depends="01_cleanUp">
-        
+        <xslt force="yes" style="${xslt}/02_processSquaredBracktes.xsl" in="${currentDir}/conversion_cache/${currentFileName}_01.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_02.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
     </target>
     
     <target name="03_groupSubsections" depends="02_processSquareBrackets">
-        
+        <xslt force="yes" style="${xslt}/03_groupSubsections.xsl" in="${currentDir}/conversion_cache/${currentFileName}_02.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_03.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
     </target>
     
     <target name="04_generateSupplied" depends="03_groupSubsections">
-        
+        <xslt force="yes" style="${xslt}/04_generateSupplied.xsl" in="${currentDir}/conversion_cache/${currentFileName}_03.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_04.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
     </target>
     
     <target name="05_mergeSuppliedElements" depends="04_generateSupplied">
-        
+        <xslt force="yes" style="${xslt}/05_mergeSuppliedElements.xsl" in="${currentDir}/conversion_cache/${currentFileName}_04.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_05.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
     </target>
     
     <target name="06_additionalCleanup" depends="05_mergeSuppliedElements">
-        
+        <xslt force="yes" style="${xslt}/06_additionalCleanup.xsl" in="${currentDir}/conversion_cache/${currentFileName}_05.mei"
+            out="${currentDir}/conversion_cache/${currentFileName}_06.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
     </target>
     
     <target name="07_transform2cnm" depends="06_additionalCleanup">
-        
-    </target><target name="del_cache" depends="07_transform2cnm">
-        <delete dir="${currentDir}/conversion_cache"/>
+        <xslt force="yes" style="${xslt}/cnm_07_transform2cnm.xsl" in="${currentDir}/conversion_cache/${currentFileName}_06.mei"
+            out="${currentDir}/${currentFileName}_cnm.mei">
+            <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+        </xslt>
+    </target>
+    
+    <target name="del_cache" depends="07_transform2cnm">
+        <!--<delete dir="${currentDir}/conversion_cache"/>-->
         <exec executable="${browser}" spawn="true">
             <arg value="${currentDir}/${currentFileName}_cnm.mei"/>
         </exec>
