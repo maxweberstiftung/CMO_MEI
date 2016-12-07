@@ -30,27 +30,6 @@
         </xsl:copy>
     </xsl:template>
     
-    <!-- adding application info -->
-    <xsl:template match="mei:appInfo">
-        <xsl:copy>
-            <xsl:copy-of select="*"/>
-            <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="xml:id">
-                    <xsl:text>clean-sibOutput</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="isodate">
-                    <xsl:value-of select="current-dateTime()"/>
-                </xsl:attribute>
-                <xsl:attribute name="type">
-                    <xsl:text>xslt-script</xsl:text>
-                </xsl:attribute>
-                <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO clean sibmei Output prototype</xsl:text>
-                </xsl:element>
-            </xsl:element>
-        </xsl:copy>
-    </xsl:template>
-    
     <!-- insert title information in header -->
     <!-- Title -->
     <xsl:template match="//mei:fileDesc/mei:titleStmt/mei:title">
@@ -129,7 +108,6 @@
         Theoretically, the metadata comes from the database and the information about genre, source, usul and makam from the transcription files is not needed.
         Therefor those <anchoredText> elements could be surpressed ... hopefully
     -->
-    <xsl:template match="mei:anchoredText[@label='Usûl name']"/>
     <xsl:template match="mei:anchoredText[@label='Usûl']"/>
     <xsl:template match="mei:anchoredText[@label='Genre']"/>
     <xsl:template match="mei:anchoredText[@label='Makâm']"/>

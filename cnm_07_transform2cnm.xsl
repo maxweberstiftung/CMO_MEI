@@ -4,29 +4,16 @@
     exclude-result-prefixes="xs"
     version="2.0">
     
+    <xsl:strip-space elements="*"/>
+    <xsl:preserve-space elements="mei:note mei:beam mei:rest mei:chord mei:symbol mei:verse mei:syl mei:accid mei:symbol mei:dir"/>
+    
     <!-- add schema to file -->
     <xsl:template match="/">
         <xsl:processing-instruction name="xml-model">
-            <xsl:attribute name="href">
-                <xsl:value-of select="'https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng'"/>
-            </xsl:attribute>
-            <xsl:attribute name="type">
-                <xsl:value-of select="'application/xml'"/>
-            </xsl:attribute>
-            <xsl:attribute name="schematypens">
-                <xsl:value-of select="'http://relaxng.org/ns/structure/1.0'"/>
-            </xsl:attribute>
+            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"</xsl:text>
         </xsl:processing-instruction>
         <xsl:processing-instruction name="xml-model">
-            <xsl:attribute name="href">
-                <xsl:value-of select="'https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng'"/>
-            </xsl:attribute>
-            <xsl:attribute name="type">
-                <xsl:value-of select="'application/xml'"/>
-            </xsl:attribute>
-            <xsl:attribute name="schematypens">
-                <xsl:value-of select="'http://purl.oclc.org/dsdl/schematron'"/>
-            </xsl:attribute>
+            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"</xsl:text>>
         </xsl:processing-instruction>
         <xsl:apply-templates/>
     </xsl:template>
@@ -51,6 +38,9 @@
             </xsl:element>
         </xsl:copy>
     </xsl:template>
+    
+    <!-- delete Usûl name -->
+    <xsl:template match="mei:anchoredText[@label='Usûl name']"/>
     
     <!-- cleaning keyAccidentals -->
     <!-- remove @accid -->
@@ -93,6 +83,40 @@
             </xsl:choose>
         </xsl:copy>
     </xsl:template>
+    
+    <!-- link division signs to end of measure -->
+    <xsl:template match="mei:dir[mei:symbol/@type='End_cycle' or mei:symbol/@type='Division']">
+        <!-- get startid of current direction -->
+        <xsl:variable name="startid" select="substring(./@startid,2)"/>
+        <!-- get last note of melody staff -->
+        <xsl:variable name="end_melody_id" select="if (preceding-sibling::*[(name() = 'note') or (name() = 'rest') or (name() = 'beam')][ancestor::mei:staff/@n='1'][1]/name() = 'beam') then string(preceding::mei:beam[ancestor::mei:staff/@n='1'][1]/*[last()]/@xml:id) else string(preceding::*[(name() = 'note') or (name() = 'rest')][ancestor::mei:staff/@n='1'][1]/@xml:id)"/>
+        <!-- get last numerator of time signatur -->
+        <xsl:variable name="currentMeterCount" select="preceding::mei:scoreDef[1]/@meter.count"/>
+        <xsl:copy>
+            <xsl:apply-templates select="@* except @startid"/>
+            <xsl:choose>
+                <!-- if id of last note or rest in the layer 
+                    is equal to the startid of the current directive,
+                    then change the current reference to a tstamp referring to the end of the measure
+                -->
+                <xsl:when test="$startid = $end_melody_id">
+                    <xsl:attribute name="tstamp">
+                        <xsl:value-of select="$currentMeterCount+1"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <!-- else: process @startid as it is -->
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@startid"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            
+            <!-- process child elements -->
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- delete wholeNote symbol because in cnm we use the semantically correct tied half notes -->
+    <xsl:template match="mei:dir[mei:symbol/@type='wholeNote']"/>
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">

@@ -7,27 +7,6 @@
     <!-- Variables for sectioning -->
     <xsl:variable name="subsectionName" select="'Subsection'"/>
     
-    <!-- adding application info -->
-    <xsl:template match="mei:appInfo">
-        <xsl:copy>
-            <xsl:copy-of select="*"/>
-            <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="xml:id">
-                    <xsl:text>group_subsections</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="isodate">
-                    <xsl:value-of select="current-dateTime()"/>
-                </xsl:attribute>
-                <xsl:attribute name="type">
-                    <xsl:text>xslt-script</xsl:text>
-                </xsl:attribute>
-                <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO group subsections transformation prototype</xsl:text>
-                </xsl:element>
-            </xsl:element>
-        </xsl:copy>
-    </xsl:template>
-    
     <!-- put Section markings into sections and mark measures according to squared bracket lines and division signs -->
     <xsl:template match="mei:section[parent::mei:section]">
         <xsl:choose>

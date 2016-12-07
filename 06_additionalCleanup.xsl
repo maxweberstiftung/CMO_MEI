@@ -5,7 +5,7 @@
     version="2.0">
     
     <!-- strip spaces -->
-    <xsl:strip-space elements="measure"/>
+    <xsl:strip-space elements="mei:measure"/>
     
     <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/annplaksin/CMO_MEI/master/'"/>
     <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
@@ -21,7 +21,7 @@
             <xsl:copy-of select="*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
-                    <xsl:text>cleanUp</xsl:text>
+                    <xsl:text>CMO_sibmei-cleanUp</xsl:text>
                 </xsl:attribute>
                 <xsl:attribute name="isodate">
                     <xsl:value-of select="current-dateTime()"/>
@@ -30,7 +30,7 @@
                     <xsl:text>xslt-script</xsl:text>
                 </xsl:attribute>
                 <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO additional cleanup before branching of versions</xsl:text>
+                    <xsl:text>CMO sibmei output cleanup before branching of versions</xsl:text>
                 </xsl:element>
             </xsl:element>
         </xsl:copy>

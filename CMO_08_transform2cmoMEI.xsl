@@ -26,7 +26,7 @@
     </xsl:template>
     
     <!-- change alignment of division signs from last note of melody staff to following barLine -->
-    <xsl:template match="mei:dir[mei:symbol/@type='HampEndCycle' or mei:symbol/@type='HampSubDivision']">
+    <xsl:template match="mei:dir[mei:symbol/@type='End_cycle' or mei:symbol/@type='Division']">
         <!-- get startid of current direction -->
         <xsl:variable name="startid" select="substring(./@startid,2)"/>
         <!-- get ID of first preceding barLine element -->

@@ -7,27 +7,6 @@
     <xsl:variable name="suppliedColor" select="'rgba(170,0,0,1)'"/>
     <xsl:variable name="suppliedSubtype" select="'supplied'"/>
     
-    <!-- adding application info -->
-    <xsl:template match="mei:appInfo">
-        <xsl:copy>
-            <xsl:copy-of select="*"/>
-            <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="xml:id">
-                    <xsl:text>turnColors</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="isodate">
-                    <xsl:value-of select="current-dateTime()"/>
-                </xsl:attribute>
-                <xsl:attribute name="type">
-                    <xsl:text>xslt-script</xsl:text>
-                </xsl:attribute>
-                <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO process editorial insertions part 2</xsl:text>
-                </xsl:element>
-            </xsl:element>
-        </xsl:copy>
-    </xsl:template>
-    
     <!-- catching colored notes and transform them into <supplied> elements -->
     <xsl:template match="*[(./mei:note[@color=$suppliedColor]) and (count(./mei:note[@color=$suppliedColor]) &lt; count(./*))]">
         <xsl:copy>

@@ -13,27 +13,6 @@
     <xsl:variable name="eventElements" select="('note', 'rest', 'space')"/>
     
     
-    <!-- adding application info -->
-    <xsl:template match="mei:appInfo">
-        <xsl:copy>
-            <xsl:copy-of select="*"/>
-            <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="xml:id">
-                    <xsl:text>processSquaredBrackets</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="isodate">
-                    <xsl:value-of select="current-dateTime()"/>
-                </xsl:attribute>
-                <xsl:attribute name="type">
-                    <xsl:text>xslt-script</xsl:text>
-                </xsl:attribute>
-                <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO process editorial insertions part 1</xsl:text>
-                </xsl:element>
-            </xsl:element>
-        </xsl:copy>
-    </xsl:template>
-    
     <!-- processing bracket symbols -->
     
     <!-- changing start and end positions of editorial additions into colored notes -->
