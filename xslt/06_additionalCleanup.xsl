@@ -40,7 +40,7 @@
     <xsl:template match="mei:keyAccid">
         <xsl:copy>
             <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id(.)"/>
+                <xsl:value-of select="generate-id()"/>
             </xsl:attribute>
             <xsl:apply-templates select="@*"/>
         </xsl:copy>
@@ -48,7 +48,7 @@
     
     <!-- add line breaks and page breaks -->
     <xsl:template match="mei:layer[parent::mei:staff/@n='1'][ancestor::mei:measure/mei:anchoredText]">
-        <xsl:variable name="anchoredBreak" select="ancestor::mei:measure/mei:anchoredText[@label = 'line break' or @label = 'page break' or @label = 'column break']"/>
+        <xsl:variable name="anchoredBreak" select="ancestor::mei:measure/mei:anchoredText[@label = 'Line break' or @label = 'Page break' or @label = 'Column break']"/>
         <xsl:variable name="groupSigns" select="ancestor::mei:measure/mei:dir[mei:symbol/@label=$group_start or mei:symbol/@label=$group_end]"/>
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
@@ -59,7 +59,7 @@
                     <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_start]/@startid">
                         <xsl:choose>
                             <!-- create a page break event -->
-                            <xsl:when test="$anchoredBreak/@label = 'page break'">
+                            <xsl:when test="$anchoredBreak/@label = 'Page break'">
                                 <xsl:element name="pb" namespace="http://www.music-encoding.org/ns/mei">
                                     <xsl:attribute name="xml:id">
                                         <xsl:value-of select="$anchoredBreak/@xml:id"/>
@@ -91,7 +91,7 @@
                     <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_end]/@startid">
                         <xsl:choose>
                             <!-- put break before element if it is also a start of a group -->
-                            <xsl:when test="$anchoredBreak/@label = 'page break'">
+                            <xsl:when test="$anchoredBreak/@label = 'Page break'">
                                 <xsl:apply-templates select="."/>
                                 <xsl:element name="pb" namespace="http://www.music-encoding.org/ns/mei">
                                     <xsl:attribute name="xml:id">

@@ -85,6 +85,8 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="mei:anchoredText[@label='composer']"/>
+    <!-- also delete <composer> gained from Sibelius file metadata -->
+    <xsl:template match="mei:fileDesc//mei:composer"/>
     
     <!-- Editor -->
     <xsl:template match="//mei:fileDesc/mei:titleStmt/mei:respStmt">
@@ -98,7 +100,7 @@
                 <xsl:attribute name="role">
                     <xsl:text>Editor</xsl:text>
                 </xsl:attribute>
-                <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='Editor_Initials']"/>
+                <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='Editor initials']"/>
             </xsl:element>
         </xsl:copy>
     </xsl:template>
@@ -172,7 +174,7 @@
             <!-- process key signatures -->
             <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                    <xsl:value-of select="generate-id(//mei:staffDef[@n='1'])"/>
+                    <xsl:value-of select="generate-id(ancestor::mei:scoreDef)"/>
                 </xsl:attribute>
                 <!-- tokenize @label to process key signatures -->
                 <xsl:for-each select="tokenize(@label,'\s+')">
@@ -434,7 +436,7 @@
     </xsl:template>
     
     <!-- add Mükerrer and Grgnum into same <dir> element with Division sign -->
-    <xsl:template match="mei:dir[mei:symbol/@type='End_cycle' or mei:symbol/@type='Division']">
+    <xsl:template match="mei:dir[descendant::mei:symbol/@type='End_cycle' or descendant::mei:symbol/@type='Division']">
         <xsl:variable name="dirReference" select="./@startid"/>
         <xsl:variable name="anchoredText" select="../mei:anchoredText[((@label='Mükerrer') or (@label='Grgnum')) and @startid = $dirReference]"/>
         <xsl:copy>
