@@ -428,7 +428,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
-                <xsl:when test="preceding-sibling::mei:dir[mei:symbol/@type=$group_end][1]/@startid = ./@startid and //*[@xml:id=$dirRef]/following::mei:note[1]/@grace">
+                <xsl:when test="preceding-sibling::mei:dir[//@label=$group_end][1]/@startid = ./@startid">
                     <xsl:variable name="followingGrace" select="//*[@xml:id=$dirRef]/following::mei:note[1]"/>
                     <xsl:attribute name="startid">
                         <xsl:value-of select="concat('#',$followingGrace/@xml:id)"/>
