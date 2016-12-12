@@ -171,54 +171,61 @@
             <xsl:apply-templates select="@clef.shape"/>
             <xsl:apply-templates select="@clef.line"/>
             
-            <!-- process key signatures -->
-            <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                    <xsl:value-of select="generate-id(ancestor::mei:scoreDef)"/>
-                </xsl:attribute>
-                <!-- tokenize @label to process key signatures -->
-                <xsl:for-each select="tokenize(@label,'\s+')">
-                    <xsl:variable name="accid" select="substring(.,1,1)"/>
-                    <xsl:variable name="loc" select="substring(.,2,1)"/>
-                    <xsl:variable name="accidGlyph">
-                        <xsl:call-template name="accid2glyph">
-                            <xsl:with-param name="accid" select="$accid"/>
-                        </xsl:call-template>
-                    </xsl:variable>
-                    <xsl:variable name="oct">
-                        <xsl:call-template name="loc2oct">
-                            <xsl:with-param name="loc" select="number($loc)"/>
-                            <xsl:with-param name="clef-shape" select="$clef-shape"/>
-                            <xsl:with-param name="clef-line" select="$clef-line"/>
-                        </xsl:call-template>
-                    </xsl:variable>
-                    <xsl:variable name="pname">
-                        <xsl:call-template name="loc2pname">
-                            <xsl:with-param name="loc" select="number($loc)"/>
-                            <xsl:with-param name="clef-shape" select="$clef-shape"/>
-                            <xsl:with-param name="clef-line" select="$clef-line"/>
-                        </xsl:call-template>
-                    </xsl:variable>
-                    
-                    <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
-                        <xsl:attribute name="accid">
-                            <xsl:value-of select="$accid"/>
+            <xsl:choose>
+                <xsl:when test="@label = 'N'"/>
+                <xsl:when test="empty(@label)"/>
+                <xsl:otherwise>
+                    <!-- process key signatures -->
+                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
+                            <xsl:value-of select="generate-id(ancestor::mei:scoreDef)"/>
                         </xsl:attribute>
-                        <xsl:attribute name="loc">
-                            <xsl:value-of select="$loc"/>
-                        </xsl:attribute>
-                        <xsl:attribute name="glyphnum">
-                            <xsl:value-of select="$accidGlyph"/>
-                        </xsl:attribute>
-                        <xsl:attribute name="oct">
-                            <xsl:value-of select="$oct"/>
-                        </xsl:attribute>
-                        <xsl:attribute name="pname">
-                            <xsl:value-of select="$pname"/>
-                        </xsl:attribute>
+                        <!-- tokenize @label to process key signatures -->
+                        <xsl:for-each select="tokenize(@label,'\s+')">
+                            <xsl:variable name="accid" select="substring(.,1,1)"/>
+                            <xsl:variable name="loc" select="substring(.,2,1)"/>
+                            <xsl:variable name="accidGlyph">
+                                <xsl:call-template name="accid2glyph">
+                                    <xsl:with-param name="accid" select="$accid"/>
+                                </xsl:call-template>
+                            </xsl:variable>
+                            <xsl:variable name="oct">
+                                <xsl:call-template name="loc2oct">
+                                    <xsl:with-param name="loc" select="number($loc)"/>
+                                    <xsl:with-param name="clef-shape" select="$clef-shape"/>
+                                    <xsl:with-param name="clef-line" select="$clef-line"/>
+                                </xsl:call-template>
+                            </xsl:variable>
+                            <xsl:variable name="pname">
+                                <xsl:call-template name="loc2pname">
+                                    <xsl:with-param name="loc" select="number($loc)"/>
+                                    <xsl:with-param name="clef-shape" select="$clef-shape"/>
+                                    <xsl:with-param name="clef-line" select="$clef-line"/>
+                                </xsl:call-template>
+                            </xsl:variable>
+                            
+                            <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
+                                <xsl:attribute name="accid">
+                                    <xsl:value-of select="$accid"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="loc">
+                                    <xsl:value-of select="$loc"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="glyphnum">
+                                    <xsl:value-of select="$accidGlyph"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="oct">
+                                    <xsl:value-of select="$oct"/>
+                                </xsl:attribute>
+                                <xsl:attribute name="pname">
+                                    <xsl:value-of select="$pname"/>
+                                </xsl:attribute>
+                            </xsl:element>
+                        </xsl:for-each>
                     </xsl:element>
-                </xsl:for-each>
-            </xsl:element>
+                </xsl:otherwise>
+            </xsl:choose>
+            
         </xsl:copy>
     </xsl:template>
     
@@ -267,7 +274,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = '3qf'">
+                <xsl:when test="@accid = 'fd'">
                     <!-- Bakiye (flat) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'b'"/>
@@ -297,7 +304,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = '1qs'">
+                <xsl:when test="@accid = 'sd'">
                     <!-- Koma (sharp) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'K'"/>
@@ -351,7 +358,7 @@
                         <xsl:value-of select="'BM'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = '3qf'">
+                <xsl:when test="@accid.ges = 'fd'">
                     <!-- Bakiye (flat) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'b'"/>
@@ -369,7 +376,7 @@
                         <xsl:value-of select="'M'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = '1qs'">
+                <xsl:when test="@accid.ges = 'sd'">
                     <!-- Koma (sharp) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'K'"/>
