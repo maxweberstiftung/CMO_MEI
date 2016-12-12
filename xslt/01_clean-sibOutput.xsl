@@ -512,7 +512,8 @@
         <xsl:variable name="anchoredText" select="../mei:anchoredText[((@label='Mükerrer') or (@label='Grgnum')) and @startid = $dirReference]"/>
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
-            <xsl:copy-of select="$anchoredText"/>
+            <xsl:value-of select="$anchoredText/text()"/>
+            <!--<xsl:copy-of select="$anchoredText"/>-->
             <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
