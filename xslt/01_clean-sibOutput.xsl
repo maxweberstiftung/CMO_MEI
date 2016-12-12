@@ -131,7 +131,7 @@
                     <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='Lyricist']"/>
                 </xsl:element>
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="//mei:lyricist">
                 <xsl:element name="persName" namespace="http://www.music-encoding.org/ns/mei">
                     <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
                         <xsl:value-of select="generate-id(//mei:lyricist)"/>
@@ -141,6 +141,9 @@
                     </xsl:attribute>
                     <xsl:value-of select="//mei:lyricist"/>
                 </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
