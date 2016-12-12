@@ -124,7 +124,7 @@
     </xsl:template>
     
     <!-- suppress marking subtypes -->
-    <xsl:template match="@subtype['suppBeforeStart' or 'suppAfterEnd' or 'suppStart' or 'suppEnd']"/>
+    <xsl:template match="@subtype[parent::mei:measure]"/>
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
