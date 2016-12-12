@@ -57,8 +57,11 @@
                     <xsl:attribute name="n">
                         <xsl:value-of select="text()"/>
                     </xsl:attribute>
-                    <xsl:attribute name="startid">
+                    <xsl:attribute name="synch">
                         <xsl:value-of select="@startid"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="source">
+                        <xsl:value-of select="concat('#',//mei:source/@xml:id)"/>
                     </xsl:attribute>
                 </xsl:element>
             </xsl:when>
@@ -73,9 +76,12 @@
                 <xsl:attribute name="n">
                     <xsl:value-of select="text()"/>
                 </xsl:attribute>
-                    <xsl:attribute name="startid">
-                        <xsl:value-of select="@startid"/>
-                    </xsl:attribute>
+                <xsl:attribute name="synch">
+                    <xsl:value-of select="@startid"/>
+                </xsl:attribute>
+                <xsl:attribute name="source">
+                    <xsl:value-of select="concat('#',//mei:source/@xml:id)"/>
+                </xsl:attribute>
             </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
