@@ -876,12 +876,13 @@
     </xsl:template>
     
     <xsl:template name="addsource">
+        <xsl:variable name="sourceLabel" select="normalize-space(//mei:anchoredText[@label='Source'])"/>
         <xsl:element name="source" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="xml:id">
                 <xsl:value-of select="generate-id(//mei:anchoredText[@label='Source'])"/>
             </xsl:attribute>
             <xsl:attribute name="label">
-                <xsl:value-of select="//mei:anchoredText[@label='Source']"/>
+                <xsl:value-of select="$sourceLabel"/>
             </xsl:attribute>
         </xsl:element>
     </xsl:template>
