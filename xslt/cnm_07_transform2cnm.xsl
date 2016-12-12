@@ -5,7 +5,7 @@
     version="2.0">
     
     <xsl:strip-space elements="*"/>
-    <xsl:preserve-space elements="mei:note mei:beam mei:rest mei:chord mei:symbol mei:verse mei:syl mei:accid mei:symbol mei:dir"/>
+    <xsl:preserve-space elements="mei:note mei:beam mei:rest mei:chord mei:symbol mei:verse mei:syl mei:accid mei:symbol mei:dir mei:supplied mei:anchoredText"/>
     
     <!-- add schema to file -->
     <xsl:template match="/">
