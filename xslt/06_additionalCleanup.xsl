@@ -40,7 +40,7 @@
     <xsl:template match="mei:keyAccid">
         <xsl:copy>
             <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id()"/>
+                <xsl:value-of select="generate-id(./@loc)"/>
             </xsl:attribute>
             <xsl:apply-templates select="@*"/>
         </xsl:copy>
