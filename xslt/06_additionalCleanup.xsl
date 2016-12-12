@@ -47,88 +47,39 @@
     </xsl:template>
     
     <!-- add line breaks and page breaks -->
-    <xsl:template match="mei:layer[parent::mei:staff/@n='1'][ancestor::mei:measure/mei:anchoredText]">
-        <xsl:variable name="anchoredBreak" select="ancestor::mei:measure/mei:anchoredText[@label = 'Line break' or @label = 'Page break' or @label = 'Column break']"/>
-        <xsl:variable name="groupSigns" select="ancestor::mei:measure/mei:dir[mei:symbol/@label=$group_start or mei:symbol/@label=$group_end]"/>
-        <xsl:copy>
-            <xsl:apply-templates select="@*"/>
-            <xsl:for-each select="./*">
-                <xsl:variable name="selfOrChildIDs" select="for $x in descendant-or-self::*/@xml:id return concat('#',$x)"/>
-                <xsl:choose>
-                    <!-- put break before element if it is also a start of a group -->
-                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_start]/@startid">
-                        <xsl:choose>
-                            <!-- create a page break event -->
-                            <xsl:when test="$anchoredBreak/@label = 'Page break'">
-                                <xsl:element name="pb" namespace="http://www.music-encoding.org/ns/mei">
-                                    <xsl:attribute name="xml:id">
-                                        <xsl:value-of select="$anchoredBreak/@xml:id"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="n">
-                                        <xsl:value-of select="$anchoredBreak/text()"/>
-                                    </xsl:attribute>
-                                </xsl:element>
-                                <xsl:apply-templates select="."/>
-                            </xsl:when>
-                            <!-- create a system break in case of line or column break -->
-                            <xsl:otherwise>
-                                <xsl:element name="sb" namespace="http://www.music-encoding.org/ns/mei">
-                                    <xsl:attribute name="xml:id">
-                                        <xsl:value-of select="$anchoredBreak/@xml:id"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="label">
-                                        <xsl:value-of select="$anchoredBreak/@label"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="n">
-                                        <xsl:value-of select="$anchoredBreak/text()"/>
-                                    </xsl:attribute>
-                                </xsl:element>
-                                <xsl:apply-templates select="."/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <!-- put break after element if it is also an end of a group -->
-                    <xsl:when test="$selfOrChildIDs = $anchoredBreak/@startid and $selfOrChildIDs = $groupSigns[mei:symbol/@label=$group_end]/@startid">
-                        <xsl:choose>
-                            <!-- put break before element if it is also a start of a group -->
-                            <xsl:when test="$anchoredBreak/@label = 'Page break'">
-                                <xsl:apply-templates select="."/>
-                                <xsl:element name="pb" namespace="http://www.music-encoding.org/ns/mei">
-                                    <xsl:attribute name="xml:id">
-                                        <xsl:value-of select="$anchoredBreak/@xml:id"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="n">
-                                        <xsl:value-of select="$anchoredBreak/text()"/>
-                                    </xsl:attribute>
-                                </xsl:element>
-                            </xsl:when>
-                            <!-- create a system break in case of line or column break -->
-                            <xsl:otherwise>
-                                <xsl:apply-templates select="."/>
-                                <xsl:element name="sb" namespace="http://www.music-encoding.org/ns/mei">
-                                    <xsl:attribute name="xml:id">
-                                        <xsl:value-of select="$anchoredBreak/@xml:id"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="label">
-                                        <xsl:value-of select="$anchoredBreak/@label"/>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="n">
-                                        <xsl:value-of select="$anchoredBreak/text()"/>
-                                    </xsl:attribute>
-                                </xsl:element>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:apply-templates select="."/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:for-each>
-        </xsl:copy>
+    <xsl:template match="mei:anchoredText[@label = 'Line break' or @label = 'Page break' or @label = 'Column break']">
+        <xsl:choose>
+            <xsl:when test="@label = 'Page break'">
+                <xsl:element name="pb" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="@xml:id"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="n">
+                        <xsl:value-of select="text()"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="startid">
+                        <xsl:value-of select="@startid"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:element name="sb" namespace="http://www.music-encoding.org/ns/mei">
+                <xsl:attribute name="xml:id">
+                    <xsl:value-of select="@xml:id"/>
+                </xsl:attribute>
+                <xsl:attribute name="label">
+                    <xsl:value-of select="@label"/>
+                </xsl:attribute>
+                <xsl:attribute name="n">
+                    <xsl:value-of select="text()"/>
+                </xsl:attribute>
+                    <xsl:attribute name="startid">
+                        <xsl:value-of select="@startid"/>
+                    </xsl:attribute>
+            </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
-    
-    <!-- suppress old break markings -->
-    <xsl:template match="mei:anchoredText[@label = 'line break' or @label = 'page break' or @label = 'column break']"/>
     
     <!-- add @altsym to every symbol without @glyphnum -->
     <xsl:template match="mei:symbol[not(@glyphnum)]">
