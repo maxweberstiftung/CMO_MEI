@@ -75,7 +75,7 @@
             <xsl:apply-templates select="./*"/>
         </xsl:copy>
     </xsl:template>
-     
+    
     <!-- processing bracket lines -->
     <xsl:template match="mei:measure">
         <xsl:choose>

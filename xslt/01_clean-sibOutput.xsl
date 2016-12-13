@@ -249,8 +249,8 @@
                         </xsl:attribute>
                         <!-- tokenize @label to process key signatures -->
                         <xsl:for-each select="tokenize(@label,'\s+')">
-                            <xsl:variable name="accid" select="substring(.,1,1)"/>
-                            <xsl:variable name="loc" select="substring(.,2,1)"/>
+                            <xsl:variable name="accid" select="substring(.,2,1)"/>
+                            <xsl:variable name="loc" select="substring(.,1,1)"/>
                             <xsl:variable name="accidGlyph">
                                 <xsl:call-template name="accid2glyph">
                                     <xsl:with-param name="accid" select="$accid"/>
@@ -597,7 +597,7 @@
             <xsl:choose>
                 <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='start']">
                     <xsl:choose>
-                        <xsl:when test="substring(mei:line/@startid,2) = $start_melody/@xml:id">
+                        <xsl:when test="substring(mei:line[@type='bracket' and @subtype='vertical' and @label='start']/@startid,2) = $start_melody/@xml:id">
                             <xsl:attribute name="subtype">
                                 <xsl:text>suppStart</xsl:text>
                             </xsl:attribute>
@@ -611,7 +611,7 @@
                 </xsl:when>
                 <xsl:when test="mei:line[@type='bracket' and @subtype='vertical' and @label='end']">
                     <xsl:choose>
-                        <xsl:when test="substring(mei:line/@startid,2) = $end_melody/@xml:id">
+                        <xsl:when test="substring(mei:line[@type='bracket' and @subtype='vertical' and @label='end']/@startid,2) = $end_melody/@xml:id">
                             <xsl:attribute name="subtype">
                                 <xsl:text>suppEnd</xsl:text>
                             </xsl:attribute>
@@ -756,27 +756,38 @@
         <!-- first, check if bracket is start or end of an insertion -->
         <xsl:choose>
             <xsl:when test="$line/@label='start'">
-                <!-- if start, then check position of referenced event within layer -->
+                <!-- run this part only when the start bracket is not attached to the first or the last note -->
                 <xsl:choose>
-                    <!-- referenced event of bracket is start point -->
-                    <xsl:when test="./@xml:id = substring($line/@startid,2)">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:attribute name="label">
-                                <xsl:value-of select="'suppStart'"/>
-                            </xsl:attribute>
-                            <xsl:apply-templates select="node()"/>
-                        </xsl:copy>
-                    </xsl:when>
-                    <!-- last event in layer is end point -->
-                    <xsl:when test="./@xml:id = $end_melody/@xml:id">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:attribute name="label">
-                                <xsl:value-of select="'suppEnd'"/>
-                            </xsl:attribute>
-                            <xsl:apply-templates select="node()"/>
-                        </xsl:copy>
+                    <xsl:when test="$start_melody/@xml:id != substring($line/@startid,2) and $end_melody/@xml:id != substring($line/@startid,2)">
+                        <!-- if start, then check position of referenced event within layer -->
+                        <xsl:choose>
+                            <!-- referenced event of bracket is start point -->
+                            <xsl:when test="./@xml:id = substring($line/@startid,2)">
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:attribute name="label">
+                                        <xsl:value-of select="'suppStart'"/>
+                                    </xsl:attribute>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:when>
+                            <!-- last event in layer is end point -->
+                            <xsl:when test="./@xml:id = $end_melody/@xml:id">
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:attribute name="label">
+                                        <xsl:value-of select="'suppEnd'"/>
+                                    </xsl:attribute>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:copy>
@@ -788,26 +799,37 @@
             </xsl:when>
             <xsl:when test="$line/@label='end'">
                 <!-- if end, then check position of referenced event within layer -->
+                <!-- but run this only, when the line is not attached to the start or the end note -->
                 <xsl:choose>
-                    <!-- referenced musical event is end point -->
-                    <xsl:when test="./@xml:id = substring($line/@startid,2)">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:attribute name="label">
-                                <xsl:value-of select="'suppEnd'"/>
-                            </xsl:attribute>
-                            <xsl:apply-templates select="node()"/>
-                        </xsl:copy>
-                    </xsl:when>
-                    <!-- first musical event in layer is start point -->
-                    <xsl:when test="./@xml:id = $start_melody/@xml:id">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:attribute name="label">
-                                <xsl:value-of select="'suppStart'"/>
-                            </xsl:attribute>
-                            <xsl:apply-templates select="node()"/>
-                        </xsl:copy>
+                    <xsl:when test="$start_melody/@xml:id != substring($line/@startid,2) and $end_melody/@xml:id != substring($line/@startid,2)">
+                        <xsl:choose>
+                            <!-- referenced musical event is end point -->
+                            <xsl:when test="./@xml:id = substring($line/@startid,2)">
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:attribute name="label">
+                                        <xsl:value-of select="'suppEnd'"/>
+                                    </xsl:attribute>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:when>
+                            <!-- first musical event in layer is start point -->
+                            <xsl:when test="./@xml:id = $start_melody/@xml:id">
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:attribute name="label">
+                                        <xsl:value-of select="'suppStart'"/>
+                                    </xsl:attribute>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*"/>
+                                    <xsl:apply-templates select="node()"/>
+                                </xsl:copy>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:copy>
@@ -815,7 +837,7 @@
                             <xsl:apply-templates select="node()"/>
                         </xsl:copy>
                     </xsl:otherwise>
-                </xsl:choose>
+                </xsl:choose>    
             </xsl:when>
         </xsl:choose>
     </xsl:template>

@@ -53,7 +53,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy>
-                    <xsl:apply-templates/> 
+                    <xsl:apply-templates select="@*|*"/> 
                 </xsl:copy>           
             </xsl:otherwise>
         </xsl:choose>

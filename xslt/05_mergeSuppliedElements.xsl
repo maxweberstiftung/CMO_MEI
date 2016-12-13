@@ -3,6 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mei="http://www.music-encoding.org/ns/mei"
     exclude-result-prefixes="xs"
     version="2.0">
+    <xsl:preserve-space elements="*"/>
     
     <!-- merge adjacent <supplied> elements -->
     <xsl:template match="*[./mei:supplied]">
@@ -14,7 +15,7 @@
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
                             <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id($grp/*[1])"/>
+                                <xsl:value-of select="generate-id(./*[1])"/>
                             </xsl:attribute>
                             <xsl:apply-templates select="$grp/*"/>
                         </xsl:element>
