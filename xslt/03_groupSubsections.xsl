@@ -45,7 +45,7 @@
                             
                             <!-- write following elements until next start -->
                             <xsl:for-each select="./following-sibling::node()[not(mei:anchoredText/@label=$subsectionName)][preceding-sibling::mei:measure[mei:anchoredText/@label=$subsectionName][1] = $start_measure]">
-                                <xsl:apply-templates select=". except (.[@n = $nextStartN])"/>
+                                <xsl:apply-templates select=". except (.[name() = 'scoreDef' and following-sibling::mei:measure[1]/@n = $nextStartN])"/>
                             </xsl:for-each>
                         </xsl:element>
                     </xsl:for-each>
