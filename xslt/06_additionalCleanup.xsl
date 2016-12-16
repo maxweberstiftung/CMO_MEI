@@ -163,6 +163,33 @@
         </xsl:copy>
     </xsl:template>
     
+    <!-- conversion of time signatures with Darb text style -->
+    <xsl:template match="mei:scoreDef">
+        <!-- get next Darb Text element -->
+        <xsl:variable name="darbText" select="following::mei:anchoredText[@label='Darb text'][1]"/>
+        <!-- process changed scoreDef -->
+        <xsl:copy>
+            <xsl:apply-templates select="@* except (@meter.count)"/>
+            <xsl:choose>
+                <xsl:when test="$darbText != '' and @meter.count != string($darbText)">
+                    <xsl:attribute name="meter.count">
+                        <xsl:value-of select="string($darbText)"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="@meter.count"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:attribute name="meter.rend">
+                <xsl:value-of select="'num'"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="*"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- delete Darb text from output -->
+    <xsl:template match="mei:anchoredText[@label='Darb text']"/>
+    
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
         <xsl:copy>
