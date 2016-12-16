@@ -351,7 +351,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = '1qf'">
+                <xsl:when test="@accid = 'fu'">
                     <!-- Koma (flat) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'k'"/>
@@ -361,7 +361,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = '3qs'">
+                <xsl:when test="@accid = 'su'">
                     <!-- Küçük mücenneb (sharp) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'M'"/>
@@ -431,13 +431,13 @@
                         <xsl:value-of select="'b'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = '1qf'">
+                <xsl:when test="@accid.ges = 'fu'">
                     <!-- Koma (flat) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'k'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = '3qs'">
+                <xsl:when test="@accid.ges = 'su'">
                     <!-- Küçük mücenneb (sharp) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'M'"/>
@@ -470,7 +470,6 @@
             <xsl:apply-templates select="@* except (@accid, @accid.ges, @func)"/>
         </xsl:copy>
     </xsl:template>
-    
     
     <!-- delete page breaks -->
     <xsl:template match="mei:pb"/>
