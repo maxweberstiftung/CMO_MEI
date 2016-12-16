@@ -632,7 +632,7 @@
     <xsl:template match="mei:dir[mei:symbol/@type='suppliedBracketStart']"/>
     <xsl:template match="mei:dir[mei:symbol/@type='suppliedBracketEnd']"/>
         
-    <xsl:template match="mei:layer[../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketStart']]">
+    <xsl:template match="mei:layer[../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketStart'] and ../@n='1']">
         <xsl:variable name="startBrackets" select="./../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketStart']"/>
         <xsl:variable name="endBrackets" select="./../following-sibling::mei:dir[mei:symbol/@type='suppliedBracketEnd']"/>
         
