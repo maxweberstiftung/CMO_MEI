@@ -42,6 +42,16 @@
         </xsl:copy>
     </xsl:template>
     
+    <!-- Take Usûl name as label for staff/@n="2" -->
+    <xsl:template match="mei:staffDef[@n='2']">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="label">
+                <xsl:value-of select="following::mei:anchoredText[@label='Usûl name'][1]"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="*"/>
+        </xsl:copy>
+    </xsl:template>
     <!-- delete Usûl name -->
     <xsl:template match="mei:anchoredText[@label='Usûl name']"/>
     
