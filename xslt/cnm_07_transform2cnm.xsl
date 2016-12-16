@@ -7,6 +7,9 @@
     <xsl:strip-space elements="*"/>
     <xsl:preserve-space elements="mei:note mei:beam mei:rest mei:chord mei:symbol mei:verse mei:syl mei:accid mei:symbol mei:dir mei:supplied mei:anchoredText mei:section"/>
     
+    <!-- Stem modifications for tremolos -->
+    <xsl:variable name="tremStem" select="('1slash','2slash','3slash','4slash','5slash','6slash')"/>
+    
     <!-- add schema to file -->
     <xsl:template match="/">
         <xsl:processing-instruction name="xml-model">
@@ -117,6 +120,18 @@
     
     <!-- delete wholeNote symbol because in cnm we use the semantically correct tied half notes -->
     <xsl:template match="mei:dir[mei:symbol/@type='wholeNote']"/>
+    
+    <!-- surround notes or chords with slashed stems with <bTrem> -->
+    <xsl:template match="*[(name() = 'note' or name() = 'chord') and @stem.mod=$tremStem]">
+        <xsl:element name="bTrem" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="xml:id">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
+            <xsl:copy>
+                <xsl:apply-templates select="@*|*"/>
+            </xsl:copy>
+        </xsl:element>
+    </xsl:template>
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
