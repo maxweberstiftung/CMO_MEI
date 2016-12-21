@@ -97,8 +97,8 @@
         </xsl:copy>
     </xsl:template>
     
-    <!-- add id to elements without id -->
-    <xsl:template match="*[not(@xml:id)]">
+    <!-- add id to accidentals without id -->
+    <xsl:template match="mei:accid[not(@xml:id)]">
         <xsl:copy>
             <xsl:attribute name="xml:id">
                 <xsl:value-of select="generate-id()"/>

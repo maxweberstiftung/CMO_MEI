@@ -36,10 +36,15 @@
         </xsl:copy>
     </xsl:template>
     
-    <!-- add ID to key accidentals -->
-    <xsl:template match="mei:keyAccid">
+    
+    
+    <!-- add id to accidentals without id -->
+    <xsl:template match="*[not(@xml:id)]">
         <xsl:copy>
-            <xsl:apply-templates select="@*"/>
+            <xsl:attribute name="xml:id">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
     
