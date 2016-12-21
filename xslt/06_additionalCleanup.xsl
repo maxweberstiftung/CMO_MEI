@@ -46,6 +46,20 @@
         </xsl:copy>
     </xsl:template>
     
+    <!-- add @corresp for notes following a Nim geveşt -->
+    <xsl:template match="mei:note[not(./mei:accid) and preceding::mei:note/mei:accid/@label='Nim geveşt' and ancestor::mei:staff/@n='1']">
+        <xsl:variable name="currentMeasure" select="ancestor::mei:measure/@n"/>
+        <xsl:variable name="precedingNimNote" select="preceding::mei:note[mei:accid/@label='Nim geveşt' and ancestor::mei:measure/@n = $currentMeasure]"/>
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <xsl:if test="@pname = $precedingNimNote/@pname and @oct = $precedingNimNote/@oct">
+                <xsl:element name="accid" namespace="http://www.music-encoding.org/ns/mei">
+                </xsl:element>
+            </xsl:if>
+            <xsl:apply-templates select="*"/>
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- add line breaks and page breaks -->
     <xsl:template match="mei:anchoredText[@label = 'Line break' or @label = 'Page break' or @label = 'Column break']">
         <xsl:choose>

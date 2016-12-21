@@ -321,7 +321,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = 'fu'">
+                <xsl:when test="@accid = 'ff'">
                     <!-- Büyük mücenneb (flat) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'bm'"/>
@@ -331,7 +331,7 @@
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
                 </xsl:when>
-                <xsl:when test="@accid = 'su'">
+                <xsl:when test="@accid = 'x'">
                     <!-- Büyük mücenneb (sharp) -->
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'BM'"/>
@@ -413,13 +413,13 @@
                         <xsl:value-of select="'m'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = 'fu'">
+                <xsl:when test="@accid.ges = 'ff'">
                     <!-- Büyük mücenneb (flat) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'bm'"/>
                     </xsl:attribute>
                 </xsl:when>
-                <xsl:when test="@accid.ges = 'su'">
+                <xsl:when test="@accid.ges = 'x'">
                     <!-- Büyük mücenneb (sharp) -->
                     <xsl:attribute name="accid.ges">
                         <xsl:value-of select="'BM'"/>
