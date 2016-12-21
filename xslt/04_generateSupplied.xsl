@@ -16,9 +16,6 @@
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id($grp/*[1])"/>
-                            </xsl:attribute>
                             <xsl:apply-templates select="$grp"/>
                         </xsl:element>
                     </xsl:when>
@@ -32,9 +29,6 @@
     
     <xsl:template match="mei:beam[count(./mei:note[@color=$suppliedColor]) = count(./*)]">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id()"/>
-            </xsl:attribute>
             <xsl:copy>
                 <xsl:apply-templates select="@*"/>
                 <xsl:apply-templates select="./*"/>
@@ -54,9 +48,6 @@
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id(./*[1])"/>
-                            </xsl:attribute>
                             <xsl:apply-templates select="$grp"/>
                         </xsl:element>
                     </xsl:when>
@@ -71,9 +62,6 @@
     <!-- put whole section into supplied element if every measure of a section is affected -->
     <xsl:template match="*[(./mei:measure[@subtype=$suppliedSubtype]) and (count(./mei:measure[@subtype=$suppliedSubtype]) = count(./*))]">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id(.)"/>
-            </xsl:attribute>
             <xsl:copy>
                 <xsl:apply-templates select="@*|node()"/>
             </xsl:copy>
@@ -83,9 +71,6 @@
     <!-- catching enclosed accidentals and put them into <supplied> elements -->
     <xsl:template match="mei:accid[@enclose='paren']">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id(mei:accid[@enclose='paren'])"/>
-            </xsl:attribute>
             <xsl:copy>
                 <xsl:apply-templates select="@*"/>
             </xsl:copy>

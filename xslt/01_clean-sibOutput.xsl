@@ -39,9 +39,6 @@
             <!-- add CMO Ref -->
             <xsl:if test="//mei:anchoredText[@label='CMO Ref']">
                 <xsl:element name="altId" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="xml:id">
-                        <xsl:value-of select="generate-id(//mei:anchoredText[@label='CMO Ref'])"/>
-                    </xsl:attribute>
                     <xsl:attribute name="label">
                         <xsl:value-of select="'CMO Ref'"/>
                     </xsl:attribute>
@@ -63,11 +60,11 @@
             <!-- add Fasıl title-->
             <xsl:if test="//mei:anchoredText[@label='Fasıl']">
                 <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="xml:id">
-                        <xsl:value-of select="generate-id(//mei:anchoredText[@label='Fasıl'])"/>
-                    </xsl:attribute>
                     <xsl:attribute name="label">
                         <xsl:value-of select="'Fasıl'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="//mei:anchoredText[@label='Fasıl']/@xml:id"/>
                     </xsl:attribute>
                     <xsl:value-of select="//mei:anchoredText[@label='Fasıl']"/>
                 </xsl:element>
@@ -75,18 +72,18 @@
             <!-- add title -->
             <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
-                    <xsl:value-of select="generate-id(//mei:anchoredText[mei:title])"/>
+                    <xsl:value-of select="//mei:anchoredText/mei:title/@xml:id"/>
                 </xsl:attribute>
                 <xsl:value-of select="//mei:anchoredText/mei:title"/>
             </xsl:element>
             <!-- add Incipit -->
             <xsl:if test="//mei:anchoredText[@label='Incipit']">
                 <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="xml:id">
-                        <xsl:value-of select="generate-id(//mei:anchoredText[@label='Incipit'])"/>
-                    </xsl:attribute>
                     <xsl:attribute name="label">
                         <xsl:value-of select="'Incipit'"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="//mei:anchoredText[@label='Incipit']/@xml:id"/>
                     </xsl:attribute>
                     <xsl:value-of select="//mei:anchoredText[@label='Incipit']"/>
                 </xsl:element>
@@ -100,9 +97,6 @@
         <xsl:copy>
             <xsl:apply-templates select="@*|*"/>
             <xsl:element name="sourceDesc" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="xml:id">
-                    <xsl:value-of select="generate-id()"/>
-                </xsl:attribute>
                 <xsl:if test="//mei:anchoredText[@label='Source']">
                     <xsl:call-template name="addsource"/>
                 </xsl:if>
@@ -116,28 +110,31 @@
             <xsl:attribute name="role">
                 <xsl:text>Attribution</xsl:text>
             </xsl:attribute>
+            <xsl:attribute name="xml:id">
+                <xsl:value-of select="//mei:anchoredText[@label='composer']/@xml:id"/>
+            </xsl:attribute>
             <xsl:apply-templates select="@*"/>
             <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='composer']"/>  
         </xsl:copy>
         <xsl:choose>
             <xsl:when test="//mei:anchoredText[@label='Lyricist']">
                 <xsl:element name="persName" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                        <xsl:value-of select="generate-id(//mei:anchoredText[@label='Lyricist'])"/>
-                    </xsl:attribute>
                     <xsl:attribute name="role">
                         <xsl:text>Lyricist</xsl:text>
+                    </xsl:attribute>
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="//mei:anchoredText[@label='Lyricist']/@xml:id"/>
                     </xsl:attribute>
                     <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='Lyricist']"/>
                 </xsl:element>
             </xsl:when>
             <xsl:when test="//mei:lyricist">
                 <xsl:element name="persName" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                        <xsl:value-of select="generate-id(//mei:lyricist)"/>
-                    </xsl:attribute>
                     <xsl:attribute name="role">
                         <xsl:text>Lyricist</xsl:text>
+                    </xsl:attribute>
+                    <xsl:attribute name="xml:id">
+                        <xsl:value-of select="//mei:lyricist/@xml:id"/>
                     </xsl:attribute>
                     <xsl:value-of select="//mei:lyricist"/>
                 </xsl:element>
@@ -159,13 +156,13 @@
             <xsl:apply-templates select="@xml:id"/>
             <xsl:apply-templates select="node()"/>
             <xsl:element name="persName" namespace="http://www.music-encoding.org/ns/mei">
-                <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                    <xsl:value-of select="generate-id(//mei:anchoredText[@label='Editor Initials'])"/>
-                </xsl:attribute>
                 <xsl:attribute name="role">
                     <xsl:text>Editor</xsl:text>
                 </xsl:attribute>
-                <xsl:value-of select="./ancestor::mei:mei//mei:anchoredText[@label='Editor Initials']"/>
+                <xsl:attribute name="xml:id">
+                    <xsl:value-of select="//mei:anchoredText[@label='Editor Initials']/@xml:id"/>
+                </xsl:attribute>
+                <xsl:value-of select="//mei:anchoredText[@label='Editor Initials']/text()"/>
             </xsl:element>
         </xsl:copy>
     </xsl:template>
@@ -244,9 +241,6 @@
                 <xsl:otherwise>
                     <!-- process key signatures -->
                     <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
-                        <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                            <xsl:value-of select="generate-id(ancestor::mei:scoreDef)"/>
-                        </xsl:attribute>
                         <!-- tokenize @label to process key signatures -->
                         <xsl:for-each select="tokenize(@label,'\s+')">
                             <xsl:variable name="accid" select="substring(.,2,1)"/>
@@ -540,14 +534,14 @@
                         
                         <!-- generate section and put self in it -->
                         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id()"/>
-                            </xsl:attribute>
                             <!-- Set Section text as label -->
                             <xsl:attribute name="label">
                                 <xsl:value-of select="mei:anchoredText[@label=$sectionName]"/>
                             </xsl:attribute>
-                            
+                            <!-- add id of text element -->
+                            <xsl:attribute name="xml:id">
+                                <xsl:value-of select="mei:anchoredText[@label=$sectionName]/@xml:id"/>
+                            </xsl:attribute>
                             <!-- catch a preceding <scoreDef> -->
                             <xsl:if test="./preceding-sibling::*[1]/name() = 'scoreDef'">
                                 <xsl:apply-templates select="./preceding-sibling::*[1][name() = 'scoreDef']"/>
@@ -975,7 +969,7 @@
         <xsl:variable name="sourceLabel" select="normalize-space(//mei:anchoredText[@label='Source'])"/>
         <xsl:element name="source" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="xml:id">
-                <xsl:value-of select="generate-id(//mei:anchoredText[@label='Source'])"/>
+                <xsl:value-of select="//mei:anchoredText[@label='Source']/@xml:id"/>
             </xsl:attribute>
             <xsl:attribute name="label">
                 <xsl:value-of select="$sourceLabel"/>

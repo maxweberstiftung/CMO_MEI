@@ -24,7 +24,7 @@
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
-            <xsl:copy-of select="*"/>
+            <xsl:apply-templates select="@*|*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
                     <xsl:text>cmo_transform2cnm</xsl:text>
@@ -94,6 +94,16 @@
                     </xsl:attribute>
                 </xsl:otherwise>
             </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- add id to elements without id -->
+    <xsl:template match="*[not(@xml:id)]">
+        <xsl:copy>
+            <xsl:attribute name="xml:id">
+                <xsl:value-of select="generate-id()"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
     

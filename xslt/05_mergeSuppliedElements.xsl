@@ -14,9 +14,6 @@
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id(./*[1])"/>
-                            </xsl:attribute>
                             <xsl:apply-templates select="$grp/*"/>
                         </xsl:element>
                     </xsl:when>

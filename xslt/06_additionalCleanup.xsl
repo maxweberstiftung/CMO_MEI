@@ -18,7 +18,7 @@
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
         <xsl:copy>
-            <xsl:copy-of select="*"/>
+            <xsl:apply-templates select="@*|*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
                     <xsl:text>CMO_sibmei-cleanUp</xsl:text>
@@ -39,9 +39,6 @@
     <!-- add ID to key accidentals -->
     <xsl:template match="mei:keyAccid">
         <xsl:copy>
-            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                <xsl:value-of select="generate-id(./@loc)"/>
-            </xsl:attribute>
             <xsl:apply-templates select="@*"/>
         </xsl:copy>
     </xsl:template>

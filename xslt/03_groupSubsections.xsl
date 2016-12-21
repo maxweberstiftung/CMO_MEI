@@ -27,12 +27,13 @@
                         
                         <!-- generate section and put self in it -->
                         <xsl:element name="section" namespace="http://www.music-encoding.org/ns/mei">
-                            <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace">
-                                <xsl:value-of select="generate-id(mei:anchoredText[@label=$subsectionName])"/>
-                            </xsl:attribute>
                             <!-- Set Section text as label -->
                             <xsl:attribute name="label">
                                 <xsl:value-of select="mei:anchoredText[@label=$subsectionName]"/>
+                            </xsl:attribute>
+                            <!-- set text element id as section id -->
+                            <xsl:attribute name="xml:id">
+                                <xsl:value-of select="mei:anchoredText[@label=$subsectionName]/@xml:id"/>
                             </xsl:attribute>
                             
                             <!-- catch a preceding <scoreDef> -->
