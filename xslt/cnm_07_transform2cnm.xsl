@@ -27,7 +27,7 @@
             <xsl:apply-templates select="@*|*"/>
             <xsl:element name="application" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:attribute name="xml:id">
-                    <xsl:text>cmo_transform2cnm</xsl:text>
+                    <xsl:text>cmo_transform2cmn</xsl:text>
                 </xsl:attribute>
                 <xsl:attribute name="isodate">
                     <xsl:value-of select="current-dateTime()"/>
@@ -36,7 +36,7 @@
                     <xsl:text>xslt-script</xsl:text>
                 </xsl:attribute>
                 <xsl:element name="name" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:text>CMO transform Output to cnm</xsl:text>
+                    <xsl:text>CMO transform Output to cmn</xsl:text>
                 </xsl:element>
             </xsl:element>
         </xsl:copy>

@@ -7,7 +7,7 @@
     <!-- strip spaces -->
     <xsl:strip-space elements="mei:measure"/>
     
-    <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/annplaksin/CMO_MEI/master/'"/>
+    <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/maxweberstiftung/CMO_MEI/master/'"/>
     <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
     <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
     
