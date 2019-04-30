@@ -508,7 +508,17 @@
         <xsl:variable name="anchoredText" select="../mei:anchoredText[((@label='Mükerrer') or (@label='Grgnum')) and @startid = $dirReference]"/>
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
-            <xsl:value-of select="$anchoredText/text()"/>
+            <xsl:choose>
+                <xsl:when test="contains($anchoredText/text(),'[') and contains($anchoredText/text(),']')">
+                    <xsl:variable name="croppedText" select="substring-before(substring-after($anchoredText/text(),'['),']')"/>
+                    <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:value-of select="$croppedText"/>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$anchoredText/text()"/>
+                </xsl:otherwise>
+            </xsl:choose>
             <!--<xsl:copy-of select="$anchoredText"/>-->
             <xsl:apply-templates select="node()"/>
         </xsl:copy>

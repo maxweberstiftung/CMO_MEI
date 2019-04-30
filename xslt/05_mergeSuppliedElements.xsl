@@ -12,11 +12,17 @@
             <xsl:for-each-group select="*" group-adjacent="name() = 'supplied'">
                 <xsl:variable name="grp" select="current-group()"/>
                 <xsl:choose>
-                    <xsl:when test="current-grouping-key()">
+                    <!-- 
+                        Merge child nodes only when they are part of supplied (current-grouping-key() = true
+                        and when there is more than one element in $grp (because one only supplied don't need 
+                        to be merged). Therefor put the children of the group elements into a new supplied element.
+                    -->
+                    <xsl:when test="count($grp) &gt; 1 and current-grouping-key()">
                         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
                             <xsl:apply-templates select="$grp/*"/>
                         </xsl:element>
                     </xsl:when>
+                    <!-- In all other cases will $grp be processed -->
                     <xsl:otherwise>
                         <xsl:apply-templates select="$grp"/>
                     </xsl:otherwise>
