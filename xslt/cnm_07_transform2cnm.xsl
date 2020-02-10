@@ -13,10 +13,10 @@
     <!-- add schema to file -->
     <xsl:template match="/">
         <xsl:processing-instruction name="xml-model">
-            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"</xsl:text>
+            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v4.0.1/schemata/mei-CMN.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"</xsl:text>
         </xsl:processing-instruction>
         <xsl:processing-instruction name="xml-model">
-            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v3.0.0/schemata/mei-CMN.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"</xsl:text>>
+            <xsl:text>href="https://raw.githubusercontent.com/music-encoding/music-encoding/v4.0.1/schemata/mei-CMN.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"</xsl:text>>
         </xsl:processing-instruction>
         <xsl:apply-templates/>
     </xsl:template>
