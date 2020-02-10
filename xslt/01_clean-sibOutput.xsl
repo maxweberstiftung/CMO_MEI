@@ -4,7 +4,7 @@
     exclude-result-prefixes="xs"
     version="2.0">
     
-    <!-- cleaning up the standard sibmei output and create a fully compatible MEI 3.0 version -->
+    <!-- cleaning up the standard sibmei output and create a fully compatible MEI 4.0.1 version -->
     
     <!-- strip spaces -->
     <!--<xsl:strip-space elements="mei:staffDef mei:scoreDef mei:measure mei:section"/>-->
@@ -181,15 +181,13 @@
     <xsl:template match="mei:anchoredText[@label='Incipit']"/>
     
     <!-- clean notes -->
-    <xsl:template match="mei:note/@dur.ges"/>
     <xsl:template match="mei:note/@oct.ges"/>
     <xsl:template match="mei:note/@pnum"/>
     
-    <!-- clean rests -->
-    <xsl:template match="mei:rest/@dur.ges"/>
+    <!-- remove midi-related attributes from notes, rests and chords -->
+    <xsl:template match="@dur.ppq"/>
+    <xsl:template match="@tstamp.real"/>
     
-    <!-- clean chords -->
-    <xsl:template match="mei:chord/@dur.ges"/>
     
     <!-- clean scoreDef -->
     <xsl:template match="mei:scoreDef/@lyric.name"/>
