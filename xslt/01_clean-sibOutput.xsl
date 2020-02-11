@@ -93,7 +93,7 @@
     </xsl:template>
     
     <!-- Source information -->
-    <xsl:template match="mei:fileDesc">
+    <!--<xsl:template match="mei:fileDesc">
         <xsl:copy>
             <xsl:apply-templates select="@*|*"/>
             <xsl:element name="sourceDesc" namespace="http://www.music-encoding.org/ns/mei">
@@ -102,7 +102,7 @@
                 </xsl:if>
             </xsl:element>
         </xsl:copy>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- Composer and Lyricist -->
     <xsl:template match="//mei:fileDesc/mei:titleStmt/mei:respStmt/mei:persName[@xml:id]" name="composer">
@@ -151,7 +151,7 @@
     <xsl:template match="mei:fileDesc//mei:lyricist"/>
     
     <!-- Editor -->
-    <xsl:template match="//mei:fileDesc/mei:titleStmt/mei:respStmt">
+    <!--<xsl:template match="//mei:fileDesc/mei:titleStmt/mei:respStmt">
         <xsl:copy>
             <xsl:apply-templates select="@xml:id"/>
             <xsl:apply-templates select="node()"/>
@@ -165,7 +165,7 @@
                 <xsl:value-of select="//mei:anchoredText[@label='Editor Initials']/text()"/>
             </xsl:element>
         </xsl:copy>
-    </xsl:template>
+    </xsl:template>-->
     <xsl:template match="mei:anchoredText[@label='Editor Initials']"/>
     
     <!-- 
@@ -240,7 +240,7 @@
                     <!-- process key signatures -->
                     <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
                         <!-- tokenize @label to process key signatures -->
-                        <xsl:for-each select="tokenize(@label,'\s+')">
+                        <xsl:for-each select="tokenize(substring(@label,2,@label/string-length()-2),'\s+')">
                             <xsl:variable name="accid" select="substring(.,2,1)"/>
                             <xsl:variable name="loc" select="substring(.,1,1)"/>
                             <xsl:variable name="accidGlyph">
