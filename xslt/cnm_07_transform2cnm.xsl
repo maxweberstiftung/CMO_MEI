@@ -142,7 +142,7 @@
     <xsl:template match="mei:dir[mei:symbol/@type='wholeNote']"/>
     
     <!-- surround notes or chords with slashed stems with <bTrem> -->
-    <xsl:template match="*[(name() = 'note' or name() = 'chord') and @stem.mod=$tremStem]">
+    <!--<xsl:template match="*[(name() = 'note' or name() = 'chord') and @stem.mod=$tremStem]">
         <xsl:element name="bTrem" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="xml:id">
                 <xsl:value-of select="generate-id()"/>
@@ -151,7 +151,7 @@
                 <xsl:apply-templates select="@*|*"/>
             </xsl:copy>
         </xsl:element>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">
