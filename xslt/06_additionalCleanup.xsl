@@ -12,8 +12,8 @@
     <xsl:variable name="cmo_symbols" select="document(resolve-uri($cmo_symbolTable,$baseURI2symbols))"/>
     
     <!-- Variables for hampartsum groups -->
-    <xsl:variable name="group_start" select="'Hampartsum group start'"/>
-    <xsl:variable name="group_end" select="'Hampartsum group end'"/>
+    <xsl:variable name="group_start" select="'U+E201'"/>
+    <xsl:variable name="group_end" select="'U+E203'"/>
     
     <!-- adding application info -->
     <xsl:template match="mei:appInfo">
@@ -36,7 +36,34 @@
         </xsl:copy>
     </xsl:template>
     
+    <!-- convert bracket symbols into <bracketSpan> -->
+    <xsl:template match="mei:dir[mei:symbol/@glyph.num=$group_start]">
+        <xsl:variable name="followingEnd" select="following-sibling::mei:dir[mei:symbol/@glyph.num=$group_end][1]"/>
+        
+        <xsl:element name="bracketSpan" namespace="http://www.music-encoding.org/ns/mei">
+            <xsl:attribute name="xml:id" select="@xml:id"/>
+            <xsl:attribute name="func" select="'hampartsum_group'"/>
+            <xsl:attribute name="startid" select="@startid"/>
+            <xsl:attribute name="tstamp" select="@tstamp"/>
+            <xsl:if test="@vo">
+                <xsl:attribute name="startvo" select="@vo"/>    
+            </xsl:if>
+            <xsl:if test="@ho">
+                <xsl:attribute name="startho" select="@ho"/>    
+            </xsl:if>
+            <xsl:attribute name="endid" select="$followingEnd/@startid"/>
+            <xsl:attribute name="tstamp2" select="$followingEnd/@tstamp"/>
+            <xsl:if test="$followingEnd/@vo">
+                <xsl:attribute name="endvo" select="$followingEnd/@vo"/>
+            </xsl:if>
+            <xsl:if test="$followingEnd/@ho">
+                <xsl:attribute name="endho" select="$followingEnd/@ho"/>
+            </xsl:if>
+        </xsl:element>
+    </xsl:template>
     
+    <!-- remove end bracket -->
+    <xsl:template match="mei:dir[mei:symbol/@glyph.num=$group_end]"/>
     
     <!-- add id to accidentals without id -->
     <xsl:template match="*[not(@xml:id)]">
