@@ -270,7 +270,7 @@
                                 <xsl:attribute name="loc">
                                     <xsl:value-of select="$loc"/>
                                 </xsl:attribute>
-                                <xsl:attribute name="glyphnum">
+                                <xsl:attribute name="glyph.num">
                                     <xsl:value-of select="$accidGlyph"/>
                                 </xsl:attribute>
                                 <xsl:attribute name="oct">
@@ -298,7 +298,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'B'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E445'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -308,7 +308,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'m'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E441'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -318,7 +318,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'bm'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E440'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -328,7 +328,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'BM'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E447'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -338,7 +338,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'b'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E442'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -348,7 +348,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'k'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E443'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -358,7 +358,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'M'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E446'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>
@@ -368,7 +368,7 @@
                     <xsl:attribute name="accid">
                         <xsl:value-of select="'K'"/>
                     </xsl:attribute>
-                    <xsl:attribute name="glyphnum">
+                    <xsl:attribute name="glyph.num">
                         <xsl:value-of select="'U+E444'"/>
                     </xsl:attribute>
                     <xsl:apply-templates select="@func"/>

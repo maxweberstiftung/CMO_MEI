@@ -104,7 +104,7 @@
     </xsl:template>
     
     <!-- add @altsym to every symbol without @glyphnum -->
-    <xsl:template match="mei:symbol[not(@glyphnum)]">
+    <xsl:template match="mei:symbol[not(@glyph.num)]">
         <xsl:copy>
             <xsl:choose>
                 <xsl:when test="@type='Division'">
@@ -196,9 +196,6 @@
                     <xsl:apply-templates select="@meter.count"/>
                 </xsl:otherwise>
             </xsl:choose>
-            <xsl:attribute name="meter.rend">
-                <xsl:value-of select="'num'"/>
-            </xsl:attribute>
             <xsl:apply-templates select="*"/>
         </xsl:copy>
     </xsl:template>
