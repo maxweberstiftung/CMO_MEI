@@ -130,6 +130,14 @@
         </xsl:choose>
     </xsl:template>
     
+    <!-- add @glyph.auth to every element with @glyph.num -->
+    <xsl:template match="*[@glyph.num]">
+        <xsl:copy>
+            <xsl:attribute name="glyph.auth" select="'smufl'"/>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+    
     <!-- add @altsym to every symbol without @glyphnum -->
     <xsl:template match="mei:symbol[not(@glyph.num)]">
         <xsl:copy>
