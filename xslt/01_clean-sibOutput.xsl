@@ -471,30 +471,24 @@
     <xsl:template match="mei:pb"/>
     
     <!-- correct linking of start group symbols in case of grace notes -->
-    <xsl:template match="mei:dir[mei:symbol/@label=$group_start]">
+    <xsl:template match="mei:dir[mei:symbol/@glyph.num=$group_start]">
         <xsl:variable name="dirRef" select="substring(@startid,2)"/>
         <xsl:copy>
-            <xsl:apply-templates select="@*[name() != 'startid']"/>
+            <xsl:apply-templates select="@* except (@startid)"/>
             <xsl:choose>
                 <xsl:when test="//*[@xml:id=$dirRef]/preceding::mei:note[1]/@grace">
                     <xsl:variable name="graceNote" select="//*[@xml:id=$dirRef]/preceding::mei:note[1]"/>
-                    <xsl:attribute name="startid">
-                        <xsl:value-of select="concat('#',$graceNote/@xml:id)"/>
-                    </xsl:attribute>
+                    <xsl:attribute name="startid" select="concat('#',$graceNote/@xml:id)"/>
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
                 <xsl:when test="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1]/mei:note/@grace">
                     <xsl:variable name="graceBeam" select="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1][mei:note/@grace]"/>
-                    <xsl:attribute name="startid">
-                        <xsl:value-of select="concat('#',$graceBeam/mei:note[1]/@xml:id)"/>
-                    </xsl:attribute>
+                    <xsl:attribute name="startid" select="concat('#',$graceBeam/mei:note[1]/@xml:id)"/>
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
                 <xsl:when test="preceding-sibling::mei:dir[//@label=$group_end][1]/@startid = ./@startid">
                     <xsl:variable name="followingGrace" select="//*[@xml:id=$dirRef]/following::mei:note[1]"/>
-                    <xsl:attribute name="startid">
-                        <xsl:value-of select="concat('#',$followingGrace/@xml:id)"/>
-                    </xsl:attribute>
+                    <xsl:attribute name="startid" select="concat('#',$followingGrace/@xml:id)"/>
                     <xsl:apply-templates select="node()"/>
                 </xsl:when>
                 <xsl:otherwise>
