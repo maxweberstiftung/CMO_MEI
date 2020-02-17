@@ -88,7 +88,9 @@
                 <xsl:otherwise>
                     <xsl:variable name="accid" select="string(./@accid.ges)"/>
                     <xsl:variable name="parentNote" select="parent::mei:note"/>
-                    <xsl:variable name="precedingAccid" select="ancestor::mei:layer//mei:note[@pname = $parentNote/@pname and @oct = $parentNote/@oct]/mei:accid[@accid = $accid and not(@func='caution')]"/>
+                    <xsl:variable name="measureNum" select="ancestor::mei:measure/@n"/>
+                    <xsl:variable name="precedingAccid" select="preceding::mei:accid[parent::mei:note/@pname = $parentNote/@pname and  
+                        parent::mei:note/@oct = $parentNote/@oct and @accid=$accid and ancestor::mei:measure/@n = $measureNum][1]"/>
                     <xsl:attribute name="corresp">
                         <xsl:value-of select="concat('#',$precedingAccid/@xml:id)"/>
                     </xsl:attribute>
