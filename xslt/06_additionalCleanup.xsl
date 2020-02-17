@@ -5,7 +5,7 @@
     version="2.0">
     
     <!-- strip spaces -->
-    <xsl:strip-space elements="mei:measure"/>
+    <xsl:strip-space elements="mei:measure mei:note"/>
     
     <xsl:variable name="baseURI2symbols" select="'https://raw.githubusercontent.com/maxweberstiftung/CMO_MEI/master/'"/>
     <xsl:variable name="cmo_symbolTable" select="'cmo_symbolTable.xml'"/>
