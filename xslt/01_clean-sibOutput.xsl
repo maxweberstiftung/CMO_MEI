@@ -862,7 +862,7 @@
                     </xsl:when>
                 </xsl:choose>
             </xsl:attribute>
-            <xsl:apply-templates select="@* except (@pname, @oct)"/>
+            <xsl:apply-templates select="@*"/>
             <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
