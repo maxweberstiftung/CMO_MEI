@@ -2,7 +2,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mei="http://www.music-encoding.org/ns/mei"
     exclude-result-prefixes="xs"
-    version="2.0">
+    version="3.0">
+    
+    <!-- copy every node in file -->
+    <xsl:mode on-no-match="shallow-copy"/>
+    
     
     <!-- cleaning up the standard sibmei output and create a fully compatible MEI 4.0.1 version -->
     
@@ -868,13 +872,6 @@
             </xsl:attribute>
             <xsl:apply-templates select="@* except (@pname, @oct)"/>
             <xsl:apply-templates select="node()"/>
-        </xsl:copy>
-    </xsl:template>
-    
-    <!-- copy every node in file -->  
-    <xsl:template match="@*|node()">
-        <xsl:copy>
-            <xsl:apply-templates select="@*|node()" />
         </xsl:copy>
     </xsl:template>
     
