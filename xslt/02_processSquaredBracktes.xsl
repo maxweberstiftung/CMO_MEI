@@ -15,8 +15,57 @@
     
     <!-- processing bracket symbols -->
     
+   
+    
+    <!-- processing bracket lines -->
+    <xsl:template match="mei:measure">
+        <xsl:variable name="listOfTypes" select="tokenize(@type,' ')"/>
+        
+        <xsl:variable name="types">
+            <xsl:choose>
+                <!-- mark start and end measures of insertions -->
+                <xsl:when test="$listOfTypes[2]">
+                    <xsl:choose>
+                        <xsl:when test="$listOfTypes[2]='suppStart' or $listOfTypes[2]='suppEnd'">
+                            <xsl:value-of select="concat($listOfTypes[1],' ',$suppliedSubtype)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- if suppBeforeStart or suppAfterEnd the current measure is not supplied -->
+                            <xsl:value-of select="$listOfTypes[1]"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- if first preceeding measure with supp is start and first following measure with supp is end, 
+                    then this measure is supplied as well -->
+                    <xsl:variable name="next_preceding" select="preceding::node()[name()='measure'][contains(@type,'supp')][1]"/>
+                    <xsl:variable name="next_following" select="following::node()[name()='measure'][contains(@type,'supp')][1]"/>
+                    <xsl:choose>
+                        <xsl:when test="contains($next_preceding/@type, 'Start') and contains($next_following/@type, 'End')">
+                            <xsl:value-of select="concat($listOfTypes[1],' ',$suppliedSubtype)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$listOfTypes[1]"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+            
+        <xsl:copy>
+            <xsl:attribute name="type">
+                <xsl:value-of select="$types"/>
+            </xsl:attribute>
+            <xsl:apply-templates select="@* except (@type)"/>
+            <xsl:apply-templates select="./node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <!-- suppress vertical bracket lines -->
+    <xsl:template match="mei:line[starts-with(@type,'bracket vertical')]"/>
+    
     <!-- changing start and end positions of editorial additions into colored notes -->
-    <xsl:template match="*[name() = $eventElements][@label]">
+    <!--<xsl:template match="*[name() = $eventElements][@label]">
         <xsl:choose>
             <xsl:when test="@label = 'suppStart' or @label = 'suppEnd' or @label = 'suppStartEnd'">
                 <xsl:copy>
@@ -34,16 +83,14 @@
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- suppress marking labels -->
-    <xsl:template match="@label[. = 'suppStart' or . = 'suppEnd' or . = 'suppStartEnd']"/>
+    <!--<xsl:template match="@label[. = 'suppStart' or . = 'suppEnd' or . = 'suppStartEnd']"/>-->
     
-    <!-- suppress vertical bracket lines -->
-    <xsl:template match="mei:line[@type='bracket' and @subtype='vertical']"/>
     
     <!-- coloring every element between a start and an end point of an editorial addition -->
-    <xsl:template match="*[name() = $eventElements][not(@label) and preceding::node()/@label = 'suppStart' and following::node()/@label = 'suppEnd']">
+    <!--<xsl:template match="*[name() = $eventElements][not(@label) and preceding::node()/@label = 'suppStart' and following::node()/@label = 'suppEnd']">
         <xsl:choose>
             <xsl:when test="preceding::node()[@label][1]/@label = 'suppStart' and following::node()[@label][1]/@label = 'suppEnd'">
                 <xsl:copy>
@@ -61,10 +108,10 @@
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- coloring beam with first note starting an insertion or last note ending an insertion -->
-    <xsl:template match="*[(name() = $eventLikeElements) and count(child::*) = count(child::*[name() = $eventLikeElements or name() = $eventElements])]">
+    <!--<xsl:template match="*[(name() = $eventLikeElements) and count(child::*) = count(child::*[name() = $eventLikeElements or name() = $eventElements])]">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
             <xsl:if test="child::node()[1]/@label = 'suppStart' or child::node()[last()]/@label = 'suppEnd'">
@@ -74,57 +121,7 @@
             </xsl:if>
             <xsl:apply-templates select="./*"/>
         </xsl:copy>
-    </xsl:template>
-    
-    <!-- processing bracket lines -->
-    <xsl:template match="mei:measure">
-        <xsl:choose>
-            <!-- mark start and end measures of insertions -->
-            <xsl:when test="@subtype = 'suppStart' or @subtype = 'suppEnd'">
-                <xsl:copy>
-                    <xsl:apply-templates select="@*"/>
-                        <xsl:attribute name="subtype">
-                           <xsl:value-of select="$suppliedSubtype"/>
-                        </xsl:attribute>
-                    <xsl:apply-templates select="./node()"/>
-                </xsl:copy>
-            </xsl:when>
-            <!-- get measures without subtype -->
-            <xsl:when test=".[not(@subtype) and preceding::node()[name()='measure']/@subtype and following::node()[name()='measure']/@subtype]">
-                <xsl:variable name="next_preceding" select="preceding::node()[name()='measure'][@subtype][1]"/>
-                <xsl:variable name="next_following" select="following::node()[name()='measure'][@subtype][1]"/>
-                <xsl:choose>
-                    <!-- mark every measure between suppStart/suppBeforeStart and suppEnd/suppAfterEnd -->
-                    <xsl:when test="($next_preceding/@subtype = 'suppBeforeStart' or $next_preceding/@subtype = 'suppStart') and ($next_following/@subtype = 'suppEnd' or $next_following/@subtype = 'suppAfterEnd')">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:attribute name="subtype">
-                                <xsl:value-of select="$suppliedSubtype"/>
-                            </xsl:attribute>
-                            <xsl:apply-templates select="./node()"/>
-                        </xsl:copy>
-                    </xsl:when>
-                    <!-- don't mark other measures -->
-                    <xsl:otherwise>
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*"/>
-                            <xsl:apply-templates select="./node()"/>
-                        </xsl:copy>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:when>
-            <!-- don't mark any other measure -->
-            <xsl:otherwise>
-                <xsl:copy>
-                    <xsl:apply-templates select="@*"/>
-                    <xsl:apply-templates select="./node()"/>
-                </xsl:copy>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-    
-    <!-- suppress marking subtypes -->
-    <xsl:template match="@subtype[parent::mei:measure]"/>
+    </xsl:template>-->
     
     <!-- copy every node in file -->  
     <xsl:template match="@*|node()">

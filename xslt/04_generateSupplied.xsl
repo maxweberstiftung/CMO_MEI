@@ -8,7 +8,7 @@
     <xsl:variable name="suppliedSubtype" select="'supplied'"/>
     
     <!-- catching colored notes and transform them into <supplied> elements -->
-    <xsl:template match="*[(./mei:note[@color=$suppliedColor]) and (count(./mei:note[@color=$suppliedColor]) &lt; count(./*))]">
+    <!--<xsl:template match="*[(./mei:note[@color=$suppliedColor]) and (count(./mei:note[@color=$suppliedColor]) &lt; count(./*))]">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
             <xsl:for-each-group select="*" group-adjacent="@color=$suppliedColor">
@@ -34,13 +34,13 @@
                 <xsl:apply-templates select="./*"/>
             </xsl:copy>
         </xsl:element>
-    </xsl:template>
+    </xsl:template>-->
     
     <!-- suppress color -->
     <xsl:template match="@color[$suppliedColor]"/>
     
     <!-- put whole measures into supplied elements if not a whole section is affected -->
-    <xsl:template match="*[(./mei:measure[@subtype=$suppliedSubtype]) and (count(./mei:measure[@subtype=$suppliedSubtype]) &lt; count(./*))]">
+    <xsl:template match="*[(./mei:measure[contains(@type,$suppliedSubtype)]) and (count(./mei:measure[contains(@type,$suppliedSubtype)]) &lt; count(./*))]">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
             <xsl:for-each-group select="*" group-adjacent="@subtype=$suppliedSubtype">
@@ -60,7 +60,7 @@
     </xsl:template>
     
     <!-- put whole section into supplied element if every measure of a section is affected -->
-    <xsl:template match="*[(./mei:measure[@subtype=$suppliedSubtype]) and (count(./mei:measure[@subtype=$suppliedSubtype]) = count(./*))]">
+    <xsl:template match="*[(./mei:measure[contains(@type,$suppliedSubtype)]) and (count(./mei:measure[contains(@type,$suppliedSubtype)]) = count(./*))]">
         <xsl:element name="supplied" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:copy>
                 <xsl:apply-templates select="@*|node()"/>
