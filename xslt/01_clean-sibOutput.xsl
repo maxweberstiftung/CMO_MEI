@@ -508,25 +508,24 @@
         <xsl:copy>
             <xsl:apply-templates select="@* except (@startid)"/>
             <xsl:choose>
-                <xsl:when test="//*[@xml:id=$dirRef]/preceding::mei:note[1]/@grace">
-                    <xsl:variable name="graceNote" select="//*[@xml:id=$dirRef]/preceding::mei:note[1]"/>
-                    <xsl:attribute name="startid" select="concat('#',$graceNote/@xml:id)"/>
-                    <xsl:apply-templates select="node()"/>
-                </xsl:when>
-                <xsl:when test="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1]/mei:note/@grace">
-                    <xsl:variable name="graceBeam" select="//*[@xml:id=$dirRef]/preceding-sibling::mei:beam[1][mei:note/@grace]"/>
-                    <xsl:attribute name="startid" select="concat('#',$graceBeam/mei:note[1]/@xml:id)"/>
-                    <xsl:apply-templates select="node()"/>
-                </xsl:when>
-                <xsl:when test="preceding-sibling::mei:dir[//@label=$group_end][1]/@startid = ./@startid">
-                    <xsl:variable name="followingGrace" select="//*[@xml:id=$dirRef]/following::mei:note[1]"/>
-                    <xsl:attribute name="startid" select="concat('#',$followingGrace/@xml:id)"/>
-                    <xsl:apply-templates select="node()"/>
+                <xsl:when test="//*[@xml:id=$dirRef]/preceding::*[1][@grace]">
+                    <xsl:variable name="firstPrecedingWithGrace" select="//*[@xml:id=$dirRef]/preceding::*[1][@grace]"/>
+                    <xsl:choose>
+                        <xsl:when test="$firstPrecedingWithGrace/parent::*/local-name()='beam' and count($firstPrecedingWithGrace/preceding-sibling::*/@grace)=count($firstPrecedingWithGrace/preceding-sibling::*)">
+                            <!-- get first note in preceding beams that consist entirely of grace notes -->
+                            <xsl:attribute name="startid" select="concat('#',$firstPrecedingWithGrace/preceding-sibling::mei:note[position()=last()]/@xml:id)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- get preceding grace note, chord or graceGrp -->
+                            <xsl:attribute name="startid" select="concat('#',$firstPrecedingWithGrace/@xml:id)"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:apply-templates select="@startid|node()"/>
+                    <xsl:apply-templates select="@startid"/>
                 </xsl:otherwise>
             </xsl:choose>
+            <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
     
