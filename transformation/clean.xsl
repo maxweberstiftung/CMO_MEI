@@ -9,10 +9,13 @@
     <!-- copy every node in file -->
     <xsl:mode on-no-match="shallow-copy"/>
     
-    <xsl:strip-space elements="mei:note"/>
+    <!--<xsl:strip-space elements="mei:note mei:staffDef"/>-->
     
     <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
-        <desc>Removes dispensable attributes, like midi-related information and automatically created anchored text elements.</desc>
+        <desc>
+            Removes dispensable attributes, like midi-related information and automatically created anchored text elements.
+            Fixes export of verse numbers.
+        </desc>
     </doc>
     
     <!-- clean notes -->
@@ -35,6 +38,11 @@
     </xsldoc:doc>
     <xsl:template match="@tstamp.real"/>
     
+    <!-- misc -->
+    <xsldoc:doc>
+        <xsldoc:desc>Delete added duration annot within score</xsldoc:desc>
+    </xsldoc:doc>
+    <xsl:template match="mei:annot[@type='duration']"/>
     
     <!-- clean scoreDef -->
     <xsldoc:doc>
