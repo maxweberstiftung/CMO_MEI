@@ -9,6 +9,8 @@
     <!-- copy every node in file -->
     <xsl:mode on-no-match="shallow-copy"/>
     
+    <xsl:strip-space elements="mei:note"/>
+    
     <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
         <desc>Removes dispensable attributes, like midi-related information and automatically created anchored text elements.</desc>
     </doc>
@@ -102,7 +104,7 @@
     </xsldoc:doc>
     <xsl:template match="mei:staffDef/comment()"/>
     
-    
+    <!-- Clean Lyrics -->
     <xsldoc:doc>
         <xsldoc:desc>Delete verses with empty syllables </xsldoc:desc>
     </xsldoc:doc>
@@ -112,5 +114,48 @@
         <xsldoc:desc>Delete empty syllables </xsldoc:desc>
     </xsldoc:doc>
     <xsl:template match="mei:syl[not(text())]"/>
+    
+    <xsldoc:doc>
+        <xsldoc:desc>
+            Correct encoding of verse numbers. After export, they are individual verse attributes, but this is obviously wrong.
+            Put verse numbers in labels inside verse instead.
+        </xsldoc:desc>
+    </xsldoc:doc>
+    <xsl:template match="mei:note[mei:verse]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()[name() != 'verse']"/>
+            <!-- Verse number verses can be detected by doublicate @n attributes -->
+            <xsl:variable name="verses" select="mei:verse"/>
+            <xsl:for-each select="distinct-values(mei:verse/@n)">
+                <xsl:variable name="num" select="." as="xs:integer"/>
+                <xsl:variable name="currentVerses" select="$verses[@n=$num]"/>
+                <xsl:choose>
+                    <!-- try to merge verse numbers and first syllables -->
+                    <xsl:when test="count($currentVerses)=2">
+                        <!-- check which one is the verse number -->
+                        <xsl:variable name="verseNum" select="$currentVerses[matches(mei:syl,'\d.')]"/>
+                        <xsl:variable name="verseSyl" select="$currentVerses[@xml:id!=$verseNum/@xml:id]"/>
+                        
+                        <xsl:element name="verse" namespace="http://www.music-encoding.org/ns/mei">
+                            <xsl:apply-templates select="$verseSyl/@*"/>
+                            <xsl:element name="label" namespace="http://www.music-encoding.org/ns/mei">
+                                <xsl:attribute name="xml:id">
+                                    <xsl:value-of select="$verseNum/mei:syl/@xml:id"/>
+                                </xsl:attribute>
+                                <xsl:value-of select="$verseNum/mei:syl"/>
+                            </xsl:element>
+                            <xsl:element name="syl" namespace="http://www.music-encoding.org/ns/mei">
+                                <xsl:apply-templates select="$verseSyl/mei:syl/@*"/>
+                                <xsl:value-of select="$verseSyl/mei:syl"/>
+                            </xsl:element>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="$currentVerses"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
+        </xsl:copy>
+    </xsl:template>
     
 </xsl:stylesheet>
