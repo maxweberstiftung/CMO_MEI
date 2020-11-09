@@ -12,4 +12,17 @@
     <xsldoc:doc>
         <xsldoc:desc>Contains sanity checks for sibmei output.</xsldoc:desc>
     </xsldoc:doc>
+    
+    <xsldoc:doc>
+        <xsldoc:desc>Checks if there is only one vertical bracket per measure.</xsldoc:desc>
+    </xsldoc:doc>
+    <xsl:template match="/">
+        <xsl:if test="//mei:measure[count(mei:line[starts-with(@type,'bracket vertical')]) > 1]">
+            <xsl:variable name="wrongMeasure" select="//mei:measure[count(mei:line[starts-with(@type,'bracket vertical')]) > 1]"/>
+            <xsl:value-of select="error(QName('http://www.corpus-musicae-ottomanicae.de/err', 'cmo:error'),concat('There is more than one vertical bracket line in measure ', $wrongMeasure/@n))"/>
+        </xsl:if>
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
 </xsl:stylesheet>
