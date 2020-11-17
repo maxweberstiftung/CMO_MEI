@@ -21,12 +21,45 @@
             Corrects accidental values for written and gestural accidentals.
         </xsldoc:desc>
     </xsldoc:doc>
-    <xsl:template match="mei:accid"></xsl:template>
+    <xsl:template match="mei:accid">
+        <xsl:copy>
+            <xsl:apply-templates select="@xml:id"/>
+            <!-- analyze the role of @func -->
+            <xsl:if test="@accid">
+                <!-- change to correct AEU value -->
+                <xsl:attribute name="accid">
+                    <xsl:call-template name="sibAccid2AEUaccid">
+                        <xsl:with-param name="accid" select="@accid"/>
+                    </xsl:call-template>
+                </xsl:attribute>
+                <!-- 
+                    In the case of a <accid accid="n" func="caution" />, this should not be a cautionary accidental
+                    We need to look for notes with the same pitch in the measure to add gestural accidentals!!! 
+                -->
+                <xsl:if test="@accid='n' and @func='caution'">
+                    <!-- Start a template -->
+                    <xsl:attribute name="label">
+                        <xsl:value-of select="'waaah'"/>
+                    </xsl:attribute>
+                </xsl:if>
+            </xsl:if>
+            <xsl:if test="@accid.ges">
+                <!-- change to correct AEU value -->
+                <!-- AEU accidentals aren't yet part of data.ACCIDENTAL.GESTURAL, must be added there; until then, this is not valid -->
+                <xsl:attribute name="accid.ges">
+                    <xsl:call-template name="sibAccid2AEUaccid">
+                        <xsl:with-param name="accid" select="@accid.ges"/>
+                    </xsl:call-template>
+                </xsl:attribute>
+            </xsl:if>
+            <!-- keep accids in parentheses as parentheses, supplied or editorial? -->
+        </xsl:copy>
+    </xsl:template>
     
     <xsldoc:doc>
         <xsldoc:desc>
             Modifies the staffDef of the first staff (usually the music staff, while the second staff contains the usul pattern).
-            
+            Adds a keySignature according to staffDef/label, isntrument name in Sibelius.
         </xsldoc:desc>
     </xsldoc:doc>
     <xsl:template match="mei:staffDef[@n='1']">
@@ -73,13 +106,12 @@
                             </xsl:variable>
                             
                             <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
-                                <xsl:attribute name="xml:id">
-                                    <!-- generate ID -->
-                                </xsl:attribute>
+                                <!-- because a new element is generated, we still need to add a xml:id, but later -->
+                                <!-- Note: generate-id() doesn't work here because our current scope isn't a node but a string -->
                                 <xsl:attribute name="loc">
                                     <xsl:value-of select="$loc"/>
                                 </xsl:attribute>
-                                <xsl:attribute name="glyph.num">
+                                <xsl:attribute name="accid">
                                     <xsl:value-of select="$accidVal"/>
                                 </xsl:attribute>
                                 <xsl:attribute name="oct">
@@ -103,39 +135,39 @@
     <xsl:template name="sibAccid2AEUaccid">
         <xsl:param name="accid"/>
         <xsl:choose>
-            <xsl:when test="@accid = 's'">
+            <xsl:when test="$accid = 's'">
                 <!-- Bakiye sharp -->
                 <xsl:value-of select="'bs'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'f'">
+            <xsl:when test="$accid = 'f'">
                 <!-- Küçük mücenneb (flat) -->
                 <xsl:value-of select="'kmf'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'ff'">
+            <xsl:when test="$accid = 'ff'">
                 <!-- Büyük mücenneb (flat) -->
                 <xsl:value-of select="'bmf'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'x'">
+            <xsl:when test="$accid = 'x'">
                 <!-- Büyük mücenneb (sharp) -->
                 <xsl:value-of select="'bms'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'fd'">
+            <xsl:when test="$accid = 'fd'">
                 <!-- Bakiye (flat) -->
                 <xsl:value-of select="'bf'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'fu'">
+            <xsl:when test="$accid = 'fu'">
                 <!-- Koma (flat) -->
                 <xsl:value-of select="'kf'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'su'">
+            <xsl:when test="$accid = 'su'">
                 <!-- Küçük mücenneb (sharp) -->
                 <xsl:value-of select="'kms'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'sd'">
+            <xsl:when test="$accid = 'sd'">
                 <!-- Koma (sharp) -->
                 <xsl:value-of select="'ks'"/>
             </xsl:when>
-            <xsl:when test="@accid = 'n'">
+            <xsl:when test="$accid = 'n'">
                 <!-- n is always n, if it's accig.ges or a real accid, must be determined by @func -->
                 <xsl:value-of select="'n'"/>
             </xsl:when>
@@ -144,6 +176,22 @@
                 <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template name="findGesNs">
+        <xsl:param name="measureN"/>
+        <xsl:param name="accidNnote"/>
+        
+        <xsl:for-each select="//mei:measure[@n=$measureN]/mei:staff[@n='1']/mei:layer/descendant::mei:note">
+            <xsl:copy>
+                <xsl:apply-templates select="@*|node()"/>
+                <xsl:element name="accid" namespace="http://www.music-encoding.org/ns/mei">
+                    <xsl:attribute name="accid.ges">
+                        <xsl:value-of select="'n'"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:copy>
+        </xsl:for-each>
     </xsl:template>
     
     <xsldoc:doc>
