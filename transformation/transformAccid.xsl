@@ -18,6 +18,40 @@
     
     <xsldoc:doc>
         <xsldoc:desc>
+            Iterates through each note in staff 1 and copies the note.
+            If the note has a cautionary accidental on the same pitch and no accid itself, it adds a gestural natrual.
+            Variables:
+                * measureN: Number of current measure
+                * naturalNote: Note element that contains a cautionary natural.
+        </xsldoc:desc>
+    </xsldoc:doc>
+    <xsl:template match="mei:note[ancestor::mei:staff/@n='1']">
+        <xsl:variable name="measureN" select="ancestor::mei:measure/@n"/>
+        <xsl:variable name="naturalNote" 
+            select="//mei:measure[@n=$measureN]/mei:staff[@n='1']/mei:layer//mei:note[mei:accid[@accid='n' and @func='caution']]"/>
+        
+        <xsl:choose>
+            <xsl:when test=".[preceding::mei:note[@xml:id=$naturalNote/@xml:id]] and
+                ./@pname = $naturalNote/@pname and ./@oct = $naturalNote/@oct and not(mei:accid)">
+                <xsl:copy>
+                    <xsl:apply-templates select="@*|node()"/>
+                    <xsl:element name="accid" namespace="http://www.music-encoding.org/ns/mei">
+                        <xsl:attribute name="accid.ges">
+                            <xsl:value-of select="'n'"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                </xsl:copy>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@*|node()"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsldoc:doc>
+        <xsldoc:desc>
             Corrects accidental values for written and gestural accidentals.
         </xsldoc:desc>
     </xsldoc:doc>
@@ -35,11 +69,12 @@
                 <!-- 
                     In the case of a <accid accid="n" func="caution" />, this should not be a cautionary accidental
                     We need to look for notes with the same pitch in the measure to add gestural accidentals!!! 
+                    This is done via the template matching mei:note[ancestor::mei:staff/@n='1']...
                 -->
                 <xsl:if test="@accid='n' and @func='caution'">
                     <!-- Start a template -->
-                    <xsl:attribute name="label">
-                        <xsl:value-of select="'waaah'"/>
+                    <xsl:attribute name="accid">
+                        <xsl:value-of select="'n'"/>
                     </xsl:attribute>
                 </xsl:if>
             </xsl:if>
@@ -176,22 +211,6 @@
                 <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
-    
-    <xsl:template name="findGesNs">
-        <xsl:param name="measureN"/>
-        <xsl:param name="accidNnote"/>
-        
-        <xsl:for-each select="//mei:measure[@n=$measureN]/mei:staff[@n='1']/mei:layer/descendant::mei:note">
-            <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
-                <xsl:element name="accid" namespace="http://www.music-encoding.org/ns/mei">
-                    <xsl:attribute name="accid.ges">
-                        <xsl:value-of select="'n'"/>
-                    </xsl:attribute>
-                </xsl:element>
-            </xsl:copy>
-        </xsl:for-each>
     </xsl:template>
     
     <xsldoc:doc>
