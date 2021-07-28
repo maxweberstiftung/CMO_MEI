@@ -3,19 +3,21 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:math="http://www.w3.org/2005/xpath-functions/math"
     xmlns:mei="http://www.music-encoding.org/ns/mei"
+    xmlns="http://www.music-encoding.org/ns/mei"
     xmlns:xsldoc="http://www.oxygenxml.com/ns/doc/xsl"
-    exclude-result-prefixes="xs math"
+    xmlns:local="http://www.w3.org/2005/XQuery-local-functions"
+    exclude-result-prefixes="xs math local mei xsldoc"
     version="3.0">
     <!-- copy every node in file -->
     <xsl:mode on-no-match="shallow-copy"/>
-    
+
     <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
         <desc>
-            Converts the semantically wrong overwritten accidentals into proper AEU accidentals and 
+            Converts the semantically wrong overwritten accidentals into proper AEU accidentals and
             creates proper key signatures from the instrument labels.
         </desc>
     </doc>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>
             Iterates through each note in staff 1 and copies the note.
@@ -27,29 +29,18 @@
     </xsldoc:doc>
     <xsl:template match="mei:note[ancestor::mei:staff/@n='1']">
         <xsl:variable name="measureN" select="ancestor::mei:measure/@n"/>
-        <xsl:variable name="naturalNote" 
+        <xsl:variable name="naturalNote"
             select="//mei:measure[@n=$measureN]/mei:staff[@n='1']/mei:layer//mei:note[mei:accid[@accid='n' and @func='caution']]"/>
-        
-        <xsl:choose>
-            <xsl:when test=".[preceding::mei:note[@xml:id=$naturalNote/@xml:id]] and
+
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()[not(self::mei:accid)]"/>
+            <xsl:if test=".[preceding::mei:note[@xml:id=$naturalNote/@xml:id]] and
                 ./@pname = $naturalNote/@pname and ./@oct = $naturalNote/@oct and not(mei:accid)">
-                <xsl:copy>
-                    <xsl:apply-templates select="@*|node()"/>
-                    <xsl:element name="accid" namespace="http://www.music-encoding.org/ns/mei">
-                        <xsl:attribute name="accid.ges">
-                            <xsl:value-of select="'n'"/>
-                        </xsl:attribute>
-                    </xsl:element>
-                </xsl:copy>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:copy>
-                    <xsl:apply-templates select="@*|node()"/>
-                </xsl:copy>
-            </xsl:otherwise>
-        </xsl:choose>
+                <accid accid.ges="n"/>
+            </xsl:if>
+        </xsl:copy>
     </xsl:template>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>
             Corrects accidental values for written and gestural accidentals.
@@ -66,21 +57,18 @@
                         <xsl:with-param name="accid" select="@accid"/>
                     </xsl:call-template>
                 </xsl:attribute>
-                <!-- 
+                <!--
                     In the case of a <accid accid="n" func="caution" />, this should not be a cautionary accidental
-                    We need to look for notes with the same pitch in the measure to add gestural accidentals!!! 
+                    We need to look for notes with the same pitch in the measure to add gestural accidentals!!!
                     This is done via the template matching mei:note[ancestor::mei:staff/@n='1']...
                 -->
                 <xsl:if test="@accid='n' and @func='caution'">
                     <!-- Start a template -->
-                    <xsl:attribute name="accid">
-                        <xsl:value-of select="'n'"/>
-                    </xsl:attribute>
+                    <xsl:attribute name="accid" select="'n'"/>
                 </xsl:if>
             </xsl:if>
             <xsl:if test="@accid.ges">
                 <!-- change to correct AEU value -->
-                <!-- AEU accidentals aren't yet part of data.ACCIDENTAL.GESTURAL, must be added there; until then, this is not valid -->
                 <xsl:attribute name="accid.ges">
                     <xsl:call-template name="sibAccid2AEUaccid">
                         <xsl:with-param name="accid" select="@accid.ges"/>
@@ -90,79 +78,45 @@
             <!-- keep accids in parentheses as parentheses, supplied or editorial? -->
         </xsl:copy>
     </xsl:template>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>
             Modifies the staffDef of the first staff (usually the music staff, while the second staff contains the usul pattern).
-            Adds a keySignature according to staffDef/label, isntrument name in Sibelius.
+            Adds a keySignature according to staffDef/label, instrument name in Sibelius.
         </xsldoc:desc>
     </xsldoc:doc>
-    <xsl:template match="mei:staffDef[@n='1']">
-        <xsl:variable name="clef-shape" select="@clef.shape"/>
-        <xsl:variable name="clef-line" select="@clef.line"/>
-        <xsl:variable name="label" select="mei:label"/>
-        
+
+    <!-- <label>N</label> means no key signature -->
+    <xsl:template match="mei:staffDef[@n='1'][@label and @label!='N']">
+        <xsl:variable name="staffDef" select="."/>
+
         <xsl:copy>
-            <xsl:apply-templates select="@n"/>
-            <xsl:apply-templates select="@xml:id"/>
-            <xsl:apply-templates select="@lines"/>
-            <xsl:apply-templates select="@clef.shape"/>
-            <xsl:apply-templates select="@clef.line"/>
-            
-            <xsl:choose>
-                <!-- In case of 'N' no key signature is needed -->
-                <xsl:when test="$label = 'N'"/>
-                <xsl:when test="empty($label)"/>
-                <xsl:otherwise>
-                    <!-- process key signatures -->
-                    <xsl:element name="keySig" namespace="http://www.music-encoding.org/ns/mei">
-                        <!-- tokenize @label to process key signatures -->
-                        <xsl:for-each select="tokenize($label,'\s+')">
-                            <xsl:variable name="accid" select="substring(.,2,1)"/>
-                            <xsl:variable name="loc" select="substring(.,1,1)"/>
-                            <xsl:variable name="accidVal">
-                                <xsl:call-template name="keyAccid2AEUaccid">
-                                    <xsl:with-param name="accid" select="$accid"/>
-                                </xsl:call-template>
-                            </xsl:variable>
-                            <xsl:variable name="oct">
-                                <xsl:call-template name="loc2oct">
-                                    <xsl:with-param name="loc" select="number($loc)"/>
-                                    <xsl:with-param name="clef-shape" select="$clef-shape"/>
-                                    <xsl:with-param name="clef-line" select="$clef-line"/>
-                                </xsl:call-template>
-                            </xsl:variable>
-                            <xsl:variable name="pname">
-                                <xsl:call-template name="loc2pname">
-                                    <xsl:with-param name="loc" select="number($loc)"/>
-                                    <xsl:with-param name="clef-shape" select="$clef-shape"/>
-                                    <xsl:with-param name="clef-line" select="$clef-line"/>
-                                </xsl:call-template>
-                            </xsl:variable>
-                            
-                            <xsl:element name="keyAccid" namespace="http://www.music-encoding.org/ns/mei">
-                                <!-- because a new element is generated, we still need to add a xml:id, but later -->
-                                <!-- Note: generate-id() doesn't work here because our current scope isn't a node but a string -->
-                                <xsl:attribute name="loc">
-                                    <xsl:value-of select="$loc"/>
-                                </xsl:attribute>
-                                <xsl:attribute name="accid">
-                                    <xsl:value-of select="$accidVal"/>
-                                </xsl:attribute>
-                                <xsl:attribute name="oct">
-                                    <xsl:value-of select="$oct"/>
-                                </xsl:attribute>
-                                <xsl:attribute name="pname">
-                                    <xsl:value-of select="$pname"/>
-                                </xsl:attribute>
-                            </xsl:element>
-                        </xsl:for-each>
-                    </xsl:element>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:apply-templates select="@n|@xml:id|@lines|@clef.shape|@clef.line"/>
+
+            <!-- process key signatures -->
+            <keySig>
+                <!-- tokenize @label to process key signatures -->
+                <xsl:for-each select="tokenize($staffDef/mei:label,'\s+')">
+                    <xsl:if test="string-length(.) != 2">
+                        <xsl:message terminate="yes">
+                            <xsl:value-of select="concat('Unexpected syntax for key signature information in instrument label: ', $staffDef/mei:label)"/>
+                        </xsl:message>
+                    </xsl:if>
+                    <xsl:variable name="accid" select="substring(.,2,1)"/>
+                    <xsl:variable name="loc" select="substring(.,1,1)"/>
+                    <xsl:variable name="accidVal" select="local:keyAccid2AEUaccid($accid)"/>
+                    <xsl:variable name="octAndPname">
+                        <xsl:apply-templates mode="getOctAndPname" select="$staffDef"/>
+                    </xsl:variable>
+
+                    <!-- because a new element is generated, we still need to add a xml:id, but later -->
+                    <!-- Note: generate-id() doesn't work here because our current scope isn't a node but a string -->
+                    <keyAccid loc="{$loc}" accid="{$accidVal}" oct="{$octAndPname[1]}" pname="{$octAndPname[2]}"/>
+                </xsl:for-each>
+            </keySig>
         </xsl:copy>
     </xsl:template>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>Maps the wrong accidental attributes from the Sibelius output to the correct AEU accidental values.</xsldoc:desc>
         <xsldoc:param name="accid">Irregular accidental value retrieved from Sibelius</xsldoc:param>
@@ -207,17 +161,19 @@
                 <xsl:value-of select="'n'"/>
             </xsl:when>
             <xsl:otherwise>
-                <!-- in the case onf any strange cases, just copy them -->
+                <xsl:message>
+                    <xsl:value-of select="concat('Unexpected accidental shape: ', $accid)"/>
+                </xsl:message>
                 <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>Maps the key accidental value given by the editors to the values for AEU accidentals.</xsldoc:desc>
         <xsldoc:param name="accid">Accid value as string</xsldoc:param>
     </xsldoc:doc>
-    <xsl:template name="keyAccid2AEUaccid">
+    <xsl:function name="local:keyAccid2AEUaccid">
         <xsl:param name="accid"/>
         <xsl:choose>
             <!-- Bakiye flat -->
@@ -252,71 +208,32 @@
             <xsl:when test="$accid = 'S'">
                 <xsl:value-of select="'bms'"/>
             </xsl:when>
+            <xsl:otherwise>
+                <xsl:message terminate="yes">
+                    <xsl:value-of select="concat('Unexpected accidental name in staff label: ', $accid)"/>
+                </xsl:message>
+            </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
-    
+    </xsl:function>
+
+
     <xsldoc:doc>
-        <xsldoc:desc>Retrieves the pitch name for the key accidental by the given loc.</xsldoc:desc>
+        <xsldoc:desc>Returns two values: the octave number and the base pitch for the key accidental by the given loc.</xsldoc:desc>
+        <xsldoc:param name="staffDef">staffDef element with @clef.line and @clef.shape attributes</xsldoc:param>
         <xsldoc:param name="loc">Staff location as number</xsldoc:param>
-        <xsldoc:param name="clef-line">Clef line of staffDef, should always be "2" according to House Styles</xsldoc:param>
-        <xsldoc:param name="clef-shape">Clef shape of staffDef, should always be "G" accourding to House Styles</xsldoc:param>
     </xsldoc:doc>
-    <xsl:template name="loc2pname">
+    <xsl:function name="local:getOctAndPname">
+        <xsl:param name="staffDef" as="element(mei:staffDef)"/>
         <xsl:param name="loc" as="xs:double"/>
-        <xsl:param name="clef-line"/>
-        <xsl:param name="clef-shape"/>
-        <xsl:if test="($clef-line = 2) and ($clef-shape = 'G')">
-            <xsl:choose>
-                <xsl:when test="($loc = -9) or ($loc = -2) or ($loc = 5) or ($loc = 12)">
-                    <xsl:value-of select="'c'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -8) or ($loc = -1) or ($loc = 6)">
-                    <xsl:value-of select="'c'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -7) or ($loc = 0) or ($loc = 7)">
-                    <xsl:value-of select="'c'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -6) or ($loc = 1) or ($loc = 8)">
-                    <xsl:value-of select="'f'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -5) or ($loc = 2) or ($loc = 9)">
-                    <xsl:value-of select="'g'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -4) or ($loc = 3) or ($loc = 10)">
-                    <xsl:value-of select="'a'"/>
-                </xsl:when>
-                <xsl:when test="($loc = -3) or ($loc = 4) or ($loc = 11)">
-                    <xsl:value-of select="'b'"/>
-                </xsl:when>
-            </xsl:choose>
+        <xsl:if test="($staffDef/@clef.line != 2) or ($staffDef/@clef.shape != 'G')">
+            <xsl:message terminate="yes">
+                <xsl:value-of select="'loc2pname only supports treble clef'"/>
+            </xsl:message>
         </xsl:if>
-    </xsl:template>
-    
-    <xsldoc:doc>
-        <xsldoc:desc>Retrieves the octave number for the key accidental by the given loc.</xsldoc:desc>
-        <xsldoc:param name="loc">Staff location as number</xsldoc:param>
-        <xsldoc:param name="clef-line">Clef line of staffDef, should always be "2" according to House Styles</xsldoc:param>
-        <xsldoc:param name="clef-shape">Clef shape of staffDef, should always be "G" accourding to House Styles</xsldoc:param>
-    </xsldoc:doc>
-    <xsl:template name="loc2oct">
-        <xsl:param name="loc" as="xs:double"/>
-        <xsl:param name="clef-line"/>
-        <xsl:param name="clef-shape"/>
-        <xsl:if test="($clef-line = 2) and ($clef-shape = 'G')">
-            <xsl:choose>
-                <xsl:when test="($loc &gt;= -9) and ($loc &lt;= -3)">
-                    <xsl:value-of select="'3'"/>
-                </xsl:when>
-                <xsl:when test="($loc &lt;= 4) and ($loc &gt;= -2)">
-                    <xsl:value-of select="'4'"/>
-                </xsl:when>
-                <xsl:when test="($loc &gt;= 5) and ($loc &lt;= 11)">
-                    <xsl:value-of select="'5'"/>
-                </xsl:when>
-                <xsl:when test="$loc &lt;= 12">
-                    <xsl:value-of select="'6'"/>
-                </xsl:when>
-            </xsl:choose>
-        </xsl:if>
-    </xsl:template>
+
+        <xsl:copy-of select="floor(($loc + 3) div 7) + 4"/>
+        <!-- Force the loc value into the range 0–6 (octave is not relevant). All e's will be loc=0 -->
+        <xsl:variable name="normalizedLoc" select="($loc mod 7 + 7) mod 7"/>
+        <xsl:value-of select="('e', 'f', 'g', 'a', 'b', 'c', 'd')[$normalizedLoc + 1]"/>
+    </xsl:function>
 </xsl:stylesheet>
