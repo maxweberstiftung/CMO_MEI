@@ -1,0 +1,19 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13'
+
+    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'net.sf.saxon:Saxon-HE:10.5'
+
+}
+
+application {
+    mainClass = 'ngb.App'
+}
