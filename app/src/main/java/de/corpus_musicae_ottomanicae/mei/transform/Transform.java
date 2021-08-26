@@ -1,8 +1,8 @@
-package ngb;
+package de.corpus_musicae_ottomanicae.mei.transform;
 
 import javax.swing.JOptionPane;
 
-public class App {
+public class Transform {
     
     public static void main(String[] args) {
         if (args.length == 0) {

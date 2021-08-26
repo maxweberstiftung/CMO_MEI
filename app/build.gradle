@@ -15,5 +15,5 @@ dependencies {
 }
 
 application {
-    mainClass = 'ngb.App'
+    mainClass = 'de.corpus_musicae_ottomanicae.mei.transform.Transform'
 }
