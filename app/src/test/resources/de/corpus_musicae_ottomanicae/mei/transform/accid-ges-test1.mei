@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<mei xml:id="m-1" meiversion="4.0.1" xmlns="http://www.music-encoding.org/ns/mei" xmlns:xlink="http://www.w3.org/1999/xlink">
+<meiHead xml:id="m-2">
+    <fileDesc xml:id="m-3">
+        <titleStmt xml:id="m-4">
+            <title xml:id="m-16">Nişāpūr ūṣūli muḫammes Emīn&apos;iñ</title>
+            <composer xml:id="m-17">Tanbûrî Emîn Ağa</composer>
+            <respStmt xml:id="m-21">
+                <persName xml:id="m-22"/>
+            </respStmt>
+        </titleStmt>
+        <pubStmt xml:id="m-23">
+            <availability xml:id="m-24">
+                <useRestrict xml:id="m-25"/>
+            </availability>
+        </pubStmt>
+    </fileDesc>
+    <encodingDesc xml:id="m-5">
+        <appInfo xml:id="m-6">
+            <application xml:id="sibelius" isodate="2021-8-26T17:34:46Z" version="20210200">
+                <name xml:id="m-8" type="operating-system">Windows 8</name>
+            </application>
+            <application xml:id="sibmei" type="plugin" version="4.0.0">
+                <name xml:id="m-10">Sibelius to MEI 4 Exporter (4.0.0)</name>
+            </application>
+            <application xml:id="cmo_sibmei" type="extension">
+                <name xml:id="m-12">CMO to MEI</name>
+            </application>
+        </appInfo>
+    </encodingDesc>
+    <workList xml:id="m-13">
+        <work xml:id="m-14">
+            <title xml:id="m-15">Nişāpūr ūṣūli muḫammes Emīn&apos;iñ</title>
+            <composer xml:id="m-18">Tanbûrî Emîn Ağa</composer>
+            <notesStmt xml:id="m-19">
+                <annot xml:id="m-20">CMO1-I/12.7</annot>
+            </notesStmt>
+        </work>
+    </workList>
+</meiHead>
+<music xml:id="m-27">
+    <body xml:id="m-28">
+        <mdiv xml:id="m-29">
+            <score xml:id="m-31">
+                <scoreDef xml:id="m-32" lyric.name="Plantin MT Std" meter.count="16" meter.unit="2" music.name="Opus Std" page.botmar="12.7mm" page.height="297mm" page.leftmar="14.5mm" page.rightmar="14.5mm" page.topmar="12.7mm" page.width="210mm" ppq="256" spacing.staff="11" spacing.system="24" text.name="Plantin MT Std" vu.height="0.8125mm">
+                    <staffGrp xml:id="m-33">
+                        <staffDef xml:id="m-34" clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" lines="5" n="1">
+                            <label xml:id="m-35">5B 8K</label>
+                            <labelAbbr xml:id="m-36"> </labelAbbr>
+                            <!-- keyboard.piano.grand.bright -->
+                            <instrDef xml:id="m-38" midi.channel="1" midi.pan="63" midi.volume="100"/>
+                        </staffDef>
+                    </staffGrp>
+                </scoreDef>
+                <section xml:id="m-39">
+                    <pb xml:id="m-26"/>
+                    <sb xml:id="m-41"/>
+                    <measure xml:id="m-40" label="1" metcon="false" n="1" right="dashed">
+                        <staff xml:id="m-42" n="1">
+                            <layer xml:id="m-43" n="1">
+                                <note xml:id="m-44" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:00" vel="0"/>
+                                <note xml:id="m-45" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:00.6" vel="0"/>
+                                <beam xml:id="m-47">
+                                    <note xml:id="m-46" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:01.2" vel="0"/>
+                                    <note xml:id="m-48" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:01.5" vel="0">
+                                        <accid xml:id="m-49" accid="n" func="caution"/>
+                                    </note>
+                                    <note xml:id="m-50" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:01.8" vel="0">
+                                        <accid xml:id="m-51" accid="n" func="caution"/>
+                                    </note>
+                                    <note xml:id="m-52" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="d" pnum="61" stem.dir="down" tstamp.real="00:00:02.1" vel="0">
+                                        <accid xml:id="m-53" accid="f"/>
+                                    </note>
+                                </beam>
+                                <beam xml:id="m-55">
+                                    <note xml:id="m-54" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:02.4" vel="0"/>
+                                    <note xml:id="m-56" dur="8" dur.ppq="128" oct="4" oct.ges="3" pname="b" pnum="59" stem.dir="down" tstamp.real="00:00:02.7" vel="0"/>
+                                    <note xml:id="m-57" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="c" pnum="61" stem.dir="down" tstamp.real="00:00:03" vel="0">
+                                        <accid xml:id="m-58" accid="s"/>
+                                    </note>
+                                    <note xml:id="m-59" dur="8" dur.ppq="128" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:03.3" vel="0">
+                                        <accid xml:id="m-60" accid="n"/>
+                                    </note>
+                                </beam>
+                                <rest xml:id="m-61" dur="2" dur.ppq="512" tstamp.real="00:00:03.6"/>
+                            </layer>
+                        </staff>
+                    </measure>
+                    <sb xml:id="m-63"/>
+                    <measure xml:id="m-62" metcon="false" n="2" right="dashed">
+                        <staff xml:id="m-64" n="1">
+                            <layer xml:id="m-65" n="1">
+                                <note xml:id="m-66" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:04.8" vel="0"/>
+                                <note xml:id="m-67" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:05.4" vel="0"/>
+                                <rest xml:id="m-68" dur="2" dur.ppq="512" tstamp.real="00:00:06"/>
+                                <rest xml:id="m-69" dur="1" dur.ppq="1024" tstamp.real="00:00:07.2"/>
+                            </layer>
+                        </staff>
+                    </measure>
+                </section>
+                <annot xml:id="m-30" type="duration">00:00:09.6</annot>
+            </score>
+        </mdiv>
+    </body>
+</music>
+</mei>
