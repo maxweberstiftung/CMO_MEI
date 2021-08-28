@@ -1,9 +1,11 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,14 +14,44 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class TransformTest {
 
     Document loadXMLResource(String fileName) throws SAXException, IOException, ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-            this.getClass().getResourceAsStream(fileName)
-        );
+        return parseXml(new InputSource(this.getClass().getResourceAsStream(fileName)));
+    }
+
+    Document parseXml(String xmlString) throws SAXException, IOException, ParserConfigurationException {
+        return parseXml(new InputSource(new StringReader(xmlString)));
+    }
+
+    Document parseXml(InputSource input) throws SAXException, IOException, ParserConfigurationException {
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setNamespaceAware(true);
+        return builderFactory.newDocumentBuilder().parse(input);
+    }
+
+    @Test
+    void getElements() throws SAXException, IOException, ParserConfigurationException {
+        Document mei = parseXml(
+                "<mei xmlns='http://www.music-encoding.org/ns/mei' xmlns:xlink='http://www.w3.org/1999/xlink'><a/><xlink:b/></mei>");
+
+        Element[] a = Transform.getElements(mei.getDocumentElement(), "//mei:mei");
+        assertEquals(1, a.length);
+        Element b = Transform.getElement(mei, "//xlink:b");
+        assertNotNull(b);
+    }
+
+    @Test
+    void getElementsNoNamespace() throws SAXException, IOException, ParserConfigurationException {
+        Document mei = parseXml("<mei><a/><b/></mei>");
+
+        Element[] a = Transform.getElements(mei.getDocumentElement(), "//mei");
+        assertEquals(1, a.length);
+        Element b = Transform.getElement(mei, "//b");
+        assertNotNull(b);
     }
 
     @Test
