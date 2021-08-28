@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class Transform {
+public class MeiPostprocessor {
 
     public static void main(String[] args) {
         if (args.length == 0) {

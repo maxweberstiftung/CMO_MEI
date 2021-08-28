@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class TransformTest {
+public class MeiPostprocessorTest {
 
     Document loadXMLResource(String fileName) throws SAXException, IOException, ParserConfigurationException {
         return parseXml(new InputSource(this.getClass().getResourceAsStream(fileName)));
