@@ -16,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import de.corpus_musicae_ottomanicae.mei.Constants;
+
 public class MeiPostprocessor {
 
     public static void main(String[] args) {
@@ -25,16 +27,12 @@ public class MeiPostprocessor {
         }
     }
 
-    public static final String MEI_NS = "http://www.music-encoding.org/ns/mei";
-    public static final String XLINK_NS = "http://www.w3.org/1999/xlink";
-
     static final XPath xPath;
 
-    private static int j;
     static {
         HashBiMap<String, String> namespaceByPrefix = HashBiMap.create();
-        namespaceByPrefix.put("mei", MEI_NS);
-        namespaceByPrefix.put("xlink", XLINK_NS);
+        namespaceByPrefix.put("mei", Constants.MEI_NS);
+        namespaceByPrefix.put("xlink", Constants.XLINK_NS);
 
         XPath xp = XPathFactory.newInstance().newXPath();
 
