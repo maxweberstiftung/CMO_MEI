@@ -6,42 +6,124 @@ import de.corpus_musicae_ottomanicae.mei.Constants.PName;
 import java.util.HashMap;
 
 
-public class KeySignature {
-    private HashMap<PName, AEUAccidental> accidentals = new HashMap();
+public class AEUKeySignature {
+    /**
+     * Modelled after the <keyAccid> element
+     */
+    public static class KeyAccid {
+        AEUAccidental accid;
+        Integer oct;
+        Integer loc;
 
-    KeySignature() {}
-
-    KeySignature(PName[] pnames, Constants.AEUAccidental[] accids) {
-        if (pnames.length != accids.length) {
-            throw new IllegalArgumentException("number of pnames and accids must match");
+        KeyAccid(AEUAccidental accid, int oct, int loc) {
+            this.accid = accid;
+            this.oct = oct;
+            this.loc = loc;
         }
-        for (int i = 0; i < pnames.length; i++) {
-            if (accidentals.containsKey(pnames[i])) {
-                throw new IllegalArgumentException("Duplicate entry for " + pnames[i]);
+
+        @Override
+        public boolean equals(Object otherObject) {
+            if (!(otherObject instanceof KeyAccid)) {
+                return false;
             }
-            accidentals.put(pnames[i], accids[i]);
+            KeyAccid other = (KeyAccid) otherObject;
+            return accid == other.accid && oct == other.oct && loc == other.loc;
+        }
+    }
+
+    private HashMap<PName, KeyAccid> keyAccidentals = new HashMap();
+
+    AEUKeySignature() {
+    }
+
+    public AEUAccidental get(PName pname) {
+        if (keyAccidentals.containsKey(pname)) {
+            return keyAccidentals.get(pname).accid;
+        } else {
+            return AEUAccidental.n;
         }
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof KeySignature)) {
+    public boolean equals(Object otherObject) {
+        if (!(otherObject instanceof AEUKeySignature)) {
             return false;
         }
-        KeySignature otherKeySig = (KeySignature) other;
-        return accidentals.equals(otherKeySig.accidentals);
+        return ((AEUKeySignature) otherObject).keyAccidentals.equals(keyAccidentals);
     }
 
-    public AEUAccidental get(PName pname) {
-        return accidentals.getOrDefault(pname, AEUAccidental.n);
+    public KeyAccid add(PName pname, KeyAccid accid) {
+        return keyAccidentals.put(pname, accid);
     }
 
-    public AEUAccidental put(PName pname, AEUAccidental accid) {
-        return accidentals.put(pname, accid);
+    public KeyAccid add(PName pname, AEUAccidental accid, int oct, int loc) {
+        return add(pname, new KeyAccid(accid, oct, loc));
     }
 
-    public static KeySignature parseFromCMOInstrumentLabel(String label) {
-        KeySignature keySig = new KeySignature();
+    public static HashMap<Character, AEUAccidental> staffLabelAccidCodes;
+
+    static {
+        HashMap<Character, AEUAccidental> codes = new HashMap();
+        // Bakiye flat
+        codes.put('b', AEUAccidental.bf);
+        // Küçük mücenneb flat
+        codes.put('m', AEUAccidental.kmf);
+        // Koma flat
+        codes.put('k', AEUAccidental.kf);
+        // Bakiye sharp
+        codes.put('B', AEUAccidental.bs);
+        // Küçük mücenneb sharp
+        codes.put('M', AEUAccidental.kms);
+        // Koma sharp
+        codes.put('K', AEUAccidental.ks);
+        // Büyük mücenneb flat
+        codes.put('f', AEUAccidental.bmf);
+        // Büyük mücenneb sharp
+        codes.put('S', AEUAccidental.bms);
+
+        staffLabelAccidCodes = codes;
+    }
+
+    private static final PName[] pnameByLoc = {PName.e, PName.f, PName.g, PName.a, PName.b, PName.c, PName.d};
+
+    public static AEUKeySignature parseFromCMOInstrumentLabel(String label) throws IllegalArgumentException {
+        AEUKeySignature keySig = new AEUKeySignature();
+
+        switch (label.trim()) {
+            case "N":
+            case "":
+                return keySig;
+        }
+
+        String[] labelComponents = label.trim().split("\\s+");
+
+        for (String labelComponent : labelComponents) {
+            if (labelComponent.length() != 2) {
+                throw new IllegalArgumentException("Key signature codes in staff labels must be two characters long. Found component " + labelComponent);
+            }
+
+            String locCode = labelComponent.substring(0, 1);
+            int loc;
+            try {
+                loc = Integer.parseInt(locCode);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("The first character of key signature codes in staff labels must be a digit. Found component " + labelComponent);
+            }
+
+            Character accidCode = labelComponent.charAt(1);
+            AEUAccidental accid = staffLabelAccidCodes.get(accidCode);
+            if (accid == null) {
+                throw new IllegalArgumentException("Unknown accidental code in staff label. Found component " + labelComponent);
+            }
+
+            // We assume treble clef
+
+            // c4 is 2 steps below loc 0, hence +2, and +4 for octave 4
+            int octave = (loc + 2) / 7 + 4;
+            PName pname = pnameByLoc[Math.floorMod(loc, 7)];
+
+            keySig.add(pname, accid, octave, loc);
+        }
 
         return keySig;
     }
