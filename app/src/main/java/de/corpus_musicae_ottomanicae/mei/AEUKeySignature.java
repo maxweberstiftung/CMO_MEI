@@ -86,8 +86,18 @@ public class AEUKeySignature {
         staffLabelAccidCodes = codes;
     }
 
-    private static final PName[] pnameByLoc = {PName.e, PName.f, PName.g, PName.a, PName.b, PName.c, PName.d};
+    private static final PName[] pnameByTrebleLoc = {PName.e, PName.f, PName.g, PName.a, PName.b, PName.c, PName.d};
 
+    /**
+     * Because Sibelius can not represent key signatures with arbitrary
+     * accidental arrangements and AEU accidentals, CMO editors encode the key
+     * signature in the instrument label. If the label is "N" or empty, we do
+     * not have a "neutral" key signature. Otherwise, the label must consist of
+     * space separated codes consisting of two characters each, the first being
+     * a digit representing the intended MEI @loc attribute (for treble clef).
+     * The second character is mapped to the MEI @accid attribute (see the
+     * staffLabelAccidCodes Map).
+     */
     public static AEUKeySignature parseFromCMOInstrumentLabel(String label) throws IllegalArgumentException {
         AEUKeySignature keySig = new AEUKeySignature();
 
@@ -122,7 +132,7 @@ public class AEUKeySignature {
 
             // c4 is 2 steps below loc 0, hence +2, and +4 for octave 4
             int octave = (loc + 2) / 7 + 4;
-            PName pname = pnameByLoc[Math.floorMod(loc, 7)];
+            PName pname = pnameByTrebleLoc[Math.floorMod(loc, 7)];
 
             keySig.add(pname, accid, octave, loc);
         }
