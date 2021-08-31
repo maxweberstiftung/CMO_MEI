@@ -1,6 +1,7 @@
 package de.corpus_musicae_ottomanicae.mei;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
@@ -16,13 +17,29 @@ import de.corpus_musicae_ottomanicae.XmlLoader;
 public class XPathTest {
     @Test
     public void testEvaluateToElements() throws SAXException, IOException, ParserConfigurationException {
-        Document mei = XmlLoader.parse("<mei xmlns='http://www.music-encoding.org/ns/mei'><foo/><foo/></mei>");
+        Document mei;
         Element[] elements;
+
+        mei = XmlLoader.parse("<mei xmlns='http://www.music-encoding.org/ns/mei'><foo/><foo/></mei>");
 
         elements = XPath.evaluateToElements(mei, "//mei:mei/mei:foo");
         assertEquals(2, elements.length);
 
         elements = XPath.evaluateToElements(mei, "//mei/foo");
         assertEquals(0, elements.length);
+    }
+
+    @Test
+    public void testEvaluateToElementsNoNamespace() throws SAXException, IOException, ParserConfigurationException {
+        Document mei;
+        Element[] elements;
+
+        mei = XmlLoader.parse("<mei><foo/><foo/></mei>");
+
+        elements = XPath.evaluateToElements(mei, "//mei:mei/mei:foo");
+        assertEquals(0, elements.length);
+
+        elements = XPath.evaluateToElements(mei, "//mei/foo");
+        assertEquals(2, elements.length);
     }
 }

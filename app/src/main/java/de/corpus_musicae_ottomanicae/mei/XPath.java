@@ -51,7 +51,7 @@ public class XPath {
      * return null if the XPath expression is flawed. May throw an error when the
      * XPath does not evaluate to Elements.
      *
-     * The XPath expression may use use the prefixes "mei" and "xlink".
+     * The XPath expression may use the prefixes "mei" and "xlink".
      */
     public static Element[] evaluateToElements(Element element, String xpath) {
         XPathNodes result;
@@ -71,5 +71,18 @@ public class XPath {
 
     public static Element[] evaluateToElements(Document doc, String xpath) {
         return evaluateToElements(doc.getDocumentElement(), xpath);
+    }
+
+    /**
+     * @return An Element if the XPath could be resolved to a single Element,
+     * null if it resolved to multiple Elements or no Element at all.
+     */
+    public static Element evaluateToElement(Element element, String xpath) {
+        Element[] result = evaluateToElements(element, xpath);
+        return result.length == 1 ? result[0] : null;
+    }
+
+    public static Element evaluateToElement(Document doc, String xpath) {
+        return evaluateToElement(doc.getDocumentElement(), xpath);
     }
 }

@@ -34,27 +34,6 @@ public class MeiPostprocessorTest {
     }
 
     @Test
-    void getElements() throws SAXException, IOException, ParserConfigurationException {
-        Document mei = parseXml(
-                "<mei xmlns='http://www.music-encoding.org/ns/mei' xmlns:xlink='http://www.w3.org/1999/xlink'><a/><xlink:b/></mei>");
-
-        Element[] a = Transform.getElements(mei.getDocumentElement(), "//mei:mei");
-        assertEquals(1, a.length);
-        Element b = Transform.getElement(mei, "//xlink:b");
-        assertNotNull(b);
-    }
-
-    @Test
-    void getElementsNoNamespace() throws SAXException, IOException, ParserConfigurationException {
-        Document mei = parseXml("<mei><a/><b/></mei>");
-
-        Element[] a = Transform.getElements(mei.getDocumentElement(), "//mei");
-        assertEquals(1, a.length);
-        Element b = Transform.getElement(mei, "//b");
-        assertNotNull(b);
-    }
-
-    @Test
     void keySignatureAccidentals() throws SAXException, IOException, ParserConfigurationException {
         Document mei = loadXMLResource("accid-ges-test1.mei");
         Transform.transformAccids(mei);
