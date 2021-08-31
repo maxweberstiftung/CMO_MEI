@@ -2,6 +2,8 @@ package de.corpus_musicae_ottomanicae.mei;
 
 import de.corpus_musicae_ottomanicae.mei.Constants.AEUAccidental;
 import de.corpus_musicae_ottomanicae.mei.Constants.PName;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.HashMap;
 
@@ -125,6 +127,20 @@ public class AEUKeySignature {
             keySig.add(pname, accid, octave, loc);
         }
 
+        return keySig;
+    }
+
+    Element toMei(Document mei) {
+        Element keySig = mei.createElementNS(Constants.MEI_NS, "keySig");
+        for (PName pname : keyAccidentals.keySet()) {
+            KeyAccid accid = keyAccidentals.get(pname);
+            Element keyAccid = mei.createElementNS(Constants.MEI_NS, "keyAccid");
+            keySig.appendChild(keyAccid);
+            keyAccid.setAttribute("pname", pname.toString());
+            keyAccid.setAttribute("loc", accid.loc.toString());
+            keyAccid.setAttribute("accid", accid.accid.toString());
+            keyAccid.setAttribute("oct", accid.oct.toString());
+        }
         return keySig;
     }
 }
