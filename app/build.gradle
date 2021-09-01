@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'org.xmlunit:xmlunit-core:2.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
