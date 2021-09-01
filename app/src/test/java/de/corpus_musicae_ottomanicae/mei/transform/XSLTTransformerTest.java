@@ -1,18 +1,15 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
-import de.corpus_musicae_ottomanicae.XmlLoader;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import de.corpus_musicae_ottomanicae.XmlLoader;
 
 class XSLTTransformerTest {
     @Test
-    void testTransform() throws IOException, ParserConfigurationException, SAXException {
+    void testTransform() throws Exception {
         Document xslt = XmlLoader.loadResource(this, "xsl-transform-test.xsl");
         Document input = XmlLoader.loadResource(this, "xsl-transform-test.xml");
         Document output = new XSLTTransformer(xslt).transform(input);
