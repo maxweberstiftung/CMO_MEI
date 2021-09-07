@@ -6,7 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;
-
+import java.util.LinkedHashMap;
 
 public class AEUKeySignature {
     /**
@@ -33,7 +33,8 @@ public class AEUKeySignature {
         }
     }
 
-    private final HashMap<PName, KeyAccid> keyAccidentals = new HashMap<>();
+    // LinkedHashMap keeps the order of entries as we added them
+    private final LinkedHashMap<PName, KeyAccid> keyAccidentals = new LinkedHashMap<>();
 
     AEUKeySignature() {
     }

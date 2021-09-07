@@ -8,14 +8,13 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.Difference;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,19 +65,25 @@ class AEUKeySignatureTest {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b 8K");
         Element expected = XmlLoader.parse(String.join("", //
                 "<keySig xmlns='" + Constants.MEI_NS + "'>", //
-                "<keyAccid pname='b' accid='bf' oct='4' loc='4'/>", //
-                "<keyAccid pname='f' accid='ks' oct='5' loc='8'/>", //
+                "<keyAccid accid='bf' loc='4' oct='4' pname='b'/>", //
+                "<keyAccid accid='ks' loc='8' oct='5' pname='f'/>", //
                 "</keySig>" //
         )).getDocumentElement();
-        StringWriter sw = new StringWriter();
-        TransformerFactory.newInstance().newTransformer()
-                .transform(new DOMSource(keySig.toMei(expected.getOwnerDocument())), new StreamResult(sw));
+        Element actual = keySig.toMei(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
 
         Diff xmlDiff = DiffBuilder //
                 .compare(expected) //
-                .withTest(keySig.toMei(expected.getOwnerDocument())) //
+                .withTest(actual) //
                 .ignoreWhitespace() //
                 .build();
-        assert !xmlDiff.hasDifferences();
+
+        if (xmlDiff.hasDifferences()) {
+            String message = "";
+            Iterator<Difference> iterator = xmlDiff.getDifferences().iterator();
+            while (iterator.hasNext()) {
+                message += iterator.next().toString() + "\n";
+            }
+            throw new Error(message);
+        }
     }
 }
