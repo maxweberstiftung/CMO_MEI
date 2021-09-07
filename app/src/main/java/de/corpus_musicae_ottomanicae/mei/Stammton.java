@@ -1,7 +1,7 @@
 package de.corpus_musicae_ottomanicae.mei;
 
-import de.corpus_musicae_ottomanicae.mei.Constants.AEUAccidental;
 import de.corpus_musicae_ottomanicae.mei.Constants.PName;
+import org.w3c.dom.Element;
 
 /**
  * This class implements the "white keys" in a way they can be used e.g. as keys
@@ -14,6 +14,18 @@ public class Stammton {
     Stammton(PName pname, int octave) {
         this.pname = pname;
         this.octave = octave;
+    }
+
+    public Stammton(Element note) throws MeiInputException {
+        if (!note.getTagName().equals("note") || !note.getNamespaceURI().equals(Constants.MEI_NS)) {
+            throw new IllegalArgumentException("Argument must be a note from the MEI namespace");
+        }
+        try {
+            this.pname = PName.valueOf(note.getAttribute("pname"));
+            this.octave = Integer.parseInt(note.getAttribute("oct"));
+        } catch (IllegalArgumentException e) {
+            throw new MeiInputException(note, "Note needs both @pname and @oct attributes");
+        }
     }
 
     @Override

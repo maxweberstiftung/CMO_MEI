@@ -145,7 +145,7 @@ public class AEUKeySignature {
         return keySig;
     }
 
-    Element toMei(Document mei) {
+    public Element toMei(Document mei) {
         Element keySig = mei.createElementNS(Constants.MEI_NS, "keySig");
         for (PName pname : keyAccidentals.keySet()) {
             KeyAccid accid = keyAccidentals.get(pname);

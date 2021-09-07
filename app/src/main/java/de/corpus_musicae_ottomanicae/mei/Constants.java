@@ -14,4 +14,11 @@ public class Constants {
     public enum AEUAccidental {
         bms, kms, bs, ks, kf, bf, kmf, bmf, n
     }
+
+    /**
+     * Commen Western Music Notation accidentals
+     */
+    public enum CWMNAccidental {
+        s, f, ss, ff, n, su, sd, fu, fd, x
+    }
 }
