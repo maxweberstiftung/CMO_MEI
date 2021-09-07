@@ -13,7 +13,7 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 
 public class XSLTTransformer implements Transformer {
-    
+
     private final Xslt30Transformer transformer;
     private static final Processor processor = new Processor(false);
     private static final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

@@ -4,8 +4,8 @@ import de.corpus_musicae_ottomanicae.mei.Constants.AEUAccidental;
 import de.corpus_musicae_ottomanicae.mei.Constants.PName;
 
 /**
- * This class implements the "white keys" in a way they can be used e.g. as
- * keys of a Map.
+ * This class implements the "white keys" in a way they can be used e.g. as keys
+ * of a Map.
  */
 public class Stammton {
     public int octave;

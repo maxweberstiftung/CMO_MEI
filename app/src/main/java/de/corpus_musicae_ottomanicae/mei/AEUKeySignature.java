@@ -86,17 +86,16 @@ public class AEUKeySignature {
         staffLabelAccidCodes = codes;
     }
 
-    private static final PName[] pnameByTrebleLoc = {PName.e, PName.f, PName.g, PName.a, PName.b, PName.c, PName.d};
+    private static final PName[] pnameByTrebleLoc = { PName.e, PName.f, PName.g, PName.a, PName.b, PName.c, PName.d };
 
     /**
-     * Because Sibelius can not represent key signatures with arbitrary
-     * accidental arrangements and AEU accidentals, CMO editors encode the key
-     * signature in the instrument label. If the label is "N" or empty, we do
-     * not have a "neutral" key signature. Otherwise, the label must consist of
-     * space separated codes consisting of two characters each, the first being
-     * a digit representing the intended MEI @loc attribute (for treble clef).
-     * The second character is mapped to the MEI @accid attribute (see the
-     * staffLabelAccidCodes Map).
+     * Because Sibelius can not represent key signatures with arbitrary accidental
+     * arrangements and AEU accidentals, CMO editors encode the key signature in the
+     * instrument label. If the label is "N" or empty, we do not have a "neutral"
+     * key signature. Otherwise, the label must consist of space separated codes
+     * consisting of two characters each, the first being a digit representing the
+     * intended MEI @loc attribute (for treble clef). The second character is mapped
+     * to the MEI @accid attribute (see the staffLabelAccidCodes Map).
      */
     public static AEUKeySignature parseFromCMOInstrumentLabel(String label) throws IllegalArgumentException {
         AEUKeySignature keySig = new AEUKeySignature();
@@ -111,7 +110,9 @@ public class AEUKeySignature {
 
         for (String labelComponent : labelComponents) {
             if (labelComponent.length() != 2) {
-                throw new IllegalArgumentException("Key signature codes in staff labels must be two characters long. Found component " + labelComponent);
+                throw new IllegalArgumentException(
+                        "Key signature codes in staff labels must be two characters long. Found component "
+                                + labelComponent);
             }
 
             String locCode = labelComponent.substring(0, 1);
@@ -119,13 +120,16 @@ public class AEUKeySignature {
             try {
                 loc = Integer.parseInt(locCode);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("The first character of key signature codes in staff labels must be a digit. Found component " + labelComponent);
+                throw new IllegalArgumentException(
+                        "The first character of key signature codes in staff labels must be a digit. Found component "
+                                + labelComponent);
             }
 
             Character accidCode = labelComponent.charAt(1);
             AEUAccidental accid = staffLabelAccidCodes.get(accidCode);
             if (accid == null) {
-                throw new IllegalArgumentException("Unknown accidental code in staff label. Found component " + labelComponent);
+                throw new IllegalArgumentException(
+                        "Unknown accidental code in staff label. Found component " + labelComponent);
             }
 
             // We assume treble clef

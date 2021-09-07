@@ -64,20 +64,20 @@ class AEUKeySignatureTest {
     @Test
     public void TestToMei() throws IOException, ParserConfigurationException, SAXException, TransformerException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b 8K");
-        Element expected = XmlLoader.parse(String.join(
-                "",
-                "<keySig xmlns='" + Constants.MEI_NS + "'>",
-                "<keyAccid pname='b' accid='bf' oct='4' loc='4'/>",
-                "<keyAccid pname='f' accid='ks' oct='5' loc='8'/>",
-                "</keySig>"
+        Element expected = XmlLoader.parse(String.join("", //
+                "<keySig xmlns='" + Constants.MEI_NS + "'>", //
+                "<keyAccid pname='b' accid='bf' oct='4' loc='4'/>", //
+                "<keyAccid pname='f' accid='ks' oct='5' loc='8'/>", //
+                "</keySig>" //
         )).getDocumentElement();
         StringWriter sw = new StringWriter();
-        TransformerFactory.newInstance().newTransformer().transform(new DOMSource(keySig.toMei(expected.getOwnerDocument())), new StreamResult(sw));
+        TransformerFactory.newInstance().newTransformer()
+                .transform(new DOMSource(keySig.toMei(expected.getOwnerDocument())), new StreamResult(sw));
 
-        Diff xmlDiff = DiffBuilder
-                .compare(expected)
-                .withTest(keySig.toMei(expected.getOwnerDocument()))
-                .ignoreWhitespace()
+        Diff xmlDiff = DiffBuilder //
+                .compare(expected) //
+                .withTest(keySig.toMei(expected.getOwnerDocument())) //
+                .ignoreWhitespace() //
                 .build();
         assert !xmlDiff.hasDifferences();
     }

@@ -1,18 +1,16 @@
 package de.corpus_musicae_ottomanicae.mei;
 
-import java.util.Collections;
-import java.util.Iterator;
+import com.google.common.collect.HashBiMap;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathNodes;
-
-import com.google.common.collect.HashBiMap;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class XPath {
     static final javax.xml.xpath.XPath xPath;
@@ -74,8 +72,8 @@ public class XPath {
     }
 
     /**
-     * @return An Element if the XPath could be resolved to a single Element,
-     * null if it resolved to multiple Elements or no Element at all.
+     * @return An Element if the XPath could be resolved to a single Element, null
+     *         if it resolved to multiple Elements or no Element at all.
      */
     public static Element evaluateToElement(Element element, String xpath) {
         Element[] result = evaluateToElements(element, xpath);

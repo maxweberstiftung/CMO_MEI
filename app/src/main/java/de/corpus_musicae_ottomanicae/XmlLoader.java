@@ -13,9 +13,9 @@ import org.xml.sax.SAXException;
 public class XmlLoader {
     /**
      * Function for retrieving resources that are stored
-     * 
-     * @param object   The class of this object will be used to determine the
-     *                 resource path.
+     *
+     * @param object The class of this object will be used to determine the resource
+     *               path.
      */
     public static Document loadResource(Object object, String fileName)
             throws SAXException, IOException, ParserConfigurationException {

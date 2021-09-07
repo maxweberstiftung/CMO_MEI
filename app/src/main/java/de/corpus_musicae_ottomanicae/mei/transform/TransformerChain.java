@@ -8,7 +8,7 @@ import org.w3c.dom.Document;
  * A collection of multiple transformers which are performed in order
  */
 public class TransformerChain implements Transformer {
-    
+
     private final List<Transformer> transforms;
 
     public TransformerChain(List<Transformer> transforms) {

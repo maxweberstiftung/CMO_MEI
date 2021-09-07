@@ -47,22 +47,18 @@ public class MeiPostprocessorTest {
             accidValues[i] = note.getAttribute("accid");
         }
 
-        assertArrayEquals(
-            new String[]{
-                "bs", "ks", "ks", "n", "n", "kmf", "n", "n", "ks", "n", // bar 1
-                "ks", "ks" // bar 2
-            },
-            accidGesValues,
-            "accid.ges"
-        );
+        assertArrayEquals(new String[] {
+                // bar 1
+                "bs", "ks", "ks", "n", "n", "kmf", "n", "n", "ks", "n", //
+                // bar 2
+                "ks", "ks" //
+        }, accidGesValues, "accid.ges");
 
-        assertArrayEquals(
-            new String[]{
-                null, null, null, "n", "n", "kmf", null, null, "ks", "n", // bar 1
-                null, null // bar 2
-            },
-            accidValues,
-            "accid.ges"
-        );
+        assertArrayEquals(new String[] {
+                // bar 1
+                null, null, null, "n", "n", "kmf", null, null, "ks", "n", //
+                // bar 2
+                null, null //
+        }, accidValues, "accid.ges");
     }
 }
