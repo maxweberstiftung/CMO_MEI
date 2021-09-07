@@ -14,8 +14,4 @@ public class MeiPostprocessor {
     public static void showError(String message) {
         JOptionPane.showMessageDialog(null, message, "Error Processing Files", JOptionPane.WARNING_MESSAGE);
     }
-
-    public static void transformAccids(Document mei) {
-        // TODO: Implement this
-    }
 }

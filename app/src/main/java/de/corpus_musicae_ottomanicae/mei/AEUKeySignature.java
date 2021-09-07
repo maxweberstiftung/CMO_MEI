@@ -33,7 +33,7 @@ public class AEUKeySignature {
         }
     }
 
-    private HashMap<PName, KeyAccid> keyAccidentals = new HashMap();
+    private final HashMap<PName, KeyAccid> keyAccidentals = new HashMap<>();
 
     AEUKeySignature() {
     }
@@ -65,7 +65,7 @@ public class AEUKeySignature {
     public static HashMap<Character, AEUAccidental> staffLabelAccidCodes;
 
     static {
-        HashMap<Character, AEUAccidental> codes = new HashMap();
+        HashMap<Character, AEUAccidental> codes = new HashMap<>();
         // Bakiye flat
         codes.put('b', AEUAccidental.bf);
         // Küçük mücenneb flat

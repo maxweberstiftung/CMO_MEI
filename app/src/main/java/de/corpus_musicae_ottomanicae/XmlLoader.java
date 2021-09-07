@@ -16,7 +16,6 @@ public class XmlLoader {
      * 
      * @param object   The class of this object will be used to determine the
      *                 resource path.
-     * @param fileName
      */
     public static Document loadResource(Object object, String fileName)
             throws SAXException, IOException, ParserConfigurationException {
