@@ -29,7 +29,7 @@ public class AEUKeySignature {
                 return false;
             }
             KeyAccid other = (KeyAccid) otherObject;
-            return accid == other.accid && oct == other.oct && loc == other.loc;
+            return accid == other.accid && oct.equals(other.oct) && loc.equals(other.loc);
         }
     }
 
