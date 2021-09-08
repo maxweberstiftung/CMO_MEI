@@ -17,7 +17,7 @@
     </fileDesc>
     <encodingDesc xml:id="m-5">
         <appInfo xml:id="m-6">
-            <application xml:id="sibelius" isodate="2021-8-26T17:34:46Z" version="20210200">
+            <application xml:id="sibelius" isodate="2021-9-8T11:14:08Z" version="20210200">
                 <name xml:id="m-8" type="operating-system">Windows 8</name>
             </application>
             <application xml:id="sibmei" type="plugin" version="4.0.0">
@@ -55,7 +55,7 @@
                 <section xml:id="m-39">
                     <pb xml:id="m-26"/>
                     <sb xml:id="m-41"/>
-                    <measure xml:id="m-40" label="1" metcon="false" n="1" right="dashed">
+                    <measure xml:id="m-40" metcon="false" n="1" right="dashed">
                         <staff xml:id="m-42" n="1">
                             <layer xml:id="m-43" n="1">
                                 <note xml:id="m-44" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:00" vel="0"/>
@@ -82,18 +82,20 @@
                                         <accid xml:id="m-60" accid="n"/>
                                     </note>
                                 </beam>
-                                <rest xml:id="m-61" dur="2" dur.ppq="512" tstamp.real="00:00:03.6"/>
+                                <note xml:id="m-61" dur="2" dur.ppq="512" oct="5" oct.ges="4" pname="d" pnum="61" stem.dir="down" tstamp.real="00:00:03.6" vel="0">
+                                    <accid xml:id="m-62" accid.ges="f"/>
+                                </note>
                             </layer>
                         </staff>
                     </measure>
-                    <sb xml:id="m-63"/>
-                    <measure xml:id="m-62" metcon="false" n="2" right="dashed">
-                        <staff xml:id="m-64" n="1">
-                            <layer xml:id="m-65" n="1">
-                                <note xml:id="m-66" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:04.8" vel="0"/>
-                                <note xml:id="m-67" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:05.4" vel="0"/>
-                                <rest xml:id="m-68" dur="2" dur.ppq="512" tstamp.real="00:00:06"/>
-                                <rest xml:id="m-69" dur="1" dur.ppq="1024" tstamp.real="00:00:07.2"/>
+                    <sb xml:id="m-64"/>
+                    <measure xml:id="m-63" metcon="false" n="2" right="dashed">
+                        <staff xml:id="m-65" n="1">
+                            <layer xml:id="m-66" n="1">
+                                <note xml:id="m-67" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="c" pnum="60" stem.dir="down" tstamp.real="00:00:04.8" vel="0"/>
+                                <note xml:id="m-68" dur="4" dur.ppq="256" oct="5" oct.ges="4" pname="f" pnum="65" stem.dir="down" tstamp.real="00:00:05.4" vel="0"/>
+                                <rest xml:id="m-69" dur="2" dur.ppq="512" tstamp.real="00:00:06"/>
+                                <rest xml:id="m-70" dur="1" dur.ppq="1024" tstamp.real="00:00:07.2"/>
                             </layer>
                         </staff>
                     </measure>

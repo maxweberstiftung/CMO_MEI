@@ -76,25 +76,25 @@ public class AccidentalTransformer implements Transformer {
                     "Music must not contain chords in division " + Util.contextDivisionNumber(staff));
         }
         Map<Stammton, AEUAccidental> accidState = new HashMap<>();
-        for (Element note : XPath.evaluateToElements(layer, "//mei:note")) {
+        for (Element note : XPath.evaluateToElements(layer, ".//mei:note")) {
             // Ignore any existing @accid.ges completely as the accidental
             // semantics from Sibelius are irrelevant. Only the visual
             // appearance has relevance to us.
-            note.removeAttribute("accid.ges");
+            for (Element element : XPath.evaluateToElements(note, "descendant-or-self::*[@accid.ges]")) {
+                element.removeAttribute("accid.ges");
+            }
 
             Stammton stammton = new Stammton(note);
-            String oldAccidString = Util.getAttributeOrDefault(note, "accid", null);
-            CWMNAccidental oldAccid;
-            try {
-                oldAccid = oldAccidString == null ? null : CWMNAccidental.valueOf(oldAccidString);
-            } catch (IllegalArgumentException e) {
-                throw new MeiInputException(note, "@accid=\"" + oldAccidString + "\" is not recognized");
-            }
+            CWMNAccidental oldAccid = getAccid(note);
 
             if (oldAccid != null) {
                 AEUAccidental newAccid = cwmn2aeuMap.get(oldAccid);
+                if (newAccid == null) {
+                    throw new MeiInputException(note,
+                            "Could not map CWMN accidntal " + oldAccid.toString() + " to an AEU accidental");
+                }
                 accidState.put(stammton, newAccid);
-                note.setAttribute("accid", newAccid.toString());
+                setAccid(note, newAccid);
             } else {
                 AEUAccidental precedingAccid = accidState.get(stammton);
                 AEUAccidental accidGes = precedingAccid != null ? precedingAccid : keySig.get(stammton.pname);
@@ -103,5 +103,49 @@ public class AccidentalTransformer implements Transformer {
                 }
             }
         }
+    }
+
+    /**
+     * Looks for an accid attribute on the note or an <accid> child. Returns null if
+     * no such attribute was found.
+     */
+    CWMNAccidental getAccid(Element note) throws MeiInputException {
+        String accid = null;
+        for (Element element : XPath.evaluateToElements(note, "descendant-or-self::*[@accid]")) {
+            String foundAccid = element.getAttribute("accid");
+            if (accid == null) {
+                accid = foundAccid;
+            } else if (foundAccid != accid) {
+                throw new MeiInputException(note, "@accid='" + foundAccid + "' contradicts @accid='" + accid + "'");
+            }
+        }
+        try {
+            return accid == null ? null : CWMNAccidental.valueOf(accid);
+        } catch (IllegalArgumentException e) {
+            throw new MeiInputException(note, "@accid=\"" + accid + "\" is not recognized as CWMN accidental");
+        }
+    }
+
+    /**
+     * Creates an <accid> element (if not already present) and sets @accid on it.
+     * Removes any @accid from the note itself.
+     */
+    void setAccid(Element note, AEUAccidental accid) throws MeiInputException {
+        note.removeAttribute("accid");
+        NodeList accidElements = note.getElementsByTagNameNS(Constants.MEI_NS, "accid");
+        Element accidElement;
+        switch (accidElements.getLength()) {
+            case 0:
+                accidElement = note.getOwnerDocument().createElementNS(Constants.MEI_NS, "accid");
+                note.appendChild(accidElement);
+                break;
+            case 1:
+                accidElement = (Element) accidElements.item(0);
+                break;
+            default:
+                throw new MeiInputException(note, "Notes must not have more than one <accid> child");
+        }
+
+        accidElement.setAttribute("accid", accid.toString());
     }
 }
