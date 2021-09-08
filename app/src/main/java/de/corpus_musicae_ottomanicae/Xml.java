@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class XmlLoader {
+public class Xml {
     /**
      * Function for retrieving resources that are stored
      *

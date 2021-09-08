@@ -1,6 +1,6 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
-import de.corpus_musicae_ottomanicae.XmlLoader;
+import de.corpus_musicae_ottomanicae.Xml;
 import de.corpus_musicae_ottomanicae.mei.MeiInputException;
 import de.corpus_musicae_ottomanicae.mei.Util;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class AccidentalTransformerTest {
     @Test
     void keySignatureAccidentals() throws SAXException, IOException, ParserConfigurationException, MeiInputException {
-        Document mei = XmlLoader.loadResource(this, "accid-ges-test1.mei");
+        Document mei = Xml.loadResource(this, "accid-ges-test1.mei");
         mei = new AccidentalTransformer().transform(mei);
 
         NodeList notes = mei.getElementsByTagName("note");

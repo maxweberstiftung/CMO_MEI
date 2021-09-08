@@ -1,6 +1,6 @@
 package de.corpus_musicae_ottomanicae.mei;
 
-import de.corpus_musicae_ottomanicae.XmlLoader;
+import de.corpus_musicae_ottomanicae.Xml;
 import de.corpus_musicae_ottomanicae.mei.Constants.AEUAccidental;
 import de.corpus_musicae_ottomanicae.mei.Constants.PName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class AEUKeySignatureTest {
     @Test
     public void TestToMei() throws IOException, ParserConfigurationException, SAXException, TransformerException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b 8K");
-        Element expected = XmlLoader.parse(String.join("", //
+        Element expected = Xml.parse(String.join("", //
                 "<keySig xmlns='" + Constants.MEI_NS + "'>", //
                 "<keyAccid accid='bf' loc='4' oct='4' pname='b'/>", //
                 "<keyAccid accid='ks' loc='8' oct='5' pname='f'/>", //

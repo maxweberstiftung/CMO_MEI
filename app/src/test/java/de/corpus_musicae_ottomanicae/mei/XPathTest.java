@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import de.corpus_musicae_ottomanicae.XmlLoader;
+import de.corpus_musicae_ottomanicae.Xml;
 
 public class XPathTest {
     @Test
@@ -20,7 +20,7 @@ public class XPathTest {
         Document mei;
         Element[] elements;
 
-        mei = XmlLoader.parse("<mei xmlns='http://www.music-encoding.org/ns/mei'><foo/><foo/></mei>");
+        mei = Xml.parse("<mei xmlns='http://www.music-encoding.org/ns/mei'><foo/><foo/></mei>");
 
         elements = XPath.evaluateToElements(mei, "//mei:mei/mei:foo");
         assertEquals(2, elements.length);
@@ -34,7 +34,7 @@ public class XPathTest {
         Document mei;
         Element[] elements;
 
-        mei = XmlLoader.parse("<mei><foo/><foo/></mei>");
+        mei = Xml.parse("<mei><foo/><foo/></mei>");
 
         elements = XPath.evaluateToElements(mei, "//mei:mei/mei:foo");
         assertEquals(0, elements.length);
