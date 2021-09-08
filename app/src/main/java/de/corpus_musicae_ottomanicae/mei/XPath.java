@@ -1,7 +1,6 @@
 package de.corpus_musicae_ottomanicae.mei;
 
 import com.google.common.collect.HashBiMap;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -44,20 +43,23 @@ public class XPath {
         xPath = xp;
     }
 
+    private static XPathNodes evaluate(Node context, String xpath) {
+        try {
+            return xPath.evaluateExpression(xpath, context, XPathNodes.class);
+        } catch (XPathExpressionException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     /**
-     * Convenience method for evaluating XPath expressions that return elements. May
-     * return null if the XPath expression is flawed. May throw an error when the
-     * XPath does not evaluate to Elements.
+     * Convenience method for evaluating XPath expressions that return elements.
+     * Will throw errors when the XPath expression is flawed because of syntax or
+     * because it does not evaluate to elements.
      *
      * The XPath expression may use the prefixes "mei" and "xlink".
      */
-    public static Element[] evaluateToElements(Element element, String xpath) {
-        XPathNodes result;
-        try {
-            result = (XPathNodes) xPath.evaluateExpression(xpath, element, XPathNodes.class);
-        } catch (XPathExpressionException e) {
-            return null;
-        }
+    public static Element[] evaluateToElements(Node context, String xpath) {
+        XPathNodes result = evaluate(context, xpath);
         Element[] elements = new Element[result.size()];
         int i = 0;
         for (Node node : result) {
@@ -67,20 +69,28 @@ public class XPath {
         return elements;
     }
 
-    public static Element[] evaluateToElements(Document doc, String xpath) {
-        return evaluateToElements(doc.getDocumentElement(), xpath);
-    }
-
     /**
      * @return An Element if the XPath could be resolved to a single Element, null
      *         if it resolved to multiple Elements or no Element at all.
      */
-    public static Element evaluateToElement(Element element, String xpath) {
-        Element[] result = evaluateToElements(element, xpath);
+    public static Element evaluateToElement(Node context, String xpath) {
+        Element[] result = evaluateToElements(context, xpath);
         return result.length == 1 ? result[0] : null;
     }
 
-    public static Element evaluateToElement(Document doc, String xpath) {
-        return evaluateToElement(doc.getDocumentElement(), xpath);
+    public static String[] evaluateToStrings(Node context, String xpath) {
+        XPathNodes result = evaluate(context, xpath);
+        String[] strings = new String[result.size()];
+        int i = 0;
+        for (Node node : result) {
+            strings[i] = node.getTextContent();
+            i += 1;
+        }
+        return strings;
+    }
+
+    public static String evaluateToString(Node context, String xpath) {
+        Element result = evaluateToElement(context, xpath);
+        return result == null ? null : result.getTextContent();
     }
 }
