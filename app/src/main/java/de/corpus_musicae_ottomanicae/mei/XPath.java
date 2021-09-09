@@ -90,7 +90,7 @@ public class XPath {
     }
 
     public static String evaluateToString(Node context, String xpath) {
-        Element result = evaluateToElement(context, xpath);
-        return result == null ? null : result.getTextContent();
+        String[] strings = evaluateToStrings(context, xpath);
+        return strings.length == 1 ? strings[0] : null;
     }
 }
