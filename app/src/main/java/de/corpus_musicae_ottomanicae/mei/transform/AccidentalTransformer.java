@@ -77,15 +77,20 @@ public class AccidentalTransformer implements Transformer {
         }
         Map<Stammton, AEUAccidental> accidState = new HashMap<>();
         for (Element note : XPath.evaluateToElements(layer, ".//mei:note")) {
+            Stammton stammton = new Stammton(note);
+            CWMNAccidental oldAccid = getAccid(note, "accid");
+
             // Ignore any existing @accid.ges completely as the accidental
             // semantics from Sibelius are irrelevant. Only the visual
             // appearance has relevance to us.
+            setAccid(note, "accid.ges", null);
             for (Element element : XPath.evaluateToElements(note, "descendant-or-self::*[@accid.ges]")) {
-                element.removeAttribute("accid.ges");
+                if (element.getTagName().equals("accid")) {
+                    element.getParentNode().removeChild(element);
+                } else {
+                    element.removeAttribute("accid.ges");
+                }
             }
-
-            Stammton stammton = new Stammton(note);
-            CWMNAccidental oldAccid = getAccid(note);
 
             if (oldAccid != null) {
                 AEUAccidental newAccid = cwmn2aeuMap.get(oldAccid);
@@ -94,13 +99,11 @@ public class AccidentalTransformer implements Transformer {
                             "Could not map CWMN accidntal " + oldAccid.toString() + " to an AEU accidental");
                 }
                 accidState.put(stammton, newAccid);
-                setAccid(note, newAccid);
+                setAccid(note, "accid", newAccid);
             } else {
                 AEUAccidental precedingAccid = accidState.get(stammton);
                 AEUAccidental accidGes = precedingAccid != null ? precedingAccid : keySig.get(stammton.pname);
-                if (accidGes != null) {
-                    note.setAttribute("accid.ges", accidGes.toString());
-                }
+                setAccid(note, "accid.ges", accidGes == AEUAccidental.n ? null : accidGes);
             }
         }
     }
@@ -109,43 +112,74 @@ public class AccidentalTransformer implements Transformer {
      * Looks for an accid attribute on the note or an <accid> child. Returns null if
      * no such attribute was found.
      */
-    CWMNAccidental getAccid(Element note) throws MeiInputException {
-        String accid = null;
-        for (Element element : XPath.evaluateToElements(note, "descendant-or-self::*[@accid]")) {
-            String foundAccid = element.getAttribute("accid");
-            if (accid == null) {
-                accid = foundAccid;
-            } else if (foundAccid != accid) {
-                throw new MeiInputException(note, "@accid='" + foundAccid + "' contradicts @accid='" + accid + "'");
+    static CWMNAccidental getAccid(Element note, String attribute) throws MeiInputException {
+        Element accidElement = getAccidElement(note, false);
+        String accid = accidElement == null ? "" : accidElement.getAttribute(attribute);
+        String noteAccid = note.getAttribute(attribute);
+
+        if (!noteAccid.isEmpty() && !noteAccid.equals(accid)) {
+            if (accid.isEmpty()) {
+                accid = noteAccid;
+            } else {
+                throw new MeiInputException(note, "note/@" + attribute + "='" + noteAccid + "' contradicts accid/@"
+                        + attribute + "='" + accid + "'");
             }
         }
+
         try {
-            return accid == null ? null : CWMNAccidental.valueOf(accid);
+            return accid.isEmpty() ? null : CWMNAccidental.valueOf(accid);
         } catch (IllegalArgumentException e) {
-            throw new MeiInputException(note, "@accid=\"" + accid + "\" is not recognized as CWMN accidental");
+            throw new MeiInputException(note,
+                    "@" + attribute + "=\"" + accid + "\" is not recognized as CWMN accidental");
         }
     }
 
     /**
-     * Creates an <accid> element (if not already present) and sets @accid on it.
-     * Removes any @accid from the note itself.
+     * Sets or removes @accid of an <accid> child of the note. Normalizes accid
+     * attributes, i.e. only keeps either @accid or @accid.ges and moves them from
+     * the <note> to the <accid> element.
+     *
+     * @param accid If null, the attribute will be removed. If this leaves an empty
+     *              <accid> element, that will be removed, too.
      */
-    void setAccid(Element note, AEUAccidental accid) throws MeiInputException {
-        note.removeAttribute("accid");
+    static void setAccid(Element note, String attribute, AEUAccidental accid) throws MeiInputException {
+        String otherAttribute = attribute.equals("accid") ? "accid.ges" : "accid";
+        note.removeAttribute(attribute);
+        String otherAttributeValue = note.getAttribute(otherAttribute);
+        note.removeAttribute(otherAttribute);
+
+        Element accidElement = getAccidElement(note, accid != null);
+        if (accid != null) {
+            // Add accid
+            accidElement.removeAttribute(otherAttribute);
+            accidElement.setAttribute(attribute, accid.toString());
+        } else if (accidElement != null) {
+            // Remove @accid*
+            if (accidElement.hasAttribute(otherAttribute)) {
+                accidElement.removeAttribute(attribute);
+            } else if (otherAttributeValue.isEmpty()) {
+                // Don't leave an empty <accid> element
+                note.removeChild(accidElement);
+            } else {
+                // Normalize remaining @accid* by moving it from <note> to <accid>
+                accidElement.setAttribute(otherAttribute, otherAttributeValue);
+            }
+        }
+    }
+
+    static Element getAccidElement(Element note, boolean createIfNotPresent) throws MeiInputException {
         NodeList accidElements = note.getElementsByTagNameNS(Constants.MEI_NS, "accid");
-        Element accidElement;
         switch (accidElements.getLength()) {
             case 0:
-                accidElement = note.getOwnerDocument().createElementNS(Constants.MEI_NS, "accid");
-                note.appendChild(accidElement);
-                break;
+                if (!createIfNotPresent) {
+                    return null;
+                }
+                Element accidElement = note.getOwnerDocument().createElementNS(Constants.MEI_NS, "accid");
+                return (Element) note.appendChild(accidElement);
             case 1:
-                accidElement = (Element) accidElements.item(0);
-                break;
+                return (Element) accidElements.item(0);
             default:
                 throw new MeiInputException(note, "Notes must not have more than one <accid> child");
         }
-
-        accidElement.setAttribute("accid", accid.toString());
     }
 }
