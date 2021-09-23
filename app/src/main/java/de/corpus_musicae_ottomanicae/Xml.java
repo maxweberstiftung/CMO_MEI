@@ -22,11 +22,17 @@ public class Xml {
      * Function for retrieving resources that are stored
      *
      * @param object The class of this object will be used to determine the resource
-     *               path.
+     *               path. Can be an instance or a Class.
      */
     public static Document loadResource(Object object, String fileName)
             throws SAXException, IOException, ParserConfigurationException {
-        return parse(new InputSource(object.getClass().getResourceAsStream(fileName)));
+        Class<?> klass;
+        if (object instanceof Class) {
+            klass = (Class<?>) object;
+        } else {
+            klass = object.getClass();
+        }
+        return parse(new InputStreamReader(klass.getResourceAsStream(fileName)));
     }
 
     public static Document parse(String xmlString) throws SAXException, IOException, ParserConfigurationException {
