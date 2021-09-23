@@ -15,6 +15,8 @@ public class AccidentalTransformer implements Transformer {
     private static final Map<CWMNAccidental, AEUAccidental> cwmn2aeuMap;
 
     static {
+        // Map the accidentals as they are logically input in Sibelius to the
+        // actually intended AEU accidentals
         HashMap<CWMNAccidental, AEUAccidental> map = new HashMap<>();
         // Bakiye sharp
         map.put(CWMNAccidental.s, AEUAccidental.bs);

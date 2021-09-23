@@ -13,7 +13,7 @@ public class MeiInputException extends Exception {
         String info = "";
 
         info += "Division " + Util.contextDivisionNumber(context) + ", ";
-        info += context.getTagName() + "element";
+        info += context.getTagName() + " element";
         if (context.hasAttribute("xml:id")) {
             info += " " + context.getAttribute("xml:id");
         }

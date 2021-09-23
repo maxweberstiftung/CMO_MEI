@@ -20,8 +20,7 @@ public class XSLTTransformer implements Transformer {
 
     public XSLTTransformer(Document xslt) throws SaxonApiException {
         XsltCompiler xsltCompiler = processor.newXsltCompiler();
-        XsltExecutable executable = xsltCompiler.compile(
-                new DOMSource(xslt.getDocumentElement()));
+        XsltExecutable executable = xsltCompiler.compile(new DOMSource(xslt.getDocumentElement()));
         transformer = executable.load30();
     }
 
