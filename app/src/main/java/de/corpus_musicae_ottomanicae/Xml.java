@@ -28,13 +28,13 @@ import org.xml.sax.SAXException;
 
 public class Xml {
     /**
-     * Function for retrieving resources that are stored
+     * Function for retrieving resources that are stored in the "classpath folder"
+     * corresponding to the object argument.
      *
      * @param object The class of this object will be used to determine the resource
      *               path. Can be an instance or a Class.
      */
-    public static Document loadResource(Object object, String fileName)
-            throws SAXException, IOException, ParserConfigurationException {
+    public static Document loadResource(Object object, String fileName) throws SAXException, IOException {
         Class<?> klass;
         if (object instanceof Class) {
             klass = (Class<?>) object;
@@ -72,7 +72,7 @@ public class Xml {
         try {
             TransformerFactory.newInstance().newTransformer().transform(new DOMSource(node), result);
         } catch (TransformerFactoryConfigurationError e) {
-            // Shold be unreachable as transformer configuration is unchanged
+            // Should be unreachable as transformer configuration is unchanged
             throw new RuntimeException(e);
         }
     }

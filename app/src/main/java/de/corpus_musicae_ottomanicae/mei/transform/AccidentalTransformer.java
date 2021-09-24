@@ -60,8 +60,8 @@ public class AccidentalTransformer implements Transformer {
 
     private void addKeySignature(Element staffDef) {
         // Remove any pre-existing key signature
-        for (Element keySig : XPath.evaluateToElements(staffDef, "./mei:keySig")) {
-            keySig.getParentNode().removeChild(keySig);
+        for (Element existingKeySig : XPath.evaluateToElements(staffDef, "./mei:keySig")) {
+            existingKeySig.getParentNode().removeChild(existingKeySig);
         }
         staffDef.appendChild(keySig.toMei(staffDef.getOwnerDocument()));
     }
@@ -152,7 +152,8 @@ public class AccidentalTransformer implements Transformer {
 
         Element accidElement = getAccidElement(note, accid != null);
         if (accid != null) {
-            // Add accid
+            // Add accid. We have getAccidElement() create accidElement for us
+            // if accid != null, so we can rely on it.
             accidElement.removeAttribute(otherAttribute);
             accidElement.setAttribute(attribute, accid.toString());
         } else if (accidElement != null) {
