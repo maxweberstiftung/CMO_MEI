@@ -1,6 +1,7 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.w3c.dom.Document;
@@ -25,9 +26,18 @@ public class XSLTTransformer implements Transformer {
     }
 
     @Override
-    public Document transform(Document input) throws Exception {
-        Document output = factory.newDocumentBuilder().newDocument();
-        transformer.transform(new DOMSource(input), new DOMDestination(output));
+    public Document transform(Document input) throws TransformerException {
+        Document output;
+        try {
+            output = factory.newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            transformer.transform(new DOMSource(input), new DOMDestination(output));
+        } catch (SaxonApiException e) {
+            throw new TransformerException(e);
+        }
         return output;
     }
 }
