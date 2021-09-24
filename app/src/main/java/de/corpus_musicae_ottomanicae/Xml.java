@@ -1,6 +1,7 @@
 package de.corpus_musicae_ottomanicae;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,9 +10,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -65,18 +68,28 @@ public class Xml {
         }
     }
 
-    public static String serialize(Node node) {
-        StringWriter stringWriter = new StringWriter();
+    static void writeToResult(Node node, Result result) throws TransformerException {
         try {
-            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(node),
-                    new StreamResult(stringWriter));
-        } catch (TransformerException | TransformerFactoryConfigurationError e) {
-            // Transformer configuration is expected to be O.K. and StringWriter
-            // should not be prone to errors, so handle this as unchecked
-            // exception.
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(node), result);
+        } catch (TransformerFactoryConfigurationError e) {
+            // Shold be unreachable as transformer configuration is unchanged
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String serialize(Node node) {
+        var stringWriter = new StringWriter();
+        try {
+            writeToResult(node, new StreamResult(stringWriter));
+        } catch (TransformerException e) {
+            // Should be unreachable
             throw new RuntimeException(e);
         }
         return stringWriter.toString();
+    }
+
+    public static void write(Node node, Path path) throws FileNotFoundException, TransformerException {
+        writeToResult(node, new StreamResult(new FileOutputStream(path.toFile())));
     }
 
     /**
