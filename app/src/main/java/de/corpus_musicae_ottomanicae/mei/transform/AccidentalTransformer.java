@@ -45,7 +45,8 @@ public class AccidentalTransformer implements Transformer {
     public Document transform(Document mei) throws MeiInputException {
         Element keySigLabel = XPath.evaluateToElement(mei, "(//mei:staffDef[@n='1'])[1]/mei:label");
         if (keySigLabel == null) {
-            throw new IllegalArgumentException("Expected a single label element on staff 1");
+            throw new MeiInputException(mei.getDocumentElement(),
+                    "Expected a single staff label on staff 1 (for encoding key signatures).");
         }
         keySig = AEUKeySignature.parseFromCMOInstrumentLabel(keySigLabel.getTextContent());
 
@@ -69,13 +70,11 @@ public class AccidentalTransformer implements Transformer {
     private void transformAccidentals(Element staff) throws MeiInputException {
         NodeList layers = staff.getElementsByTagNameNS(Constants.MEI_NS, "layer");
         if (layers.getLength() > 1) {
-            throw new IllegalArgumentException(
-                    "There must not be more than on voice in division " + Util.contextDivisionNumber(staff));
+            throw new MeiInputException(staff, "There must not be more than one voice");
         }
         Element layer = (Element) layers.item(0);
         if (layer.getElementsByTagNameNS(Constants.MEI_NS, "chord").getLength() > 0) {
-            throw new IllegalArgumentException(
-                    "Music must not contain chords in division " + Util.contextDivisionNumber(staff));
+            throw new MeiInputException(staff, "Music must not contain chords");
         }
         Map<Stammton, AEUAccidental> accidState = new HashMap<>();
         for (Element note : XPath.evaluateToElements(layer, ".//mei:note")) {
