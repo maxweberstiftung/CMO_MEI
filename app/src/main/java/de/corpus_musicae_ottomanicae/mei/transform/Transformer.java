@@ -15,5 +15,9 @@ public interface Transformer {
         TransformerException(Exception e) {
             super(e);
         }
+
+        TransformerException(String message) {
+            super(message);
+        }
     }
 }
