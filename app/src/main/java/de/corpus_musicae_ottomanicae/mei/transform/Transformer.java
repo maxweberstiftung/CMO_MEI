@@ -6,8 +6,13 @@ import de.corpus_musicae_ottomanicae.mei.MeiInputException;
 
 public interface Transformer {
     /**
-     * An implementation may either return the modified input Document or generate a
-     * new Document as output.
+     * @return The (modified) input Document, or a newly generated output Document
+     * @throws MeiInputException    Signals a problem with the MEI input Document,
+     *                              e.g. if the document structure is not as
+     *                              expected
+     * @throws TransformerException Signals a problem with the transformation
+     *                              implementation, especially of XSLT code called
+     *                              by XSLTTransformers
      */
     Document transform(Document input) throws MeiInputException, TransformerException;
 

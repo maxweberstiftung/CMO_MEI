@@ -97,7 +97,7 @@ public class AccidentalTransformer implements Transformer {
                 AEUAccidental newAccid = cwmn2aeuMap.get(oldAccid);
                 if (newAccid == null) {
                     throw new MeiInputException(note,
-                            "Could not map CWMN accidntal " + oldAccid.toString() + " to an AEU accidental");
+                            "Could not map CWMN accidental " + oldAccid.toString() + " to an AEU accidental");
                 }
                 accidState.put(stammton, newAccid);
                 setAccid(note, "accid", newAccid);
