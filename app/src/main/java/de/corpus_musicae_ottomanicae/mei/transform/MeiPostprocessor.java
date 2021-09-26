@@ -2,10 +2,11 @@ package de.corpus_musicae_ottomanicae.mei.transform;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 public class MeiPostprocessor implements Runnable {
-    @Option(names = "--xslt-dir", required = true, description = "Full path to directorry of XSLTs. XSLTs in this directory are processed in alphanumeric order")
+    @Option(names = "--xslt-dir", required = true, description = "Full path to directorry of XSLTs. XSLTs in this directory are processed in alphanumeric order.")
     File xsltDir;
 
     @Parameters(arity = "1..*", description = "Full paths to MEI files. Files will be overwritten.")
@@ -84,6 +85,8 @@ public class MeiPostprocessor implements Runnable {
         transformers.add(new AccidentalTransformer());
 
         File[] xslts = xsltDir.listFiles((dir, name) -> name.endsWith(".xsl"));
+        // Make processing order reliable by sorting alphabetically
+        Arrays.sort(xslts, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER));
 
         for (File xslt : xslts) {
             try {
