@@ -1,5 +1,6 @@
 package de.corpus_musicae_ottomanicae;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -88,8 +88,8 @@ public class Xml {
         return stringWriter.toString();
     }
 
-    public static void write(Node node, Path path) throws FileNotFoundException, TransformerException {
-        writeToResult(node, new StreamResult(new FileOutputStream(path.toFile())));
+    public static void write(Node node, File file) throws FileNotFoundException, TransformerException {
+        writeToResult(node, new StreamResult(new FileOutputStream(file)));
     }
 
     /**
