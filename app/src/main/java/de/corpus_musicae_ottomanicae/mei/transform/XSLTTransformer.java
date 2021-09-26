@@ -1,6 +1,7 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,7 +47,7 @@ public class XSLTTransformer implements Transformer {
         MeiInputException messageToMeiInputError(XdmNode message) throws TransformerException {
             ArrayList<String> exceptionComponents = new ArrayList<>();
             for (String localName : new String[] { "context", "message" }) {
-                var childIterator = message.children(localName).iterator();
+                Iterator<XdmNode> childIterator = message.children(localName).iterator();
 
                 if (!childIterator.hasNext()) {
                     throw new TransformerException("Terminating XSLT message must have a " + localName + " element");

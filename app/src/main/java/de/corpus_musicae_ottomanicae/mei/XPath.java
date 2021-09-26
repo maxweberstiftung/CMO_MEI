@@ -1,15 +1,18 @@
 package de.corpus_musicae_ottomanicae.mei;
 
-import com.google.common.collect.HashBiMap;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathNodes;
 import java.util.Collections;
 import java.util.Iterator;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import com.google.common.collect.HashBiMap;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class XPath {
     static final javax.xml.xpath.XPath xPath;
@@ -43,9 +46,9 @@ public class XPath {
         xPath = xp;
     }
 
-    private static XPathNodes evaluate(Node context, String xpath) {
+    private static NodeList evaluate(Node context, String xpath) {
         try {
-            return xPath.evaluateExpression(xpath, context, XPathNodes.class);
+            return (NodeList) xPath.evaluate(xpath, context, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             throw new IllegalArgumentException(e);
         }
@@ -59,12 +62,10 @@ public class XPath {
      * The XPath expression may use the prefixes "mei" and "xlink".
      */
     public static Element[] evaluateToElements(Node context, String xpath) {
-        XPathNodes result = evaluate(context, xpath);
-        Element[] elements = new Element[result.size()];
-        int i = 0;
-        for (Node node : result) {
-            elements[i] = (Element) node;
-            i += 1;
+        NodeList result = evaluate(context, xpath);
+        Element[] elements = new Element[result.getLength()];
+        for (int i = 0; i < elements.length; i++) {
+            elements[i] = (Element) result.item(i);
         }
         return elements;
     }
@@ -79,12 +80,10 @@ public class XPath {
     }
 
     public static String[] evaluateToStrings(Node context, String xpath) {
-        XPathNodes result = evaluate(context, xpath);
-        String[] strings = new String[result.size()];
-        int i = 0;
-        for (Node node : result) {
-            strings[i] = node.getTextContent();
-            i += 1;
+        NodeList result = evaluate(context, xpath);
+        String[] strings = new String[result.getLength()];
+        for (int i = 0; i < strings.length; i++) {
+            strings[i] = result.item(i).getTextContent();
         }
         return strings;
     }

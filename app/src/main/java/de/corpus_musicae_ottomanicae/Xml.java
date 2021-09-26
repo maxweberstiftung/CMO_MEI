@@ -78,7 +78,7 @@ public class Xml {
     }
 
     public static String serialize(Node node) {
-        var stringWriter = new StringWriter();
+        StringWriter stringWriter = new StringWriter();
         try {
             writeToResult(node, new StreamResult(stringWriter));
         } catch (TransformerException e) {
