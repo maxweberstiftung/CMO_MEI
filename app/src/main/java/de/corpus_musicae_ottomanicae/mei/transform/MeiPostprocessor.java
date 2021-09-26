@@ -100,6 +100,7 @@ public class MeiPostprocessor implements Runnable {
     }
 
     static void showError(String message) {
+        System.err.println(message);
         JOptionPane.showMessageDialog(null, message, "Error Processing Files", JOptionPane.WARNING_MESSAGE);
         System.exit(1);
     }
