@@ -13,6 +13,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
+    implementation 'info.picocli:picocli:4.6.1'
     implementation 'net.sf.saxon:Saxon-HE:10.5'
 
     compile "com.google.guava:guava:16+"
@@ -20,7 +21,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'de.corpus_musicae_ottomanicae.mei.transform.Transform'
+    mainClass = 'de.corpus_musicae_ottomanicae.mei.transform.MeiPostprocessor'
 }
 
 test {
