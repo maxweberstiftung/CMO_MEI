@@ -48,7 +48,7 @@ public class AccidentalTransformer implements Transformer {
             throw new MeiInputException(mei.getDocumentElement(),
                     "Expected a single staff label on staff 1 (for encoding key signatures).");
         }
-        keySig = AEUKeySignature.parseFromCMOInstrumentLabel(keySigLabel.getTextContent());
+        keySig = AEUKeySignature.parseFromCMOInstrumentLabel(keySigLabel);
 
         addKeySignature((Element) keySigLabel.getParentNode());
 

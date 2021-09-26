@@ -20,19 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AEUKeySignatureTest {
     @Test
-    public void TestCMOLabelN() {
+    public void TestCMOLabelN() throws MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("N");
         assertEquals(new AEUKeySignature(), keySig);
     }
 
     @Test
-    public void TestEmptyCMOLabel() {
+    public void TestEmptyCMOLabel() throws MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("");
         assertEquals(new AEUKeySignature(), keySig);
     }
 
     @Test
-    public void TestCMOLabel4b8K() {
+    public void TestCMOLabel4b8K() throws MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b 8K");
         AEUKeySignature expectedKeySig = new AEUKeySignature();
         expectedKeySig.add(PName.b, AEUAccidental.bf, 4, 4);
@@ -41,7 +41,7 @@ class AEUKeySignatureTest {
     }
 
     @Test
-    public void TestCMOLabel4b() {
+    public void TestCMOLabel4b() throws MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b");
         AEUKeySignature expectedKeySig = new AEUKeySignature();
         expectedKeySig.add(PName.b, AEUAccidental.bf, 4, 4);
@@ -49,7 +49,7 @@ class AEUKeySignatureTest {
     }
 
     @Test
-    public void TestCMOLabel4k8B5B7B3B() {
+    public void TestCMOLabel4k8B5B7B3B() throws MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4k 8B 5B 7B 3B");
         AEUKeySignature expectedKeySig = new AEUKeySignature();
         expectedKeySig.add(PName.b, AEUAccidental.kf, 4, 4);
@@ -61,7 +61,8 @@ class AEUKeySignatureTest {
     }
 
     @Test
-    public void TestToMei() throws IOException, ParserConfigurationException, SAXException, TransformerException {
+    public void TestToMei()
+            throws IOException, ParserConfigurationException, SAXException, TransformerException, MeiInputException {
         AEUKeySignature keySig = AEUKeySignature.parseFromCMOInstrumentLabel("4b 8K");
         Element expected = Xml.parse(String.join("", //
                 "<keySig xmlns='" + Constants.MEI_NS + "'>", //

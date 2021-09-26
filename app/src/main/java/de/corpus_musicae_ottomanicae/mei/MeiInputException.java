@@ -26,7 +26,7 @@ public class MeiInputException extends Exception {
 
         try {
             info += "Division " + Util.contextDivisionNumber(context) + ", ";
-        } catch (IllegalArgumentException e) {
+        } catch (MeiInputException e) {
             // It's OK, `context` is just not an element occurring inside a division
         }
         info += context.getTagName() + " element";

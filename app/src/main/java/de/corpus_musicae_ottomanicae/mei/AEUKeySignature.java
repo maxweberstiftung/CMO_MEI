@@ -2,6 +2,7 @@ package de.corpus_musicae_ottomanicae.mei;
 
 import de.corpus_musicae_ottomanicae.mei.Constants.AEUAccidental;
 import de.corpus_musicae_ottomanicae.mei.Constants.PName;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -98,7 +99,7 @@ public class AEUKeySignature {
      * intended MEI @loc attribute (for treble clef). The second character is mapped
      * to the MEI @accid attribute (see the staffLabelAccidCodes Map).
      */
-    public static AEUKeySignature parseFromCMOInstrumentLabel(String label) throws IllegalArgumentException {
+    public static AEUKeySignature parseFromCMOInstrumentLabel(String label) throws MeiInputException {
         AEUKeySignature keySig = new AEUKeySignature();
 
         switch (label.trim()) {
@@ -111,7 +112,7 @@ public class AEUKeySignature {
 
         for (String labelComponent : labelComponents) {
             if (labelComponent.length() != 2) {
-                throw new IllegalArgumentException(
+                throw new MeiInputException("[unknown]",
                         "Key signature codes in staff labels must be two characters long. Found component "
                                 + labelComponent);
             }
@@ -121,7 +122,7 @@ public class AEUKeySignature {
             try {
                 loc = Integer.parseInt(locCode);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(
+                throw new MeiInputException("[unknown]",
                         "The first character of key signature codes in staff labels must be a digit. Found component "
                                 + labelComponent);
             }
@@ -129,7 +130,7 @@ public class AEUKeySignature {
             Character accidCode = labelComponent.charAt(1);
             AEUAccidental accid = staffLabelAccidCodes.get(accidCode);
             if (accid == null) {
-                throw new IllegalArgumentException(
+                throw new MeiInputException("[unknown]",
                         "Unknown accidental code in staff label. Found component " + labelComponent);
             }
 
@@ -143,6 +144,16 @@ public class AEUKeySignature {
         }
 
         return keySig;
+    }
+
+    public static AEUKeySignature parseFromCMOInstrumentLabel(Element label) throws MeiInputException {
+        try {
+            return parseFromCMOInstrumentLabel(label.getTextContent());
+        } catch (MeiInputException e) {
+            // The string based method can't properly decribe the context, so
+            // let's do that here by creating a more meaningful MeiInputException
+            throw new MeiInputException(label, e.getMessage());
+        }
     }
 
     public Element toMei(Document mei) {

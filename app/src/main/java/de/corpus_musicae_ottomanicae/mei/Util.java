@@ -3,10 +3,10 @@ package de.corpus_musicae_ottomanicae.mei;
 import org.w3c.dom.Element;
 
 public class Util {
-    public static String contextDivisionNumber(Element element) {
+    public static String contextDivisionNumber(Element element) throws MeiInputException {
         Element measure = XPath.evaluateToElement(element, "ancestor-or-self::mei:measure[1]");
         if (measure == null) {
-            throw new IllegalArgumentException("Descendant of measure expected");
+            throw new MeiInputException(element, "To determine the division number, element must be in a measure");
         }
         for (String attribute : new String[] { "label", "n" }) {
             if (measure.hasAttribute(attribute)) {
