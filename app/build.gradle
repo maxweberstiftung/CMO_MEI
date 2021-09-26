@@ -20,10 +20,24 @@ dependencies {
 
 }
 
+mainClassName = 'de.corpus_musicae_ottomanicae.mei.transform.MeiPostprocessor'
+
 application {
-    mainClass = 'de.corpus_musicae_ottomanicae.mei.transform.MeiPostprocessor'
+    mainClass = "${mainClassName}"
 }
 
 test {
     useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+    doFirst {
+        from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    manifest {
+        attributes 'Main-Class': "${mainClassName}"
+    }
+    archiveBaseName = "CmoMeiPostprocessor"
+    with jar
 }
