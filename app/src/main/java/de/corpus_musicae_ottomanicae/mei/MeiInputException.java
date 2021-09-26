@@ -24,10 +24,9 @@ public class MeiInputException extends Exception {
     private static String contextInfo(Element context) {
         String info = "";
 
-        try {
-            info += "Division " + Util.contextDivisionNumber(context) + ", ";
-        } catch (MeiInputException e) {
-            // It's OK, `context` is just not an element occurring inside a division
+        String divisionNumber = Util.contextDivisionNumber(context);
+        if (divisionNumber != null) {
+            info += "Division " + divisionNumber + ", ";
         }
         info += context.getTagName() + " element";
         if (context.hasAttribute("xml:id")) {
