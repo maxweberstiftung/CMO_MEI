@@ -41,4 +41,10 @@ public class XPathTest {
         elements = XPath.evaluateToElements(mei, "//mei/foo");
         assertEquals(2, elements.length);
     }
+
+    @Test
+    public void testEvaluateToString() throws SAXException, IOException, ParserConfigurationException {
+        Document mei = Xml.parse("<foo bar='baz'/>");
+        assertEquals("baz", XPath.evaluateToString(mei, "/foo/@bar"));
+    }
 }
