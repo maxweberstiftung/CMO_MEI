@@ -132,7 +132,7 @@
     <xsl:template match="mei:note[mei:verse]">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()[name() != 'verse']"/>
-            <!-- Verse number verses can be detected by doublicate @n attributes -->
+            <!-- Verse number verses can be detected by duplicate @n attributes -->
             <xsl:variable name="verses" select="mei:verse"/>
             <xsl:for-each select="distinct-values(mei:verse/@n)">
                 <xsl:variable name="num" select="." as="xs:integer"/>

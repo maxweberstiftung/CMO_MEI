@@ -24,7 +24,7 @@
     </xsldoc:doc>
     <xsl:template match="*[not(@xml:id)]">
         <xsl:variable name="ancestorID" select="ancestor::node()[@xml:id][1]/@xml:id"/>
-        <xsl:variable name="acestorSelfTillID">
+        <xsl:variable name="ancestorSelfTillID">
             <xsl:for-each select="ancestor-or-self::*[not(@xml:id)]">
                 <xsl:value-of select="concat('-', ./node-name(), count(preceding-sibling::*)+1)"/>
             </xsl:for-each>
@@ -32,7 +32,7 @@
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
             <xsl:attribute name="xml:id">
-                <xsl:value-of select="concat($ancestorID, $acestorSelfTillID)"/>
+                <xsl:value-of select="concat($ancestorID, $ancestorSelfTillID)"/>
             </xsl:attribute>
             <xsl:apply-templates select="node()"/>
         </xsl:copy>
