@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+
 import com.thaiopensource.relaxng.SchemaFactory;
 import com.thaiopensource.util.PropertyMapBuilder;
 import com.thaiopensource.validate.IncorrectSchemaException;
 import com.thaiopensource.validate.Schema;
 import com.thaiopensource.validate.ValidateProperty;
+import com.thaiopensource.validate.Validator;
 
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
@@ -53,7 +58,13 @@ public class RNGTransformer implements Transformer {
         PropertyMapBuilder builder = new PropertyMapBuilder();
         ArrayList<String> errors = new ArrayList<>();
         builder.put(ValidateProperty.ERROR_HANDLER, new RNGErrorHandler(errors));
-        schema.createValidator(builder.toPropertyMap());
+        Validator validator = schema.createValidator(builder.toPropertyMap());
+        try {
+            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc),
+                    new SAXResult(validator.getContentHandler()));
+        } catch (javax.xml.transform.TransformerException e) {
+            throw new TransformerException(e);
+        }
         if (errors.size() > 0) {
             throw new MeiInputException("", String.join("\n", errors));
         }
