@@ -165,5 +165,14 @@
             </xsl:for-each>
         </xsl:copy>
     </xsl:template>
-    
+
+    <xsldoc:doc>
+        <xsldoc:desc>Remove typography attributes that are not relevant</xsldoc:desc>
+    </xsldoc:doc>
+    <xsl:template match="@lyric.name|@music.name|@page.botmar|@page.height|@page.leftmar|@page.rightmar|@page.topmar|@page.width|@ppq|@spacing.staff|@spacing.system|@text.name|@vu.height|@startvo|@endvo|@vo"/>
+
+    <xsl:template match="@key.mode"/>
+
+    <xsl:template match="@vel"/>
+
 </xsl:stylesheet>
