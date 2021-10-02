@@ -132,7 +132,12 @@
     <xsl:template match="mei:note[mei:verse]">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()[name() != 'verse']"/>
-            <!-- Verse number verses can be detected by duplicate @n attributes -->
+            <!--
+                Verse number verses can be detected by duplicate @n attributes
+                Es gibt Form-Strukturen, in der in einem Teil z.B. Strophe 1, 2
+                und 4 stehen, aber Strophe 4 ist mit dem Text-Stil für Strophe 3
+                eingegeben, weil es eben die 3. Strophe in diesem Teil ist
+            -->
             <xsl:variable name="verses" select="mei:verse"/>
             <xsl:for-each select="distinct-values(mei:verse/@n)">
                 <xsl:variable name="num" select="." as="xs:integer"/>

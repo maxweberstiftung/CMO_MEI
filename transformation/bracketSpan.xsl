@@ -61,7 +61,7 @@
     
     <!-- remove end bracket -->
     <xsldoc:doc>
-        <xsldoc:desc>Suppress the ending bracket symbol because it is already been taken care of.</xsldoc:desc>
+        <xsldoc:desc>Suppress the ending bracket symbol because it has already been taken care of.</xsldoc:desc>
     </xsldoc:doc>
     <xsl:template match="mei:dir[mei:symbol/@glyph.num=$group_end]"/>
     

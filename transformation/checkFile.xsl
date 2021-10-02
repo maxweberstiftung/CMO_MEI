@@ -8,14 +8,15 @@
     version="3.0">
     <!-- copy every node in file -->
     <xsl:mode on-no-match="shallow-copy"/>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>Contains sanity checks for sibmei output.</xsldoc:desc>
     </xsldoc:doc>
-    
+
     <xsldoc:doc>
         <xsldoc:desc>Checks if there is only one vertical bracket per measure.</xsldoc:desc>
     </xsldoc:doc>
+    <!-- TODO: This stylesheet should be replaced by a schema valdiation rule -->
     <xsl:template match="/">
         <xsl:if test="//mei:measure[count(mei:line[starts-with(@type,'bracket vertical')]) > 1]">
             <xsl:variable name="wrongMeasure" select="//mei:measure[count(mei:line[starts-with(@type,'bracket vertical')]) > 1]"/>
