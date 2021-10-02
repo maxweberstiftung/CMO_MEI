@@ -8,7 +8,9 @@
     version="3.0">
     <!-- copy every node in file -->
     <xsl:mode on-no-match="shallow-copy"/>
-    
+
+    <xsl:import href="meiInputErrorLib.xsl"/>
+
     <doc xmlns="http://www.oxygenxml.com/ns/doc/xsl">
         <desc>
             Converts opening and closing bracket symbols into bracketSpans for Hampartsum groups.
@@ -28,8 +30,13 @@
         </xsldoc:desc>
     </xsldoc:doc>
     <xsl:template match="mei:dir[mei:symbol/@glyph.num=$group_start]">
-        <xsl:variable name="followingEnd" select="following-sibling::mei:dir[mei:symbol/@glyph.num=$group_end][1]"/>
-        
+        <xsl:variable name="nextBracket" select="following-sibling::mei:dir[mei:symbol/@glyph.num=($group_start, $group_end)][1]"/>
+        <xsl:if test="not($nextBracket/mei:symbol/@glyph.num=$group_end)">
+            <xsl:apply-templates select="." mode="mei-input-error">
+                <xsl:with-param name="message" select="'Missing closing bracket.'"/>
+            </xsl:apply-templates>
+        </xsl:if>
+
         <xsl:element name="bracketSpan" namespace="http://www.music-encoding.org/ns/mei">
             <xsl:attribute name="xml:id" select="@xml:id"/>
             <xsl:attribute name="func" select="'hampartsum_group'"/>
@@ -41,13 +48,13 @@
             <xsl:if test="@ho">
                 <xsl:attribute name="startho" select="@ho"/>    
             </xsl:if>
-            <xsl:attribute name="endid" select="$followingEnd/@startid"/>
-            <xsl:attribute name="tstamp2" select="$followingEnd/@tstamp"/>
-            <xsl:if test="$followingEnd/@vo">
-                <xsl:attribute name="endvo" select="$followingEnd/@vo"/>
+            <xsl:attribute name="endid" select="$nextBracket/@startid"/>
+            <xsl:attribute name="tstamp2" select="$nextBracket/@tstamp"/>
+            <xsl:if test="$nextBracket/@vo">
+                <xsl:attribute name="endvo" select="$nextBracket/@vo"/>
             </xsl:if>
-            <xsl:if test="$followingEnd/@ho">
-                <xsl:attribute name="endho" select="$followingEnd/@ho"/>
+            <xsl:if test="$nextBracket/@ho">
+                <xsl:attribute name="endho" select="$nextBracket/@ho"/>
             </xsl:if>
         </xsl:element>
     </xsl:template>
