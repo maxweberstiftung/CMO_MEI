@@ -30,19 +30,19 @@ class XSLTTransformerTest {
     void testTransform() throws Exception {
         Document xslt = Xml.loadResource(this, "xsl-transform-test.xsl");
         Document input = Xml.loadResource(this, "xsl-transform-test.xml");
-        Document output = new XSLTTransformer(xslt).transform(input);
+        Document output = new XSLTTransformer(xslt, xslt.getBaseURI()).transform(input);
         assertEquals("out", output.getDocumentElement().getTextContent());
     }
 
     @Test
     void testTransformerException() throws SaxonApiException, SAXException, IOException, ParserConfigurationException {
-        assertThrows(SaxonApiException.class, () -> new XSLTTransformer(dummyDocument));
+        assertThrows(SaxonApiException.class, () -> new XSLTTransformer(dummyDocument, dummyDocument.getBaseURI()));
     }
 
     @Test
     void testMeiInputException() throws SAXException, IOException, SaxonApiException {
         Document xslt = Xml.loadResource(this, "mei-input-exception-test.xsl");
-        Transformer transformer = new XSLTTransformer(xslt);
+        Transformer transformer = new XSLTTransformer(xslt, xslt.getBaseURI());
         MeiInputException exception = assertThrows(MeiInputException.class, () -> transformer.transform(dummyDocument));
         assertTrue(exception.getMessage().matches(".*test context.+test message.*"));
     }

@@ -1,25 +1,15 @@
 package de.corpus_musicae_ottomanicae.mei.transform;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import de.corpus_musicae_ottomanicae.mei.MeiInputException;
+import net.sf.saxon.s9api.*;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.dom.DOMSource;
-
-import org.w3c.dom.Document;
-
-import de.corpus_musicae_ottomanicae.mei.MeiInputException;
-import net.sf.saxon.s9api.DOMDestination;
-import net.sf.saxon.s9api.MessageListener2;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.Xslt30Transformer;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class XSLTTransformer implements Transformer {
     static final QName meiInputErrorCode = new QName("MeiInputError");
@@ -68,9 +58,11 @@ public class XSLTTransformer implements Transformer {
 
     ExceptionListener exceptionListener = new ExceptionListener();
 
-    public XSLTTransformer(Document xslt) throws SaxonApiException {
+    public XSLTTransformer(Document xslt, String baseUri) throws SaxonApiException {
         XsltCompiler xsltCompiler = processor.newXsltCompiler();
-        xsltExecutable = xsltCompiler.compile(new DOMSource(xslt.getDocumentElement()));
+        DOMSource source = new DOMSource(xslt.getDocumentElement());
+        source.setSystemId(baseUri);
+        xsltExecutable = xsltCompiler.compile(source);
     }
 
     @Override

@@ -90,7 +90,8 @@ public class MeiPostprocessor implements Runnable {
 
         for (File xslt : xslts) {
             try {
-                transformers.add(new XSLTTransformer(Xml.parse(new FileInputStream(xslt))));
+                Document xsltDoc = Xml.parse(new FileInputStream(xslt));
+                transformers.add(new XSLTTransformer(xsltDoc, xslt.toURI().toString()));
             } catch (SaxonApiException | SAXException | IOException e) {
                 throw new TransformerException(e);
             }
