@@ -1,0 +1,43 @@
+plugins {
+    id 'application'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'org.xmlunit:xmlunit-core:2.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    implementation "com.google.guava:guava:16+"
+    implementation 'org.relaxng:jing:20181222'
+    implementation 'info.picocli:picocli:4.6.1'
+    implementation 'net.sf.saxon:Saxon-HE:10.5'
+}
+
+mainClassName = 'de.corpus_musicae_ottomanicae.mei.transform.MeiPostprocessor'
+
+application {
+    mainClass = "${mainClassName}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+    doFirst {
+        from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    manifest {
+        attributes 'Main-Class': "${mainClassName}"
+    }
+    archiveBaseName = "CmoMeiPostprocessor"
+    with jar
+}
