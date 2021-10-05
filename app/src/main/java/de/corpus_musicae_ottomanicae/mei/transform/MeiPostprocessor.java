@@ -2,6 +2,7 @@ package de.corpus_musicae_ottomanicae.mei.transform;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,7 +14,10 @@ import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+import com.thaiopensource.validate.IncorrectSchemaException;
+
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import de.corpus_musicae_ottomanicae.Xml;
@@ -27,6 +31,9 @@ import picocli.CommandLine.Parameters;
 public class MeiPostprocessor implements Runnable {
     @Option(names = "--xslt-dir", required = true, description = "Full path to directorry of XSLTs. XSLTs in this directory are processed in alphanumeric order.")
     File xsltDir;
+
+    @Option(names = "--schema", required = false, description = "Full path to RelaxNG schema (XML form).")
+    File schemaPath;
 
     @Parameters(arity = "1..*", description = "Full paths to MEI files. Files will be overwritten.")
     File[] meis;
@@ -93,6 +100,16 @@ public class MeiPostprocessor implements Runnable {
                 Document xsltDoc = Xml.parse(new FileInputStream(xslt));
                 transformers.add(new XSLTTransformer(xsltDoc, xslt.toURI().toString()));
             } catch (SaxonApiException | SAXException | IOException e) {
+                throw new TransformerException(e);
+            }
+        }
+
+        // TODO: When there are too many validation error messages, the program
+        // crashes without showing the error dialog
+        if (schemaPath != null) {
+            try {
+                transformers.add(new RNGTransformer(new InputSource(new FileReader(schemaPath))));
+            } catch (IOException | SAXException | IncorrectSchemaException e) {
                 throw new TransformerException(e);
             }
         }
