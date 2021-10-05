@@ -10,6 +10,12 @@
         <xsl:value-of select="concat($elementInfo, $divisionInfo)"/>
     </xsl:template>
 
+    <!--
+        This template must be called for signalling an error in the input MEI.
+        Messages produced by this template are recognized by the Java
+        postprocessor and reported to the user as input problems.
+    -->
+
     <xsl:template mode="mei-input-error" match="element()">
         <xsl:param name="message" as="xs:string"/>
         <xsl:message terminate="yes" error-code="MeiInputError">
