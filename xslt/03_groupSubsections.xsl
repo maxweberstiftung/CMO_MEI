@@ -11,7 +11,6 @@
     <xsl:template match="mei:section[parent::mei:section]">
         <xsl:choose>
             <xsl:when test="./mei:measure[mei:anchoredText/@label=$subsectionName]">
-                
                 <xsl:copy>
                     <xsl:apply-templates select="@*"/>
                     <!-- first, write every element without a preceding section mark -->
