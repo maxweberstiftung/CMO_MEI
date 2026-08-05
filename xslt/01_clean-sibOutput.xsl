@@ -254,7 +254,7 @@
             <xsl:element name="respStmt" namespace="http://www.music-encoding.org/ns/mei">
                 <xsl:element name="resp" namespace="http://www.music-encoding.org/ns/mei">
                     <xsl:attribute name="analog">
-                        <xsl:value-of select="'edi'"/>
+                        <xsl:value-of select="'edt'"/>
                     </xsl:attribute>
                     <xsl:attribute name="auth">
                         <xsl:value-of select="'MARC'"/>
