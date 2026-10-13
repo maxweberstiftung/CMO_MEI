@@ -294,7 +294,7 @@
                         </xsl:attribute>
                         <xsl:element name="xi:include" namespace="http://www.w3.org/2001/XInclude">
                             <xsl:attribute name="href">
-                                <xsl:value-of select="'pitchSet.xml'"/>
+                                <xsl:value-of select="'https://gitlab.gwdg.de/perspectivia.net/cmo-mei/-/raw/main/pitchSet.xml'"/>
                             </xsl:attribute>
                             <xsl:attribute name="xpointer">
                                 <xsl:value-of select="''"/>
