@@ -961,19 +961,19 @@
                 </xsl:element>
                 <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
                     <xsl:attribute name="type">
-                        <xsl:value-of select="'#part'"/>
+                        <xsl:value-of select="'part'"/>
                     </xsl:attribute>
                     <xsl:value-of select="'Part [#]: Edition of Manuscripts in [Hampartsum/Staff] Notation'"/>
                 </xsl:element>
                 <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
                     <xsl:attribute name="type">
-                        <xsl:value-of select="'#series'"/>
+                        <xsl:value-of select="'series'"/>
                     </xsl:attribute>
                     <xsl:value-of select="'Series [#]: The Manuscript Sources from [Institution]'"/>
                 </xsl:element>
                 <xsl:element name="title" namespace="http://www.music-encoding.org/ns/mei">
                     <xsl:attribute name="type">
-                        <xsl:value-of select="'#idno'"/>
+                        <xsl:value-of select="'idno'"/>
                     </xsl:attribute>
                     <xsl:value-of select="'CMO[#-#]'"/>
                 </xsl:element>
